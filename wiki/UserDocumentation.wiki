@@ -85,3 +85,4 @@ Each field defined in the entity also has a spec array that defines the mapping 
   * [http://www.mailchimp.com/labs/visualization/api/ API Documentation]
   * [http://www.mailchimp.com/labs/visualization/examples/ Usage Examples]
   * [http://code.google.com/apis/visualization/documentation/querylanguage.html Google Visualization Query Language Reference]
+  * [QueryLanguageDifferences Query Language Differences]
