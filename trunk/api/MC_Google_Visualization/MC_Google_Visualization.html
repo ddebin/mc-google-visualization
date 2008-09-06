@@ -1,0 +1,1371 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  <html xmlns="http://www.w3.org/1999/xhtml">
+		<head>
+			<!-- template designed by Marco Von Ballmoos -->
+			<title>Docs For Class MC_Google_Visualization</title>
+			<link rel="stylesheet" href="../media/stylesheet.css" />
+			<meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1'/>
+		</head>
+		<body>
+			<div class="page-body">			
+<h2 class="class-name">Class MC_Google_Visualization</h2>
+
+<a name="sec-description"></a>
+<div class="info-box">
+	<div class="info-box-title">Description</div>
+	<div class="nav-bar">
+					<span class="disabled">Description</span> |
+													<a href="#sec-var-summary">Vars</a> (<a href="#sec-vars">details</a>)
+						|											<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+						
+					</div>
+	<div class="info-box-body">
+        		<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Provide a working implementation of the Google Visualization Query data source that works with a database (or any other custom backend)</p>
+<p class="description"><p>The documentation for the query language itself and how to use it with Google Visualizations can be found here: http://code.google.com/apis/visualization/documentation/querylanguage.html</p></p>
+		<p class="notes">
+			Located in <a class="field" href="_Google---Visualization.php.html">/Google/Visualization.php</a> (line <span class="field">34</span>)
+		</p>
+		
+				
+		<pre></pre>
+	
+			</div>
+</div>
+
+
+
+	<a name="sec-var-summary"></a>
+	<div class="info-box">
+		<div class="info-box-title">Variable Summary</span></div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+						<span class="disabled">Vars</span> (<a href="#sec-vars">details</a>)
+							| 
+									<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+							
+								</div>
+		<div class="info-box-body">
+			<div class="var-summary">
+																																																								<div class="var-title">
+					<span class="var-type">PDO</span>
+					<a href="#$db" title="details" class="var-name">$db</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">string</span>
+					<a href="#$default_entity" title="details" class="var-name">$default_entity</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">array</span>
+					<a href="#$default_format" title="details" class="var-name">$default_format</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">array</span>
+					<a href="#$entities" title="details" class="var-name">$entities</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">string</span>
+					<a href="#$sql_dialect" title="details" class="var-name">$sql_dialect</a>
+				</div>
+											</div>
+		</div>
+	</div>
+
+	<a name="sec-method-summary"></a>
+	<div class="info-box">
+		<div class="info-box-title">Method Summary</span></div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+																		<a href="#sec-var-summary">Vars</a> (<a href="#sec-vars">details</a>)
+				 
+				|
+						<span class="disabled">Methods</span> (<a href="#sec-methods">details</a>)
+		</div>
+		<div class="info-box-body">			
+			<div class="method-summary">
+																																																																																																																																																																																																																																																												
+												<div class="method-definition">
+											<span class="method-result">MC_Google_Visualization</span>
+										<a href="#__construct" title="details" class="method-name">__construct</a>
+											([<span class="var-type">PDO</span>&nbsp;<span class="var-name">$db</span> = <span class="var-default">null</span>], [<span class="var-type">string</span>&nbsp;<span class="var-name">$dialect</span> = <span class="var-default">'mysql'</span>])
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#addDependantCallbackFields" title="details" class="method-name">addDependantCallbackFields</a>
+											(<span class="var-type">array</span>&nbsp;<span class="var-name">$field</span>, <span class="var-type">array</span>&nbsp;<span class="var-name">$entity</span>, <span class="var-type"></span>&nbsp;<span class="var-name">&$meta</span>, <span class="var-type">array</span>&nbsp;<span class="var-name">$meta</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#addEntity" title="details" class="method-name">addEntity</a>
+											(<span class="var-type">string</span>&nbsp;<span class="var-name">$name</span>, [<span class="var-type">array</span>&nbsp;<span class="var-name">$spec</span> = <span class="var-default">array()</span>])
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#addEntityField" title="details" class="method-name">addEntityField</a>
+											(<span class="var-type">string</span>&nbsp;<span class="var-name">$entity</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$field</span>, <span class="var-type">array</span>&nbsp;<span class="var-name">$spec</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#addEntityJoin" title="details" class="method-name">addEntityJoin</a>
+											(<span class="var-type">string</span>&nbsp;<span class="var-name">$entity</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$join</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$sql</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">string</span>
+										<a href="#convertDate" title="details" class="method-name">convertDate</a>
+											(<span class="var-type">string</span>&nbsp;<span class="var-name">$value</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">string</span>
+										<a href="#convertDateTime" title="details" class="method-name">convertDateTime</a>
+											(<span class="var-type">string</span>&nbsp;<span class="var-name">$value</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">string</span>
+										<a href="#convertLimit" title="details" class="method-name">convertLimit</a>
+											(<span class="var-type">integer|null</span>&nbsp;<span class="var-name">$limit</span>, <span class="var-type">integer|null</span>&nbsp;<span class="var-name">$offset</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">string</span>
+										<a href="#convertTime" title="details" class="method-name">convertTime</a>
+											(<span class="var-type">string</span>&nbsp;<span class="var-name">$value</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">array</span>
+										<a href="#generateMetadata" title="details" class="method-name">generateMetadata</a>
+											(<span class="var-type">array</span>&nbsp;<span class="var-name">$query</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">string</span>
+										<a href="#generateSQL" title="details" class="method-name">generateSQL</a>
+											(<span class="var-type">array</span>&nbsp;<span class="var-name">$meta</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#getFieldQuote" title="details" class="method-name">getFieldQuote</a>
+										()
+									</div>
+																<div class="method-definition">
+											<span class="method-result">string</span>
+										<a href="#getFieldSQL" title="details" class="method-name">getFieldSQL</a>
+											(<span class="var-type">string</span>&nbsp;<span class="var-name">$name</span>, <span class="var-type">array</span>&nbsp;<span class="var-name">$spec</span>, [<span class="var-type">boolean</span>&nbsp;<span class="var-name">$alias</span> = <span class="var-default">false</span>], [<span class="var-type">string|null</span>&nbsp;<span class="var-name">$func</span> = <span class="var-default">null</span>], [<span class="var-type">array|null</span>&nbsp;<span class="var-name">$pivot</span> = <span class="var-default">null</span>], [<span class="var-type">array|null</span>&nbsp;<span class="var-name">$pivot_fields</span> = <span class="var-default">null</span>])
+									</div>
+																<div class="method-definition">
+											<span class="method-result"><a href="../MC_Parser/MC_Parser_Def.html">MC_Parser_Def</a></span>
+										<a href="#getGrammar" title="details" class="method-name">getGrammar</a>
+										()
+									</div>
+																<div class="method-definition">
+											<span class="method-result">string</span>
+										<a href="#getRowValues" title="details" class="method-name">getRowValues</a>
+											(<span class="var-type">array</span>&nbsp;<span class="var-name">$row</span>, <span class="var-type">array</span>&nbsp;<span class="var-name">$meta</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">string</span>
+										<a href="#getSQL" title="details" class="method-name">getSQL</a>
+											(<span class="var-type">string</span>&nbsp;<span class="var-name">$query</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#getSuccessClose" title="details" class="method-name">getSuccessClose</a>
+										()
+									</div>
+																<div class="method-definition">
+											<span class="method-result">string</span>
+										<a href="#getSuccessInit" title="details" class="method-name">getSuccessInit</a>
+											(<span class="var-type">array</span>&nbsp;<span class="var-name">$meta</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#getTableInit" title="details" class="method-name">getTableInit</a>
+											(<span class="var-type">array</span>&nbsp;<span class="var-name">$meta</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">string</span>
+										<a href="#handleError" title="details" class="method-name">handleError</a>
+											(<span class="var-type">integer</span>&nbsp;<span class="var-name">$reqid</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$detail_msg</span>, [<span class="var-type">string</span>&nbsp;<span class="var-name">$code</span> = <span class="var-default">'error'</span>], [<span class="var-type">string</span>&nbsp;<span class="var-name">$summary_msg</span> = <span class="var-default">null</span>])
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#handleQuery" title="details" class="method-name">handleQuery</a>
+											(<span class="var-type">string</span>&nbsp;<span class="var-name">$query</span>, <span class="var-type">integer</span>&nbsp;<span class="var-name">$reqid</span>, [<span class="var-type">string</span>&nbsp;<span class="var-name">$signature</span> = <span class="var-default">''</span>])
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#handleRequest" title="details" class="method-name">handleRequest</a>
+										()
+									</div>
+																<div class="method-definition">
+											<span class="method-result">string</span>
+										<a href="#jsonEncode" title="details" class="method-name">jsonEncode</a>
+											(<span class="var-type">mixed</span>&nbsp;<span class="var-name">$php</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#parseFieldTokens" title="details" class="method-name">parseFieldTokens</a>
+											(<span class="var-type"><a href="../MC_Parser/MC_Parser_Token.html">MC_Parser_Token</a></span>&nbsp;<span class="var-name">$token</span>, <span class="var-type"></span>&nbsp;<span class="var-name">&$fields</span>, <span class="var-type">array</span>&nbsp;<span class="var-name">$fields</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">array</span>
+										<a href="#parseQuery" title="details" class="method-name">parseQuery</a>
+											(<span class="var-type">string</span>&nbsp;<span class="var-name">$str</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#parseWhereTokens" title="details" class="method-name">parseWhereTokens</a>
+											(<span class="var-type"><a href="../MC_Parser/MC_Parser_Token.html">MC_Parser_Token</a></span>&nbsp;<span class="var-name">$token</span>, <span class="var-type"></span>&nbsp;<span class="var-name">&$where</span>, <span class="var-type">array</span>&nbsp;<span class="var-name">$where</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#setDB" title="details" class="method-name">setDB</a>
+											([<span class="var-type">PDO|null</span>&nbsp;<span class="var-name">$db</span> = <span class="var-default">null</span>])
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#setDefaultEntity" title="details" class="method-name">setDefaultEntity</a>
+											([<span class="var-type">string|null</span>&nbsp;<span class="var-name">$default</span> = <span class="var-default">null</span>])
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#setDefaultFormat" title="details" class="method-name">setDefaultFormat</a>
+											(<span class="var-type">string</span>&nbsp;<span class="var-name">$type</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$format</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#setEntityWhere" title="details" class="method-name">setEntityWhere</a>
+											(<span class="var-type">string</span>&nbsp;<span class="var-name">$entity</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$where</span>)
+									</div>
+																<div class="method-definition">
+											<span class="method-result">void</span>
+										<a href="#setSqlDialect" title="details" class="method-name">setSqlDialect</a>
+											(<span class="var-type">string</span>&nbsp;<span class="var-name">$dialect</span>)
+									</div>
+								</div>
+		</div>
+	</div>		
+
+	<a name="sec-vars"></a>
+	<div class="info-box">
+		<div class="info-box-title">Variables</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+										<a href="#sec-var-summary">Vars</a> (<span class="disabled">details</span>)
+						
+			
+										| 
+									<a href="#sec-method-summary">Methods</a> (<a href="#sec-methods">details</a>)
+							
+					</div>
+		<div class="info-box-body">
+			<a name="var$db" id="$db"><!-- --></A>
+<div class="oddrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">PDO</span>
+			<span class="var-name">$db</span>
+			 = <span class="var-default"> null</span>			(line <span class="line-number">53</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">If pivots are being used or MC_Google_Visualization is handling the whole request, this must be a PDO  connection to your database.</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> protected</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$default_entity" id="$default_entity"><!-- --></A>
+<div class="evenrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">string</span>
+			<span class="var-name">$default_entity</span>
+			 = <span class="var-default"> null</span>			(line <span class="line-number">40</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">The default entity that will be used if the &quot;from&quot; part of a query is left out.  Setting this to null</p>
+<p class="description"><p>will make a &quot;from&quot; clause required</p></p>
+	<ul class="tags">
+				<li><span class="field">access:</span> protected</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$default_format" id="$default_format"><!-- --></A>
+<div class="oddrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">array</span>
+			<span class="var-name">$default_format</span>
+			 = <span class="var-default">array(<br />        'date' =&gt; 'm/d/Y',<br />        'datetime' =&gt; 'm/d/Y h:ia',<br />        'time' =&gt; 'h:ia',<br />        'boolean' =&gt; 'FALSE:TRUE',<br />        'number' =&gt; 'num:0'<br />    )</span>			(line <span class="line-number">66</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">If a format string is not provided by the query, these will be used to format values by default.</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> protected</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$entities" id="$entities"><!-- --></A>
+<div class="evenrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">array</span>
+			<span class="var-name">$entities</span>
+			 = <span class="var-default">array()</span>			(line <span class="line-number">46</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">The entity schema that defines which tables are exposed to visualization clients, along with their fields, joins, and callbacks</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> protected</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+<a name="var$sql_dialect" id="$sql_dialect"><!-- --></A>
+<div class="oddrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">string</span>
+			<span class="var-name">$sql_dialect</span>
+			 = <span class="var-default"> 'mysql'</span>			(line <span class="line-number">60</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">The SQL dialect to use when auto-generating SQL statements from the parsed query tokens  defaults to &quot;mysql&quot;.  Allowed values are &quot;mysql&quot;, &quot;postgres&quot;, or &quot;sqlite&quot;.  Patches are welcome for the rest.</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> protected</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
+						
+		</div>
+	</div>
+	
+	<a name="sec-methods"></a>
+	<div class="info-box">
+		<div class="info-box-title">Methods</div>
+		<div class="nav-bar">
+			<a href="#sec-description">Description</a> |
+															<a href="#sec-var-summary">Vars</a> (<a href="#sec-vars">details</a>)
+																	<a href="#sec-method-summary">Methods</a> (<span class="disabled">details</span>)
+						
+		</div>
+		<div class="info-box-body">
+			<A NAME='method_detail'></A>
+
+<a name="method__construct" id="__construct"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">Constructor __construct</span> (line <span class="line-number">80</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Create a new instance.  This must be done before the library can be used.  Pass in a PDO connection and</p>
+<p class="description"><p>dialect if MC_Google_Visualization will handle the entire request cycle</p></p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">MC_Google_Visualization</span>
+		<span class="method-name">
+			__construct
+		</span>
+					([<span class="var-type">PDO</span>&nbsp;<span class="var-name">$db</span> = <span class="var-default">null</span>], [<span class="var-type">string</span>&nbsp;<span class="var-name">$dialect</span> = <span class="var-default">'mysql'</span>])
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">PDO</span>
+				<span class="var-name">$db</span><span class="var-description">: the database connection to use</span>			</li>
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$dialect</span><span class="var-description">: the SQL dialect to use - one of &quot;mysql&quot;, &quot;postgres&quot;, or &quot;sqlite&quot;</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodaddDependantCallbackFields" id="addDependantCallbackFields"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">addDependantCallbackFields</span> (line <span class="line-number">579</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Recursively process the dependant fields for callback entity fields</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> protected</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			addDependantCallbackFields
+		</span>
+					(<span class="var-type">array</span>&nbsp;<span class="var-name">$field</span>, <span class="var-type">array</span>&nbsp;<span class="var-name">$entity</span>, <span class="var-type"></span>&nbsp;<span class="var-name">&$meta</span>, <span class="var-type">array</span>&nbsp;<span class="var-name">$meta</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">array</span>
+				<span class="var-name">$field</span><span class="var-description">: the spec array for the field to add (must have a &quot;callback&quot; key)</span>			</li>
+					<li>
+				<span class="var-type">array</span>
+				<span class="var-name">$entity</span><span class="var-description">: the spec array for the entity to pull other fields from</span>			</li>
+					<li>
+				<span class="var-type">array</span>
+				<span class="var-name">$meta</span><span class="var-description">: the query metadata array to append the results</span>			</li>
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">&$meta</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodaddEntity" id="addEntity"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">addEntity</span> (line <span class="line-number">765</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Add a new entity (table) to the visualization server that maps onto one or more SQL database tables</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			addEntity
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$name</span>, [<span class="var-type">array</span>&nbsp;<span class="var-name">$spec</span> = <span class="var-default">array()</span>])
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$name</span><span class="var-description">: the name of the entity - should be used in the &quot;from&quot; clause of visualization queries</span>			</li>
+					<li>
+				<span class="var-type">array</span>
+				<span class="var-name">$spec</span><span class="var-description">: optional spec array with keys &quot;fields&quot;, &quot;joins&quot;, &quot;table&quot;, and &quot;where&quot; to define the mapping between visualization queries and SQL queries</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodaddEntityField" id="addEntityField"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">addEntityField</span> (line <span class="line-number">792</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Add a new field to an entity table</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			addEntityField
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$entity</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$field</span>, <span class="var-type">array</span>&nbsp;<span class="var-name">$spec</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$entity</span><span class="var-description">: the name of the entity to add the field to</span>			</li>
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$field</span><span class="var-description">: the name of the field</span>			</li>
+					<li>
+				<span class="var-type">array</span>
+				<span class="var-name">$spec</span><span class="var-description">: the metadata for the field as a set of key-value pairs - allowed keys are &quot;field&quot;, &quot;callback&quot;, &quot;fields&quot;, &quot;extra&quot;, &quot;sort_field&quot;, &quot;type&quot;, and &quot;join&quot;</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodaddEntityJoin" id="addEntityJoin"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">addEntityJoin</span> (line <span class="line-number">814</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Add a new optional join to the entity table.  If fields associated with this join are selected, the join will be added to the SQL query</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			addEntityJoin
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$entity</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$join</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$sql</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$entity</span><span class="var-description">: the name of the entity table to add the join to</span>			</li>
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$join</span><span class="var-description">: the name of the join.  Set the entity field's &quot;join&quot; key to this</span>			</li>
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$sql</span><span class="var-description">: the SQL for the join that will be injected into the query</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodconvertDate" id="convertDate"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">convertDate</span> (line <span class="line-number">335</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Convert a visualization date into the appropriate date-literal format for the SQL dialect</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> the same value converted to be used inline in a SQL query</li>
+				<li><span class="field">access:</span> protected</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">string</span>
+		<span class="method-name">
+			convertDate
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$value</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$value</span><span class="var-description">: the date as a string &quot;YYY-MM-DD&quot;</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodconvertDateTime" id="convertDateTime"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">convertDateTime</span> (line <span class="line-number">344</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Convert a visualization date/time into the appropriate literal format for the SQL dialect</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> the same value converted to be used inline in a SQL query</li>
+				<li><span class="field">access:</span> protected</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">string</span>
+		<span class="method-name">
+			convertDateTime
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$value</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$value</span><span class="var-description">: the date/time as a string &quot;YYY-MM-DD HH:NN:SS&quot;</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodconvertLimit" id="convertLimit"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">convertLimit</span> (line <span class="line-number">363</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Convert the limit and offset clauses from the visualization query into SQL</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> the limit clause converted to be used inline in a SQL query</li>
+				<li><span class="field">access:</span> protected</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">string</span>
+		<span class="method-name">
+			convertLimit
+		</span>
+					(<span class="var-type">integer|null</span>&nbsp;<span class="var-name">$limit</span>, <span class="var-type">integer|null</span>&nbsp;<span class="var-name">$offset</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">integer|null</span>
+				<span class="var-name">$limit</span><span class="var-description">: the limit value, or null if not provided</span>			</li>
+					<li>
+				<span class="var-type">integer|null</span>
+				<span class="var-name">$offset</span><span class="var-description">: the offset value, or null if not provided</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodconvertTime" id="convertTime"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">convertTime</span> (line <span class="line-number">353</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Convert a visualization time into the appropriate literal format for the SQL dialect</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> the same value converted to be used inline in a SQL query</li>
+				<li><span class="field">access:</span> protected</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">string</span>
+		<span class="method-name">
+			convertTime
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$value</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$value</span><span class="var-description">: the time as a string &quot;HH:NN:SS&quot;</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodgenerateMetadata" id="generateMetadata"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">generateMetadata</span> (line <span class="line-number">421</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Given the results of parseQuery(), introspect against the entity definitions provided and return the metadata array used to generate the SQL</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> the metadata array from merging the query with the entity table definitions</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">array</span>
+		<span class="method-name">
+			generateMetadata
+		</span>
+					(<span class="var-type">array</span>&nbsp;<span class="var-name">$query</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">array</span>
+				<span class="var-name">$query</span><span class="var-description">: the visualization query broken up into sections</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodgenerateSQL" id="generateSQL"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">generateSQL</span> (line <span class="line-number">202</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Given the metadata for a query and the entities it's working against, generate the SQL</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> the SQL version of the visualization query</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">string</span>
+		<span class="method-name">
+			generateSQL
+		</span>
+					(<span class="var-type">array</span>&nbsp;<span class="var-name">$meta</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">array</span>
+				<span class="var-name">$meta</span><span class="var-description">: the results of generateMetadata() on the parsed visualization query</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodgetFieldQuote" id="getFieldQuote"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">getFieldQuote</span> (line <span class="line-number">374</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Return the character used to quote aliases for this query SQL dialect</p>
+<p class="description"><p>$return string the quote character</p></p>
+	<ul class="tags">
+				<li><span class="field">access:</span> protected</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			getFieldQuote
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodgetFieldSQL" id="getFieldSQL"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">getFieldSQL</span> (line <span class="line-number">393</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Helper function to generate the SQL for a given entity field</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> the SQL string for this field, with an op</li>
+				<li><span class="field">access:</span> protected</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">string</span>
+		<span class="method-name">
+			getFieldSQL
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$name</span>, <span class="var-type">array</span>&nbsp;<span class="var-name">$spec</span>, [<span class="var-type">boolean</span>&nbsp;<span class="var-name">$alias</span> = <span class="var-default">false</span>], [<span class="var-type">string|null</span>&nbsp;<span class="var-name">$func</span> = <span class="var-default">null</span>], [<span class="var-type">array|null</span>&nbsp;<span class="var-name">$pivot</span> = <span class="var-default">null</span>], [<span class="var-type">array|null</span>&nbsp;<span class="var-name">$pivot_fields</span> = <span class="var-default">null</span>])
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$name</span><span class="var-description">: the name of the field to generate SQL for</span>			</li>
+					<li>
+				<span class="var-type">array</span>
+				<span class="var-name">$spec</span><span class="var-description">: the entity spec array for the field</span>			</li>
+					<li>
+				<span class="var-type">boolean</span>
+				<span class="var-name">$alias</span><span class="var-description">: whether to also generate an &quot;AS&quot; alias for the field - defaults to false</span>			</li>
+					<li>
+				<span class="var-type">string|null</span>
+				<span class="var-name">$func</span><span class="var-description">: the function to call against the field (count, avg, sum, max, min)</span>			</li>
+					<li>
+				<span class="var-type">array|null</span>
+				<span class="var-name">$pivot</span><span class="var-description">: if there was a pivot for this query, this should be an array of values that uniquely identify this field</span>			</li>
+					<li>
+				<span class="var-type">array|null</span>
+				<span class="var-name">$pivot_fields</span><span class="var-description">: if there was a pivot for this query, this should be an array of the specs for the pivoted fields</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodgetGrammar" id="getGrammar"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">getGrammar</span> (line <span class="line-number">1060</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Use MC_Parser to generate a grammar that matches the query language specified here: http://code.google.com/apis/visualization/documentation/querylanguage.html</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> the grammar for the query language</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result"><a href="../MC_Parser/MC_Parser_Def.html">MC_Parser_Def</a></span>
+		<span class="method-name">
+			getGrammar
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodgetRowValues" id="getRowValues"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">getRowValues</span> (line <span class="line-number">915</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Given an associative array of key =&gt; value pairs and the results of generateMetadata, return the visualization results fragment for the particular row</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> the string fragment to include in the results back to the javascript client</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">string</span>
+		<span class="method-name">
+			getRowValues
+		</span>
+					(<span class="var-type">array</span>&nbsp;<span class="var-name">$row</span>, <span class="var-type">array</span>&nbsp;<span class="var-name">$meta</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">array</span>
+				<span class="var-name">$row</span><span class="var-description">: the row values as an array</span>			</li>
+					<li>
+				<span class="var-type">array</span>
+				<span class="var-name">$meta</span><span class="var-description">: the metadata for the query (use generateMetadata())</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodgetSQL" id="getSQL"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">getSQL</span> (line <span class="line-number">1050</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">A utility method for testing - take a visualization query, and return the SQL that would be generated</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> the SQL that should be sent to the database</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">string</span>
+		<span class="method-name">
+			getSQL
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$query</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$query</span><span class="var-description">: the visualization query to run</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodgetSuccessClose" id="getSuccessClose"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">getSuccessClose</span> (line <span class="line-number">1028</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			getSuccessClose
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodgetSuccessInit" id="getSuccessInit"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">getSuccessInit</span> (line <span class="line-number">853</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Return the beginning of a visualization response from the query metadata (everything before the actual row data)</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> the initial output string for a successful query</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">string</span>
+		<span class="method-name">
+			getSuccessInit
+		</span>
+					(<span class="var-type">array</span>&nbsp;<span class="var-name">$meta</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">array</span>
+				<span class="var-name">$meta</span><span class="var-description">: the metadata for the query - generally generated by MC_Google_Visualization::generateMetadata</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodgetTableInit" id="getTableInit"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">getTableInit</span> (line <span class="line-number">861</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Return the table metadata section of the visualization response for a successful query</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			getTableInit
+		</span>
+					(<span class="var-type">array</span>&nbsp;<span class="var-name">$meta</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">array</span>
+				<span class="var-name">$meta</span><span class="var-description">: the metadata for the query - generally generated by MC_Google_Visualization::generateMetadata</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodhandleError" id="handleError"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">handleError</span> (line <span class="line-number">192</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Return the response appropriate to tell the visualization client that an error has occurred</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> the string to output that will cause the visualization client to detect an error</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">string</span>
+		<span class="method-name">
+			handleError
+		</span>
+					(<span class="var-type">integer</span>&nbsp;<span class="var-name">$reqid</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$detail_msg</span>, [<span class="var-type">string</span>&nbsp;<span class="var-name">$code</span> = <span class="var-default">'error'</span>], [<span class="var-type">string</span>&nbsp;<span class="var-name">$summary_msg</span> = <span class="var-default">null</span>])
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">integer</span>
+				<span class="var-name">$reqid</span><span class="var-description">: the request ID that caused the error</span>			</li>
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$detail_msg</span><span class="var-description">: the detailed message to send along with the error</span>			</li>
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$code</span><span class="var-description">: the code for the error (like &quot;error&quot;, &quot;server_error&quot;, &quot;invalid_query&quot;, &quot;access_denied&quot;, etc.)</span>			</li>
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$summary_msg</span><span class="var-description">: a short description of the error, appropriate to show to end users</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodhandleQuery" id="handleQuery"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">handleQuery</span> (line <span class="line-number">149</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Handle a specific query.  Use this if you want to gather the query parameters yourself instead of using handleRequest()</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			handleQuery
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$query</span>, <span class="var-type">integer</span>&nbsp;<span class="var-name">$reqid</span>, [<span class="var-type">string</span>&nbsp;<span class="var-name">$signature</span> = <span class="var-default">''</span>])
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$query</span><span class="var-description">: the visualization query to parse and execute</span>			</li>
+					<li>
+				<span class="var-type">integer</span>
+				<span class="var-name">$reqid</span><span class="var-description">: the request ID that google.visualization.Query sent</span>			</li>
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$signature</span><span class="var-description">: the signature to pass back to the result in appropriate</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodhandleRequest" id="handleRequest"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">handleRequest</span> (line <span class="line-number">129</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Handle the entire request, pulling the query from the $_GET variables, and printing the results directly</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			handleRequest
+		</span>
+				()
+			</div>
+	
+		
+			
+	</div>
+<a name="methodjsonEncode" id="jsonEncode"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">jsonEncode</span> (line <span class="line-number">1037</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Encode a value to JSON, using either Zend or the built-in php functions, depending on what's available</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> the JSON representation of the variable</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">string</span>
+		<span class="method-name">
+			jsonEncode
+		</span>
+					(<span class="var-type">mixed</span>&nbsp;<span class="var-name">$php</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">mixed</span>
+				<span class="var-name">$php</span><span class="var-description">: the PHP variable to serialize</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodparseFieldTokens" id="parseFieldTokens"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">parseFieldTokens</span> (line <span class="line-number">603</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Helper method for the query parser to recursively scan the delimited list of select fields</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> protected</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			parseFieldTokens
+		</span>
+					(<span class="var-type"><a href="../MC_Parser/MC_Parser_Token.html">MC_Parser_Token</a></span>&nbsp;<span class="var-name">$token</span>, <span class="var-type"></span>&nbsp;<span class="var-name">&$fields</span>, <span class="var-type">array</span>&nbsp;<span class="var-name">$fields</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"><a href="../MC_Parser/MC_Parser_Token.html">MC_Parser_Token</a></span>
+				<span class="var-name">$token</span><span class="var-description">: the token or token group to recursively parse</span>			</li>
+					<li>
+				<span class="var-type">array</span>
+				<span class="var-name">$fields</span><span class="var-description">: the collector array reference to receive the flattened select field values</span>			</li>
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">&$fields</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodparseQuery" id="parseQuery"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">parseQuery</span> (line <span class="line-number">650</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Parse the query according to the visualization query grammar, and break down the constituent parts</p>
+	<ul class="tags">
+				<li><span class="field">return:</span> the parsed query as an array, keyed by each part of the query (select, from, where, groupby, pivot, orderby, limit, offset, label, format, options</li>
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">array</span>
+		<span class="method-name">
+			parseQuery
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$str</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$str</span><span class="var-description">: the query string to parse</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodparseWhereTokens" id="parseWhereTokens"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">parseWhereTokens</span> (line <span class="line-number">630</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Helper method for the query parser to recursively scan and flatten the where clause's conditions</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> protected</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			parseWhereTokens
+		</span>
+					(<span class="var-type"><a href="../MC_Parser/MC_Parser_Token.html">MC_Parser_Token</a></span>&nbsp;<span class="var-name">$token</span>, <span class="var-type"></span>&nbsp;<span class="var-name">&$where</span>, <span class="var-type">array</span>&nbsp;<span class="var-name">$where</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type"><a href="../MC_Parser/MC_Parser_Token.html">MC_Parser_Token</a></span>
+				<span class="var-name">$token</span><span class="var-description">: the token or token group to parse</span>			</li>
+					<li>
+				<span class="var-type">array</span>
+				<span class="var-name">$where</span><span class="var-description">: the collector array of tokens that make up the where clause</span>			</li>
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">&$where</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodsetDB" id="setDB"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">setDB</span> (line <span class="line-number">93</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Set the database connection to use when handling the entire request or getting pivot values</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			setDB
+		</span>
+					([<span class="var-type">PDO|null</span>&nbsp;<span class="var-name">$db</span> = <span class="var-default">null</span>])
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">PDO|null</span>
+				<span class="var-name">$db</span><span class="var-description">: the database connection to use - or null if you want to handle your own queries</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodsetDefaultEntity" id="setDefaultEntity"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">setDefaultEntity</span> (line <span class="line-number">840</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Set the default entity to be used when a &quot;from&quot; clause is omitted from a query.  Set to null to require a &quot;from&quot; clause for all queries</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			setDefaultEntity
+		</span>
+					([<span class="var-type">string|null</span>&nbsp;<span class="var-name">$default</span> = <span class="var-default">null</span>])
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string|null</span>
+				<span class="var-name">$default</span><span class="var-description">: the new default entity</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodsetDefaultFormat" id="setDefaultFormat"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">setDefaultFormat</span> (line <span class="line-number">120</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Change the default format string to use for a particular data type</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			setDefaultFormat
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$type</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$format</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$type</span><span class="var-description">: the data type to change - one of &quot;date&quot;, &quot;datetime&quot;, &quot;time&quot;, &quot;boolean&quot;, or &quot;number&quot;</span>			</li>
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$format</span><span class="var-description">: the format string to use for the data type</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodsetEntityWhere" id="setEntityWhere"><!-- --></a>
+<div class="oddrow">
+	
+	<div class="method-header">
+		<span class="method-title">setEntityWhere</span> (line <span class="line-number">827</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Add a particular &quot;WHERE&quot; clause to all queries against an entity table</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			setEntityWhere
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$entity</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$where</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$entity</span><span class="var-description">: the name of the entity to add the filter to</span>			</li>
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$where</span><span class="var-description">: the SQL WHERE condition to add to all queries against $entity</span>			</li>
+				</ul>
+		
+			
+	</div>
+<a name="methodsetSqlDialect" id="setSqlDialect"><!-- --></a>
+<div class="evenrow">
+	
+	<div class="method-header">
+		<span class="method-title">setSqlDialect</span> (line <span class="line-number">107</span>)
+	</div> 
+	
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">Set the dialect to use when generating SQL statements</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> public</li>
+			</ul>
+	
+	<div class="method-signature">
+		<span class="method-result">void</span>
+		<span class="method-name">
+			setSqlDialect
+		</span>
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$dialect</span>)
+			</div>
+	
+			<ul class="parameters">
+					<li>
+				<span class="var-type">string</span>
+				<span class="var-name">$dialect</span><span class="var-description">: one of &quot;mysql&quot;, &quot;postgres&quot;, or &quot;sqlite&quot;</span>			</li>
+				</ul>
+		
+			
+	</div>
+						
+		</div>
+	</div>
+
+
+	<p class="notes" id="credit">
+		Documentation generated on Sat, 06 Sep 2008 13:22:01 -0400 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.2</a>
+	</p>
+	</div></body>
+</html>
