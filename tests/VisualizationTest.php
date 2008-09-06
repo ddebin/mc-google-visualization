@@ -138,7 +138,7 @@ class VisualizationTest extends PHPUnit_Framework_TestCase {
                 )
         ));
 
-        $this->assertEquals('SELECT sub_field AS group_field, SUM(num_field) AS `sum-num_field` FROM campaigns GROUP BY group_field', $vis->getSQL('select group_field, sum(num_field) from campaigns group by group_field'));
+        $this->assertEquals('SELECT sub_field AS group_field, SUM(num_field) AS `sum-num_field` FROM campaigns GROUP BY sub_field', $vis->getSQL('select group_field, sum(num_field) from campaigns group by group_field'));
     }
 
     public function testPivot() {

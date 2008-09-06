@@ -91,8 +91,10 @@ class MC_Google_Visualization {
      * @param PDO|null $db the database connection to use - or null if you want to handle your own queries
      */
     public function setDB($db=null) {
-        if($this->db !== null && !($this->db instanceof PDO)) {
+        if($db !== null && !($db instanceof PDO)) {
             throw new MC_Google_Visualization_Error('You must give a PDO database connection');
+        } elseif($db !== null) {
+            $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         }
         
         $this->db = $db;
@@ -289,12 +291,17 @@ class MC_Google_Visualization {
         }
 
         if($where_str || isset($meta['global_where'])) {
+            if(!$where_str) $where_str = '1=1';
             $sql .= ' WHERE (' . $where_str . ')';
             if(isset($meta['global_where'])) $sql .= ' AND ' . $meta['global_where'];
         }
 
         if(isset($meta['groupby'])) {
-            $sql .= ' GROUP BY ' . implode(', ', $meta['groupby']);
+            $group_sql = array();
+            foreach($meta['groupby'] as $group) {
+                $group_sql[] = $this->getFieldSQL($group, $meta['field_spec'][$group]);
+            }
+            $sql .= ' GROUP BY ' . implode(', ', $group_sql);
         }
 
         if(isset($meta['orderby'])) {
