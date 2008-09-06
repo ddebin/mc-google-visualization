@@ -1,0 +1,13 @@
+MC_Google_Visualization Version 0.1
+---------------------------------------------
+MC_Google_Visualization provides simple support for integrating Google Visualization charts and graphs with your own internal database.  It includes a complete parser for the Google Visualization Query Language, giving you the same ease of pivoting and formatting data from your database as is currently possible with Google Spreadsheets.
+
+Documentation for MC_Google_Visualization can be found at our Google Code project page: http://code.google.com/p/mc-goog-visualization/
+
+Installation
+---------------------------------------------
+To use MC_Google_Visualization in your own projects, just copy the contents of the "lib" directory somewhere in your PHP include path.  With a simple <?php require_once 'MC/Google/Visualization.php'; ?> you should be all set to go.  See the documentation above for more detailed instructions on the API.
+
+Examples
+---------------------------------------------
+Some examples can be found in the examples/ directory.  Stick the MC_Google_Visualization files somewhere on a web server with PHP installed, and browse to /examples/ to see the list.  For these examples, PDO with SQLite3 support is required.
