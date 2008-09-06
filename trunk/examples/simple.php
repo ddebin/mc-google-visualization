@@ -34,6 +34,8 @@ if(isset($_GET['tq'])) {
     </script>
 </head>
 <body>
+    <p>This simple example shows how to define an entity that can be selected on, then using the query
+    language to display results in a table.</p>
     <div id="table-div"></div>
 </body>
 </html>
