@@ -373,7 +373,7 @@ class MC_Google_Visualization {
      */
     protected function getFieldQuote() {
         switch($this->sql_dialect) {
-            case 'postgresql':
+            case 'postgres':
                 return '"';
             default:
                 return '`';
