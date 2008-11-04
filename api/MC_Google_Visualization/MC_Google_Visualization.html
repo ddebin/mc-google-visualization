@@ -48,7 +48,7 @@
 								</div>
 		<div class="info-box-body">
 			<div class="var-summary">
-																																																								<div class="var-title">
+																																																																<div class="var-title">
 					<span class="var-type">PDO</span>
 					<a href="#$db" title="details" class="var-name">$db</a>
 				</div>
@@ -67,6 +67,10 @@
 																<div class="var-title">
 					<span class="var-type">string</span>
 					<a href="#$sql_dialect" title="details" class="var-name">$sql_dialect</a>
+				</div>
+																<div class="var-title">
+					<span class="var-type">float</span>
+					<a href="#$version" title="details" class="var-name">$version</a>
 				</div>
 											</div>
 		</div>
@@ -183,12 +187,12 @@
 																<div class="method-definition">
 											<span class="method-result">string</span>
 										<a href="#handleError" title="details" class="method-name">handleError</a>
-											(<span class="var-type">integer</span>&nbsp;<span class="var-name">$reqid</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$detail_msg</span>, [<span class="var-type">string</span>&nbsp;<span class="var-name">$code</span> = <span class="var-default">'error'</span>], [<span class="var-type">string</span>&nbsp;<span class="var-name">$summary_msg</span> = <span class="var-default">null</span>])
+											(<span class="var-type">integer</span>&nbsp;<span class="var-name">$reqid</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$detail_msg</span>, [<span class="var-type"></span>&nbsp;<span class="var-name">$handler</span> = <span class="var-default">'google.visualization.Query.setResponse'</span>], [<span class="var-type">string</span>&nbsp;<span class="var-name">$code</span> = <span class="var-default">'error'</span>], [<span class="var-type">string</span>&nbsp;<span class="var-name">$summary_msg</span> = <span class="var-default">null</span>])
 									</div>
 																<div class="method-definition">
 											<span class="method-result">void</span>
 										<a href="#handleQuery" title="details" class="method-name">handleQuery</a>
-											(<span class="var-type">string</span>&nbsp;<span class="var-name">$query</span>, <span class="var-type">integer</span>&nbsp;<span class="var-name">$reqid</span>, [<span class="var-type">string</span>&nbsp;<span class="var-name">$signature</span> = <span class="var-default">''</span>])
+											(<span class="var-type">string</span>&nbsp;<span class="var-name">$query</span>, <span class="var-type">array</span>&nbsp;<span class="var-name">$params</span>)
 									</div>
 																<div class="method-definition">
 											<span class="method-result">void</span>
@@ -368,6 +372,28 @@
 		
 
 </div>
+<a name="var$version" id="$version"><!-- --></A>
+<div class="evenrow">
+
+	<div class="var-header">
+		<span class="var-title">
+			<span class="var-type">float</span>
+			<span class="var-name">$version</span>
+			 = <span class="var-default"> 0.5</span>			(line <span class="line-number">78</span>)
+		</span>
+	</div>
+
+	<!-- ========== Info from phpDoc block ========= -->
+<p class="short-description">The current supported version of the Data Source protocol</p>
+	<ul class="tags">
+				<li><span class="field">access:</span> protected</li>
+			</ul>
+	
+	
+		
+		
+
+</div>
 						
 		</div>
 	</div>
@@ -385,10 +411,10 @@
 			<A NAME='method_detail'></A>
 
 <a name="method__construct" id="__construct"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">Constructor __construct</span> (line <span class="line-number">80</span>)
+		<span class="method-title">Constructor __construct</span> (line <span class="line-number">86</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -418,10 +444,10 @@
 			
 	</div>
 <a name="methodaddDependantCallbackFields" id="addDependantCallbackFields"><!-- --></a>
-<div class="oddrow">
+<div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">addDependantCallbackFields</span> (line <span class="line-number">579</span>)
+		<span class="method-title">addDependantCallbackFields</span> (line <span class="line-number">594</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -456,10 +482,10 @@
 			
 	</div>
 <a name="methodaddEntity" id="addEntity"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">addEntity</span> (line <span class="line-number">765</span>)
+		<span class="method-title">addEntity</span> (line <span class="line-number">780</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -488,10 +514,10 @@
 			
 	</div>
 <a name="methodaddEntityField" id="addEntityField"><!-- --></a>
-<div class="oddrow">
+<div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">addEntityField</span> (line <span class="line-number">792</span>)
+		<span class="method-title">addEntityField</span> (line <span class="line-number">807</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -523,10 +549,10 @@
 			
 	</div>
 <a name="methodaddEntityJoin" id="addEntityJoin"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">addEntityJoin</span> (line <span class="line-number">814</span>)
+		<span class="method-title">addEntityJoin</span> (line <span class="line-number">829</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -558,10 +584,10 @@
 			
 	</div>
 <a name="methodconvertDate" id="convertDate"><!-- --></a>
-<div class="oddrow">
+<div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">convertDate</span> (line <span class="line-number">335</span>)
+		<span class="method-title">convertDate</span> (line <span class="line-number">350</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -588,10 +614,10 @@
 			
 	</div>
 <a name="methodconvertDateTime" id="convertDateTime"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">convertDateTime</span> (line <span class="line-number">344</span>)
+		<span class="method-title">convertDateTime</span> (line <span class="line-number">359</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -618,10 +644,10 @@
 			
 	</div>
 <a name="methodconvertLimit" id="convertLimit"><!-- --></a>
-<div class="oddrow">
+<div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">convertLimit</span> (line <span class="line-number">363</span>)
+		<span class="method-title">convertLimit</span> (line <span class="line-number">378</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -651,10 +677,10 @@
 			
 	</div>
 <a name="methodconvertTime" id="convertTime"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">convertTime</span> (line <span class="line-number">353</span>)
+		<span class="method-title">convertTime</span> (line <span class="line-number">368</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -681,10 +707,10 @@
 			
 	</div>
 <a name="methodgenerateMetadata" id="generateMetadata"><!-- --></a>
-<div class="oddrow">
+<div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">generateMetadata</span> (line <span class="line-number">421</span>)
+		<span class="method-title">generateMetadata</span> (line <span class="line-number">436</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -711,10 +737,10 @@
 			
 	</div>
 <a name="methodgenerateSQL" id="generateSQL"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">generateSQL</span> (line <span class="line-number">202</span>)
+		<span class="method-title">generateSQL</span> (line <span class="line-number">217</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -741,10 +767,10 @@
 			
 	</div>
 <a name="methodgetFieldQuote" id="getFieldQuote"><!-- --></a>
-<div class="oddrow">
+<div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">getFieldQuote</span> (line <span class="line-number">374</span>)
+		<span class="method-title">getFieldQuote</span> (line <span class="line-number">389</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -766,10 +792,10 @@
 			
 	</div>
 <a name="methodgetFieldSQL" id="getFieldSQL"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">getFieldSQL</span> (line <span class="line-number">393</span>)
+		<span class="method-title">getFieldSQL</span> (line <span class="line-number">408</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -811,10 +837,10 @@
 			
 	</div>
 <a name="methodgetGrammar" id="getGrammar"><!-- --></a>
-<div class="oddrow">
+<div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">getGrammar</span> (line <span class="line-number">1060</span>)
+		<span class="method-title">getGrammar</span> (line <span class="line-number">1077</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -836,10 +862,10 @@
 			
 	</div>
 <a name="methodgetRowValues" id="getRowValues"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">getRowValues</span> (line <span class="line-number">915</span>)
+		<span class="method-title">getRowValues</span> (line <span class="line-number">932</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -869,10 +895,10 @@
 			
 	</div>
 <a name="methodgetSQL" id="getSQL"><!-- --></a>
-<div class="oddrow">
+<div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">getSQL</span> (line <span class="line-number">1050</span>)
+		<span class="method-title">getSQL</span> (line <span class="line-number">1067</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -899,10 +925,10 @@
 			
 	</div>
 <a name="methodgetSuccessClose" id="getSuccessClose"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">getSuccessClose</span> (line <span class="line-number">1028</span>)
+		<span class="method-title">getSuccessClose</span> (line <span class="line-number">1045</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -922,10 +948,10 @@
 			
 	</div>
 <a name="methodgetSuccessInit" id="getSuccessInit"><!-- --></a>
-<div class="oddrow">
+<div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">getSuccessInit</span> (line <span class="line-number">853</span>)
+		<span class="method-title">getSuccessInit</span> (line <span class="line-number">868</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -952,10 +978,10 @@
 			
 	</div>
 <a name="methodgetTableInit" id="getTableInit"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">getTableInit</span> (line <span class="line-number">861</span>)
+		<span class="method-title">getTableInit</span> (line <span class="line-number">878</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -981,10 +1007,10 @@
 			
 	</div>
 <a name="methodhandleError" id="handleError"><!-- --></a>
-<div class="oddrow">
+<div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">handleError</span> (line <span class="line-number">192</span>)
+		<span class="method-title">handleError</span> (line <span class="line-number">206</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -999,7 +1025,7 @@
 		<span class="method-name">
 			handleError
 		</span>
-					(<span class="var-type">integer</span>&nbsp;<span class="var-name">$reqid</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$detail_msg</span>, [<span class="var-type">string</span>&nbsp;<span class="var-name">$code</span> = <span class="var-default">'error'</span>], [<span class="var-type">string</span>&nbsp;<span class="var-name">$summary_msg</span> = <span class="var-default">null</span>])
+					(<span class="var-type">integer</span>&nbsp;<span class="var-name">$reqid</span>, <span class="var-type">string</span>&nbsp;<span class="var-name">$detail_msg</span>, [<span class="var-type"></span>&nbsp;<span class="var-name">$handler</span> = <span class="var-default">'google.visualization.Query.setResponse'</span>], [<span class="var-type">string</span>&nbsp;<span class="var-name">$code</span> = <span class="var-default">'error'</span>], [<span class="var-type">string</span>&nbsp;<span class="var-name">$summary_msg</span> = <span class="var-default">null</span>])
 			</div>
 	
 			<ul class="parameters">
@@ -1015,15 +1041,18 @@
 					<li>
 				<span class="var-type">string</span>
 				<span class="var-name">$summary_msg</span><span class="var-description">: a short description of the error, appropriate to show to end users</span>			</li>
+					<li>
+				<span class="var-type"></span>
+				<span class="var-name">$handler</span>			</li>
 				</ul>
 		
 			
 	</div>
 <a name="methodhandleQuery" id="handleQuery"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">handleQuery</span> (line <span class="line-number">149</span>)
+		<span class="method-title">handleQuery</span> (line <span class="line-number">162</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1037,7 +1066,7 @@
 		<span class="method-name">
 			handleQuery
 		</span>
-					(<span class="var-type">string</span>&nbsp;<span class="var-name">$query</span>, <span class="var-type">integer</span>&nbsp;<span class="var-name">$reqid</span>, [<span class="var-type">string</span>&nbsp;<span class="var-name">$signature</span> = <span class="var-default">''</span>])
+					(<span class="var-type">string</span>&nbsp;<span class="var-name">$query</span>, <span class="var-type">array</span>&nbsp;<span class="var-name">$params</span>)
 			</div>
 	
 			<ul class="parameters">
@@ -1045,20 +1074,17 @@
 				<span class="var-type">string</span>
 				<span class="var-name">$query</span><span class="var-description">: the visualization query to parse and execute</span>			</li>
 					<li>
-				<span class="var-type">integer</span>
-				<span class="var-name">$reqid</span><span class="var-description">: the request ID that google.visualization.Query sent</span>			</li>
-					<li>
-				<span class="var-type">string</span>
-				<span class="var-name">$signature</span><span class="var-description">: the signature to pass back to the result in appropriate</span>			</li>
+				<span class="var-type">array</span>
+				<span class="var-name">$params</span><span class="var-description">: all extra params sent along with the query - must include at least &quot;reqId&quot; key</span>			</li>
 				</ul>
 		
 			
 	</div>
 <a name="methodhandleRequest" id="handleRequest"><!-- --></a>
-<div class="oddrow">
+<div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">handleRequest</span> (line <span class="line-number">129</span>)
+		<span class="method-title">handleRequest</span> (line <span class="line-number">135</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1079,10 +1105,10 @@
 			
 	</div>
 <a name="methodjsonEncode" id="jsonEncode"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">jsonEncode</span> (line <span class="line-number">1037</span>)
+		<span class="method-title">jsonEncode</span> (line <span class="line-number">1054</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1109,10 +1135,10 @@
 			
 	</div>
 <a name="methodparseFieldTokens" id="parseFieldTokens"><!-- --></a>
-<div class="oddrow">
+<div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">parseFieldTokens</span> (line <span class="line-number">603</span>)
+		<span class="method-title">parseFieldTokens</span> (line <span class="line-number">618</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1144,10 +1170,10 @@
 			
 	</div>
 <a name="methodparseQuery" id="parseQuery"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">parseQuery</span> (line <span class="line-number">650</span>)
+		<span class="method-title">parseQuery</span> (line <span class="line-number">665</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1174,10 +1200,10 @@
 			
 	</div>
 <a name="methodparseWhereTokens" id="parseWhereTokens"><!-- --></a>
-<div class="oddrow">
+<div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">parseWhereTokens</span> (line <span class="line-number">630</span>)
+		<span class="method-title">parseWhereTokens</span> (line <span class="line-number">645</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1209,10 +1235,10 @@
 			
 	</div>
 <a name="methodsetDB" id="setDB"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">setDB</span> (line <span class="line-number">93</span>)
+		<span class="method-title">setDB</span> (line <span class="line-number">99</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1238,10 +1264,10 @@
 			
 	</div>
 <a name="methodsetDefaultEntity" id="setDefaultEntity"><!-- --></a>
-<div class="oddrow">
+<div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">setDefaultEntity</span> (line <span class="line-number">840</span>)
+		<span class="method-title">setDefaultEntity</span> (line <span class="line-number">855</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1267,10 +1293,10 @@
 			
 	</div>
 <a name="methodsetDefaultFormat" id="setDefaultFormat"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">setDefaultFormat</span> (line <span class="line-number">120</span>)
+		<span class="method-title">setDefaultFormat</span> (line <span class="line-number">126</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1299,10 +1325,10 @@
 			
 	</div>
 <a name="methodsetEntityWhere" id="setEntityWhere"><!-- --></a>
-<div class="oddrow">
+<div class="evenrow">
 	
 	<div class="method-header">
-		<span class="method-title">setEntityWhere</span> (line <span class="line-number">827</span>)
+		<span class="method-title">setEntityWhere</span> (line <span class="line-number">842</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1331,10 +1357,10 @@
 			
 	</div>
 <a name="methodsetSqlDialect" id="setSqlDialect"><!-- --></a>
-<div class="evenrow">
+<div class="oddrow">
 	
 	<div class="method-header">
-		<span class="method-title">setSqlDialect</span> (line <span class="line-number">107</span>)
+		<span class="method-title">setSqlDialect</span> (line <span class="line-number">113</span>)
 	</div> 
 	
 	<!-- ========== Info from phpDoc block ========= -->
@@ -1365,7 +1391,7 @@
 
 
 	<p class="notes" id="credit">
-		Documentation generated on Sat, 06 Sep 2008 13:27:28 -0400 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.2</a>
+		Documentation generated on Mon, 03 Nov 2008 19:54:07 -0500 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.2</a>
 	</p>
 	</div></body>
 </html>

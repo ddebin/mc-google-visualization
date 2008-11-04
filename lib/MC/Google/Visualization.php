@@ -70,6 +70,12 @@ class MC_Google_Visualization {
         'boolean' => 'FALSE:TRUE',
         'number' => 'num:0'
     );
+    
+    /**
+     * The current supported version of the Data Source protocol
+     * @var float
+     */
+    protected $version = 0.5;
 
     /**
      * Create a new instance.  This must be done before the library can be used.  Pass in a PDO connection and
@@ -128,35 +134,43 @@ class MC_Google_Visualization {
      */
     public function handleRequest() {
         $query = $_GET['tq'];
-        $params = array();
+        $params = array('version' => $this->version, 'responseHandler' => 'google.visualization.Query.setResponse');
         $paramlist = explode(';', $_GET['tqx']);
         foreach($paramlist as $paramstr) {
             list($name, $val) = explode(':', $paramstr);
-            $paramlist[$name] = $val;
+            $params[$name] = $val;
         }
-        $reqid = (int) $paramlist['reqId'];
-        $signature = $paramlist['sig'];
+        
+        $params['reqId'] = (int) $params['reqId'];
+        $params['version'] = (float) $params['version'];
+        if($params['version'] > $this->version) {
+            throw new MC_Google_Visualization_Error('Data Source version ' . $params['version'] . ' is unsupported at this time');
+        }
+        
+        if(isset($_GET['responseHandler'])) {
+            $params['responseHandler'] = $_GET['responseHandler'];
+        }
 
-        $this->handleQuery($query, $reqid, $signature);
+        $this->handleQuery($query, $params);
     }
 
     /**
      * Handle a specific query.  Use this if you want to gather the query parameters yourself instead of using handleRequest()
      * @param string $query the visualization query to parse and execute
-     * @param integer $reqid the request ID that google.visualization.Query sent
-     * @param string $signature the signature to pass back to the result in appropriate
+     * @param array $params all extra params sent along with the query - must include at least "reqId" key
      */
-    public function handleQuery($query, $reqid, $signature='') {
+    public function handleQuery($query, $params) {
         try {
             if(!($this->db instanceof PDO)) {
                 throw new MC_Google_Visualization_Error('You must pass a PDO connection to the MC Google Visualization Server if you want to let the server handle the entire request');
             }
 
+            $reqid = $params['reqId'];
             $query = $this->parseQuery($query);
             $meta = $this->generateMetadata($query);
             $sql = $this->generateSQL($meta);
             $meta['req_id'] = $reqid;
-            $meta['signature'] = $signature;
+            $meta['req_params'] = $params;
 
             $stmt = $this->db->query($sql);
             //If we got here, there's no errors
@@ -171,13 +185,13 @@ class MC_Google_Visualization {
 
             $stmt = null;
         } catch(MC_Google_Visualization_Error $e) {
-            echo $this->handleError($reqid, $e->getMessage(), $e->type, $e->summary);
+            echo $this->handleError($reqid, $e->getMessage(), $params['responseHandler'], $e->type, $e->summary);
         } catch(PDOException $e) {
-            echo $this->handleError($reqid, $e->getMessage(), 'invalid_query', 'Invalid Query');
+            echo $this->handleError($reqid, $e->getMessage(), $params['responseHandler'], 'invalid_query', 'Invalid Query');
         } catch(MC_Parser_ParseError $e) {
-            echo $this->handleError($reqid, $e->getMessage(), 'invalid_query', 'Invalid Query');
+            echo $this->handleError($reqid, $e->getMessage(), $params['responseHandler'], 'invalid_query', 'Invalid Query');
         } catch(Exception $e) {
-            echo $this->handleError($reqid, $e->getMessage());
+            echo $this->handleError($reqid, $e->getMessage(), $params['responseHandler']);
         }
     }
 
@@ -189,9 +203,10 @@ class MC_Google_Visualization {
      * @param string $summary_msg a short description of the error, appropriate to show to end users
      * @return string the string to output that will cause the visualization client to detect an error
      */
-    public function handleError($reqid, $detail_msg, $code='error', $summary_msg=null) {
+    public function handleError($reqid, $detail_msg, $handler='google.visualization.Query.setResponse', $code='error', $summary_msg=null) {
         if($summary_msg === null) $summary_msg = $detail_msg;
-        return 'google.visualization.Query.setResponse({requestId:"' . $reqid . '",status:"error",reason:' . $this->jsonEncode($code) . ',message:' . $this->jsonEncode($summary_msg) . ',detailed_message:' . $this->jsonEncode($detail_msg) . '});';
+        $handler = ($handler) ? $handler : 'google.visualization.Query.setResponse';
+        return $handler . '({requestId:"' . $reqid . '",status:"error",errors:[{reason:' . $this->jsonEncode($code) . ',message:' . $this->jsonEncode($summary_msg) . ',detailed_message:' . $this->jsonEncode($detail_msg) . '}]});';
     }
 
     /**
@@ -851,7 +866,9 @@ class MC_Google_Visualization {
      * @return string the initial output string for a successful query
      */
     public function getSuccessInit($meta) {
-        return "google.visualization.Query.setResponse({requestId:'" . $meta['req_id'] . "',status:'ok',signature:'" . $meta['signature'] . "',table:" . $this->getTableInit($meta);
+        $handler = ($meta['req_params']['responseHandler']) ? $meta['req_params']['responseHandler'] : 'google.visualization.Query.setResponse';
+        $version = ($meta['req_params']['version']) ? $meta['req_params']['version'] : $this->version;
+        return $handler . "({version:'" . $version . "',reqId:'" . $meta['req_id'] . "',status:'ok',table:" . $this->getTableInit($meta);
     }
 
     /**
@@ -878,29 +895,29 @@ class MC_Google_Visualization {
             $type = (isset($meta['field_spec'][$field]['type'])) ? $meta['field_spec'][$field]['type'] : 'text';
             switch($type) {
                 case 'text':
-                    $rtype = 't';
+                    $rtype = 'string';
                     break;
                 case 'number':
-                    $rtype = 'n';
+                    $rtype = 'number';
                     break;
                 case 'boolean':
-                    $rtype = 'b';
+                    $rtype = 'boolean';
                     break;
                 case 'date':
-                    $rtype = 'd';
+                    $rtype = 'date';
                     break;
                 case 'datetime':
                 case 'timestamp':
-                    $rtype = 's';
+                    $rtype = 'datetime';
                     break;
                 case 'time':
-                    $rtype = 'm';
+                    $rtype = 'time';
                     break;
                 default:
                     throw new MC_Google_Visualization_Error('Unknown field type "' . $type . '"');
             }
 
-            $field_init[] = "{id:'" . $field_id . "',label:" . $this->jsonEncode($label) . ",type:'" . $rtype . "',pattern:''}";
+            $field_init[] = "{id:'" . $field_id . "',label:" . $this->jsonEncode($label) . ",type:'" . $rtype . "'}";
         }
 
         return "{cols: [" . implode(',', $field_init) . "],rows: [";
@@ -1022,7 +1039,7 @@ class MC_Google_Visualization {
             
             $vals[] =  $cell . '}';
         }
-        return '[' . implode(',', $vals) . ']';
+        return '{c:[' . implode(',', $vals) . ']}';
     }
 
     public function getSuccessClose() {
