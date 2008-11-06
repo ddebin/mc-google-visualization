@@ -46,7 +46,7 @@ If you take the above code and save it to */vis.php* on your web server, you can
             alert(result.getDetailedMessage());
           } else {
             var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
-            chart.draw(res.getDataTable(), {width: 400, height: 240});
+            chart.draw(result.getDataTable(), {width: 400, height: 240});
           }
         });
       }
