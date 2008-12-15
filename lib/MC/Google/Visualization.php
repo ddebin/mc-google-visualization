@@ -214,7 +214,7 @@ class MC_Google_Visualization {
      * @param array $meta the results of generateMetadata() on the parsed visualization query
      * @return string the SQL version of the visualization query
      */
-    public function generateSQL($meta) {
+    public function generateSQL(&$meta) {
         if(!isset($meta['query_fields'])) $meta['query_fields'] = $meta['select'];
         
         if(isset($meta['pivot'])) {
