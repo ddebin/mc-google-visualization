@@ -66,7 +66,7 @@ class VisualizationTest extends PHPUnit_Framework_TestCase {
         $query = $vis->parseQuery('select max(opens) from campaigns');
         $meta = $vis->generateMetadata($query);
         $val = $vis->getRowValues(array('max-opens' => 10), $meta);
-        $this->assertEquals('[{v:10,f:"10"}]', $val);
+        $this->assertEquals('{c:[{v:10,f:"10"}]}', $val);
     }
 
     public function testWhere() {
@@ -99,7 +99,7 @@ class VisualizationTest extends PHPUnit_Framework_TestCase {
 
         $query = $vis->parseQuery('select req_callback from campaigns');
         $meta = $vis->generateMetadata($query);
-        $this->assertEquals('[{v:"callback-1"}]', $vis->getRowValues(array('field' => '1'), $meta));
+        $this->assertEquals('{c:[{v:"callback-1"}]}', $vis->getRowValues(array('field' => '1'), $meta));
     }
 
     public function testOrderBy() {
@@ -126,7 +126,7 @@ class VisualizationTest extends PHPUnit_Framework_TestCase {
         $query = $vis->parseQuery('select * from campaigns format date_field "m/d/Y", num_field "num:2", bool_field "N:Y"');
         $meta = $vis->generateMetadata($query);
         $val = $vis->getRowValues(array('date_field' => '2007-01-01', 'num_field' => '2057.566', 'bool_field' => 0), $meta);
-        $this->assertEquals('[{v:new Date(2007,0,1),f:"01\/01\/2007"},{v:2057.566,f:"2,057.57"},{v:false,f:"N"}]', $val);
+        $this->assertEquals('{c:[{v:new Date(2007,0,1),f:"01\/01\/2007"},{v:2057.566,f:"2,057.57"},{v:false,f:"N"}]}', $val);
     }
 
     public function testGroupBy() {
@@ -193,7 +193,7 @@ class VisualizationTest extends PHPUnit_Framework_TestCase {
         $query = $vis->parseQuery('select amount from orders options no_format');
         $meta = $vis->generateMetadata($query);
         $val = $vis->getRowValues(array('amount' => 10000), $meta);
-        $this->assertEquals('[{v:10000}]', $val);
+        $this->assertEquals('{c:[{v:10000}]}', $val);
     }
     
     public function testNoValues() {
@@ -205,7 +205,20 @@ class VisualizationTest extends PHPUnit_Framework_TestCase {
         $query = $vis->parseQuery('select amount from orders options no_values');
         $meta = $vis->generateMetadata($query);
         $val = $vis->getRowValues(array('amount' => 10000), $meta);
-        $this->assertEquals('[{f:"10,000"}]', $val);
+        $this->assertEquals('{c:[{f:"10,000"}]}', $val);
+    }
+    
+    public function testCountNonNumber() {
+        $vis = new MC_Google_Visualization();
+        $vis->addEntity('orders', array(
+            'fields' => array(
+                'product' => array('field' => 'product', 'type' => 'text'),
+                'id' => array('field' => 'id', 'type' => 'text')
+        )));
+        $query = $vis->parseQuery('select count(id), product from orders group by product');
+        $meta = $vis->generateMetadata($query);
+        $val = $vis->getRowValues(array('count-id' => 2, 'product' => 'test product'), $meta);
+        $this->assertEquals('{c:[{v:2,f:"2"},{v:"test product"}]}', $val);
     }
 
     public static function callback($row) {

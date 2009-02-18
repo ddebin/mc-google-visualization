@@ -893,6 +893,8 @@ class MC_Google_Visualization {
 
             $label = (isset($meta['labels'][$field])) ? $meta['labels'][$field] : $field_id;
             $type = (isset($meta['field_spec'][$field]['type'])) ? $meta['field_spec'][$field]['type'] : 'text';
+            if(isset($function)) $type = 'number';
+            
             switch($type) {
                 case 'text':
                     $rtype = 'string';
@@ -958,13 +960,15 @@ class MC_Google_Visualization {
                 $val = $row[$key];
             }
 
+            $type = (isset($function)) ? 'number' : $field_meta['type'];
+
             if(isset($meta['formats'][$field])) {
                 $format = $meta['formats'][$field];
-            } elseif(isset($this->default_format[$field_meta['type']])) {
-                $format = $this->default_format[$field_meta['type']];
+            } elseif(isset($this->default_format[$type])) {
+                $format = $this->default_format[$type];
             }
-
-            switch($field_meta['type']) {
+            
+            switch($type) {
                 case '':
                 case null:
                 case 'text':
