@@ -206,7 +206,7 @@ class MC_Google_Visualization {
     public function handleError($reqid, $detail_msg, $handler='google.visualization.Query.setResponse', $code='error', $summary_msg=null) {
         if($summary_msg === null) $summary_msg = $detail_msg;
         $handler = ($handler) ? $handler : 'google.visualization.Query.setResponse';
-        return $handler . '({requestId:"' . $reqid . '",status:"error",errors:[{reason:' . $this->jsonEncode($code) . ',message:' . $this->jsonEncode($summary_msg) . ',detailed_message:' . $this->jsonEncode($detail_msg) . '}]});';
+        return $handler . '({version:"' . $this->version . '"reqId:"' . $reqid . '",status:"error",errors:[{reason:' . $this->jsonEncode($code) . ',message:' . $this->jsonEncode($summary_msg) . ',detailed_message:' . $this->jsonEncode($detail_msg) . '}]});';
     }
 
     /**

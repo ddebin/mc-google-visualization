@@ -1,4 +1,4 @@
-MC_Google_Visualization Version 0.1
+MC_Google_Visualization Version 0.3
 ---------------------------------------------
 MC_Google_Visualization provides simple support for integrating Google Visualization charts and graphs with your own internal database.  It includes a complete parser for the Google Visualization Query Language, giving you the same ease of pivoting and formatting data from your database as is currently possible with Google Spreadsheets.
 
