@@ -293,6 +293,10 @@ class MC_Google_Visualization {
                     case 'date':
                         $where_part['value'] = $this->convertDate(trim($where_part['value'][1], '\'"'));
                         break;
+                    case 'null':
+                    case 'notnull':
+                        $where_part['value'] = strtoupper(implode(' ', $where_part['value']));
+                        break;
                 }
                 
                 $where_str[] = $where_part['value'];
@@ -1109,8 +1113,8 @@ class MC_Google_Visualization {
         $value = $p->oneOf($literal, $ident->name('where_field'));
         $cond = $p->oneOf(
             $p->set($value, $comparison, $value),
-            $p->set($value, $p->keyword('is', true), $p->literal('null', true)),
-            $p->set($value, $p->keyword('is', true), $p->keyword('not', true), $p->literal('null', true)),
+            $p->set($value, $p->set($p->keyword('is', true), $p->literal('null', true))->name('isnull')),
+            $p->set($value, $p->set($p->keyword('is', true), $p->keyword('not', true), $p->literal('null', true))->name('notnull')),
             $p->set($p->literal('(')->name('sep'), $expr, $p->literal(')')->name('sep'))
         );
 
