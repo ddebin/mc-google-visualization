@@ -54,21 +54,33 @@
 					<th class="class-table-header">Description</th>
 				</tr>
 								<tr>
-					<td style="padding-right: 2em"><a href="../MC_Parser/MC_Parser_Def_NOrMore.html">MC_Parser_Def_NOrMore</a></td>
-					<td>
-											Parser Generator for PHP
-										</td>
-				</tr>
-								<tr>
 					<td style="padding-right: 2em"><a href="../MC_Parser/MC_Parser_Def_Regex.html">MC_Parser_Def_Regex</a></td>
 					<td>
 											Generic grammar rule for matching a regular expresion
 										</td>
 				</tr>
 								<tr>
+					<td style="padding-right: 2em"><a href="../MC_Parser/MC_Parser_Def_NOrMore.html">MC_Parser_Def_NOrMore</a></td>
+					<td>
+											Parser Generator for PHP
+										</td>
+				</tr>
+								<tr>
 					<td style="padding-right: 2em"><a href="../MC_Parser/MC_Parser_Def_Literal.html">MC_Parser_Def_Literal</a></td>
 					<td>
 											Parser Generator for PHP
+										</td>
+				</tr>
+								<tr>
+					<td style="padding-right: 2em"><a href="../MC_Parser/MC_Parser_Def_Empty.html">MC_Parser_Def_Empty</a></td>
+					<td>
+											This match always succeeds with a zero-length suppressed token - useful for doing any kind of optional matching
+										</td>
+				</tr>
+								<tr>
+					<td style="padding-right: 2em"><a href="../MC_Parser/MC_Parser_Def_Set.html">MC_Parser_Def_Set</a></td>
+					<td>
+											Verify that the string matches a series of subexpressions in the specified order
 										</td>
 				</tr>
 								<tr>
@@ -81,18 +93,6 @@
 					<td style="padding-right: 2em"><a href="../MC_Parser/MC_Parser_Def_OneOf.html">MC_Parser_Def_OneOf</a></td>
 					<td>
 											Successfully match one of a set of potential expressions - the longest match wins if there are multiples
-										</td>
-				</tr>
-								<tr>
-					<td style="padding-right: 2em"><a href="../MC_Parser/MC_Parser_Def_Set.html">MC_Parser_Def_Set</a></td>
-					<td>
-											Verify that the string matches a series of subexpressions in the specified order
-										</td>
-				</tr>
-								<tr>
-					<td style="padding-right: 2em"><a href="../MC_Parser/MC_Parser_Def_Empty.html">MC_Parser_Def_Empty</a></td>
-					<td>
-											This match always succeeds with a zero-length suppressed token - useful for doing any kind of optional matching
 										</td>
 				</tr>
 							</table>
@@ -491,25 +491,25 @@
 		<div class="notes">Redefined in descendants as:</div>
 		<ul class="redefinitions">
 					<li>
-				<a href="../MC_Parser/MC_Parser_Def_NOrMore.html#method_name">MC_Parser_Def_NOrMore::_name()</a>
-							</li>
-					<li>
 				<a href="../MC_Parser/MC_Parser_Def_Regex.html#method_name">MC_Parser_Def_Regex::_name()</a>
 							</li>
 					<li>
+				<a href="../MC_Parser/MC_Parser_Def_NOrMore.html#method_name">MC_Parser_Def_NOrMore::_name()</a>
+							</li>
+					<li>
 				<a href="../MC_Parser/MC_Parser_Def_Literal.html#method_name">MC_Parser_Def_Literal::_name()</a>
+							</li>
+					<li>
+				<a href="../MC_Parser/MC_Parser_Def_Empty.html#method_name">MC_Parser_Def_Empty::_name()</a>
+							</li>
+					<li>
+				<a href="../MC_Parser/MC_Parser_Def_Set.html#method_name">MC_Parser_Def_Set::_name()</a>
 							</li>
 					<li>
 				<a href="../MC_Parser/MC_Parser_Def_Recursive.html#method_name">MC_Parser_Def_Recursive::_name()</a>
 							</li>
 					<li>
 				<a href="../MC_Parser/MC_Parser_Def_OneOf.html#method_name">MC_Parser_Def_OneOf::_name()</a>
-							</li>
-					<li>
-				<a href="../MC_Parser/MC_Parser_Def_Set.html#method_name">MC_Parser_Def_Set::_name()</a>
-							</li>
-					<li>
-				<a href="../MC_Parser/MC_Parser_Def_Empty.html#method_name">MC_Parser_Def_Empty::_name()</a>
 							</li>
 				</ul>
 	</div>
@@ -550,25 +550,25 @@
 		<div class="notes">Redefined in descendants as:</div>
 		<ul class="redefinitions">
 					<li>
-				<a href="../MC_Parser/MC_Parser_Def_NOrMore.html#method_parse">MC_Parser_Def_NOrMore::_parse()</a>
-							</li>
-					<li>
 				<a href="../MC_Parser/MC_Parser_Def_Regex.html#method_parse">MC_Parser_Def_Regex::_parse()</a>
 							</li>
 					<li>
+				<a href="../MC_Parser/MC_Parser_Def_NOrMore.html#method_parse">MC_Parser_Def_NOrMore::_parse()</a>
+							</li>
+					<li>
 				<a href="../MC_Parser/MC_Parser_Def_Literal.html#method_parse">MC_Parser_Def_Literal::_parse()</a>
+							</li>
+					<li>
+				<a href="../MC_Parser/MC_Parser_Def_Empty.html#method_parse">MC_Parser_Def_Empty::_parse()</a>
+							</li>
+					<li>
+				<a href="../MC_Parser/MC_Parser_Def_Set.html#method_parse">MC_Parser_Def_Set::_parse()</a>
 							</li>
 					<li>
 				<a href="../MC_Parser/MC_Parser_Def_Recursive.html#method_parse">MC_Parser_Def_Recursive::_parse()</a>
 							</li>
 					<li>
 				<a href="../MC_Parser/MC_Parser_Def_OneOf.html#method_parse">MC_Parser_Def_OneOf::_parse()</a>
-							</li>
-					<li>
-				<a href="../MC_Parser/MC_Parser_Def_Set.html#method_parse">MC_Parser_Def_Set::_parse()</a>
-							</li>
-					<li>
-				<a href="../MC_Parser/MC_Parser_Def_Empty.html#method_parse">MC_Parser_Def_Empty::_parse()</a>
 							</li>
 				</ul>
 	</div>
@@ -578,7 +578,7 @@
 
 
 	<p class="notes" id="credit">
-		Documentation generated on Mon, 03 Nov 2008 19:54:05 -0500 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.2</a>
+		Documentation generated on Wed, 13 May 2009 08:25:46 -0400 by <a href="http://www.phpdoc.org" target="_blank">phpDocumentor 1.4.2</a>
 	</p>
 	</div></body>
 </html>
