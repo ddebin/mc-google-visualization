@@ -220,6 +220,17 @@ class VisualizationTest extends PHPUnit_Framework_TestCase {
         $val = $vis->getRowValues(array('count-id' => 2, 'product' => 'test product'), $meta);
         $this->assertEquals('{c:[{v:2,f:"2"},{v:"test product"}]}', $val);
     }
+    
+    public function testIsNull() {
+        $vis = new MC_Google_Visualization();
+        $vis->addEntity('orders', array(
+            'fields' => array(
+                'product' => array('field' => 'product', 'type' => 'text'),
+                'id' => array('field' => 'id', 'type' => 'text')
+        )));
+        $sql = $vis->getSQL('select id from orders where product is not null');
+        $this->assertEquals('SELECT id AS id FROM orders WHERE (product IS NOT NULL)', $sql);
+    }
 
     public static function callback($row) {
         return 'callback-' . $row['field'];
