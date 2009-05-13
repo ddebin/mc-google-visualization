@@ -727,7 +727,7 @@ class MC_Google_Visualization {
                 case 'offset':
                     $offset = $token->getValues();
                     $offset = $offset[1];
-                    $queery['offset'] = $offset;
+                    $query['offset'] = $offset;
                     break;
                 case 'label':
                     $labels = $token->getValues();
