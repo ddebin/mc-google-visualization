@@ -1,0 +1,28 @@
+{
+    "name": "ddebin/mc-google-visualization",
+    "type": "library",
+    "description": "Google Visualization datasource with your own database",
+    "keywords": ["google","visualization","charts","datasource","database"],
+    "homepage": "https://github.com/ddebin/mc-google-visualization",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Chadwick Morris",
+            "email": "chad@mailchimp.com"
+        },
+        {
+            "name": "Damien Debin",
+            "email": "ddebin@yahoo.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.0",
+        "ext-json": "*",
+        "ext-pdo": "*"
+    },
+    "autoload": {
+        "psr-0": {
+            "": "lib/"
+        }
+    }
+}
