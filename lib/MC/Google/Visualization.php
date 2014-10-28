@@ -151,6 +151,7 @@ class MC_Google_Visualization {
             $params['responseHandler'] = $_GET['responseHandler'];
         }
 
+        header('Content-Type: text/javascript; charset=utf-8');
         $this->handleQuery($query, $params);
     }
 
@@ -183,7 +184,6 @@ class MC_Google_Visualization {
                 $first = false;
             }
 
-            header('Content-Type: text/javascript; charset=utf-8');
             echo $this->getSuccessClose();
 
             $stmt = null;
