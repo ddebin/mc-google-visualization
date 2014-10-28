@@ -182,6 +182,8 @@ class MC_Google_Visualization {
                 echo $this->getRowValues($row, $meta);
                 $first = false;
             }
+
+            header('Content-Type: text/javascript; charset=utf-8');
             echo $this->getSuccessClose();
 
             $stmt = null;
