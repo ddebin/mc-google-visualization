@@ -207,7 +207,7 @@ class MC_Google_Visualization {
     public function handleError($reqid, $detail_msg, $handler='google.visualization.Query.setResponse', $code='error', $summary_msg=null) {
         if($summary_msg === null) $summary_msg = $detail_msg;
         $handler = ($handler) ? $handler : 'google.visualization.Query.setResponse';
-        return $handler . '({version:"' . $this->version . '",reqId:"' . $reqid . '",status:"error",errors:[{reason:' . $this->json_encode($code) . ',message:' . $this->json_encode($summary_msg) . ',detailed_message:' . $this->json_encode($detail_msg) . '}]});';
+        return $handler . '({version:"' . $this->version . '",reqId:"' . $reqid . '",status:"error",errors:[{reason:' . json_encode($code) . ',message:' . json_encode($summary_msg) . ',detailed_message:' . json_encode($detail_msg) . '}]});';
     }
 
     /**
@@ -925,7 +925,7 @@ class MC_Google_Visualization {
                     throw new MC_Google_Visualization_Error('Unknown field type "' . $type . '"');
             }
 
-            $field_init[] = "{id:'" . $field_id . "',label:" . $this->json_encode($label) . ",type:'" . $rtype . "'}";
+            $field_init[] = "{id:'" . $field_id . "',label:" . json_encode($label) . ",type:'" . $rtype . "'}";
         }
 
         return "{cols: [" . implode(',', $field_init) . "],rows: [";
@@ -978,7 +978,7 @@ class MC_Google_Visualization {
                 case '':
                 case null:
                 case 'text':
-                    $val = $this->json_encode((string) $val);
+                    $val = json_encode((string) $val);
                     $formatted = null;
                     break;
                 case 'number':
@@ -998,13 +998,13 @@ class MC_Google_Visualization {
                     } else {
                         $formatted = sprintf($format, $val);
                     }
-                    $val = $this->json_encode($val);
+                    $val = json_encode($val);
                     break;
                 case 'boolean':
                     $val = (bool) $val;
                     list($format_false, $format_true) = explode(':', $format, 2);
                     $formatted = ($val) ? $format_true : $format_false;
-                    $val = $this->json_encode((bool) $val);
+                    $val = json_encode((bool) $val);
                     break;
                 case 'date':
                     if(!is_numeric($val) || strlen($val) != 6) {
@@ -1038,7 +1038,7 @@ class MC_Google_Visualization {
                 case 'binary':
                     $formatted = "0x" . array_shift(unpack('H*', $val));
                     $val = "0x" . array_shift(unpack('H*', $val));
-                    $val = $this->json_encode((string) $val);
+                    $val = json_encode((string) $val);
                     break;
                 default:
                     throw new MC_Google_Visualization_Error('Unknown field type "' . $type . '"');
@@ -1047,10 +1047,10 @@ class MC_Google_Visualization {
             if(!isset($meta['options']['no_values'])) {
                 $cell = '{v:' . $val;
                 if(!isset($meta['options']['no_format'])) {
-                    if($formatted !== null) $cell .= ',f:' . $this->json_encode($formatted);
+                    if($formatted !== null) $cell .= ',f:' . json_encode($formatted);
                 }
             } else {
-                $cell = '{f:' . $this->json_encode($formatted);
+                $cell = '{f:' . json_encode($formatted);
             }
 
             $vals[] =  $cell . '}';
