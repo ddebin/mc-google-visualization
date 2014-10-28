@@ -17,7 +17,7 @@ class MC_Parser_Def_Literal extends MC_Parser_Def {
     public $search = null;
     public $caseless = false;
     public $fullword = true;
-    
+
     /**
      * Match against an exact set of characters in the string
      * @param string $str the search string
@@ -29,27 +29,27 @@ class MC_Parser_Def_Literal extends MC_Parser_Def {
         $this->caseless = $caseless;
         $this->fullword = $fullword;
     }
-    
+
     public function _parse($str, $loc) {
         if(!$this->caseless) {
             $match = strpos($str, $this->search, $loc);
         } else {
             $match = stripos($str, $this->search, $loc);
         }
-        
+
         if($match !== $loc) {
             throw new MC_Parser_ParseError('Expected: ' . $this->search, $str, $loc);
         }
-        
+
         $loc += strlen($this->search);
-        
+
         if($this->fullword && $loc < strlen($str) && !MC_Parser::isWhitespace($str[$loc])) {
             throw new MC_Parser_ParseError('Expected: ' . $this->search, $str, $loc);
         }
-        
+
         return array($loc, $this->token($this->search));
     }
-    
+
     public function _name() {
         return $this->search;
     }

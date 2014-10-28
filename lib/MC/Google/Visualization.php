@@ -38,20 +38,20 @@ class MC_Google_Visualization {
      * @var string
      */
     protected $default_entity = null;
-    
+
     /**
      * The entity schema that defines which tables are exposed to visualization clients, along with their fields, joins, and callbacks
      * @var array
      */
     protected $entities = array();
-    
+
     /**
      * If pivots are being used or MC_Google_Visualization is handling the whole request, this must be a PDO
      * connection to your database.
      * @var PDO
      */
     protected $db = null;
-    
+
     /**
      * The SQL dialect to use when auto-generating SQL statements from the parsed query tokens
      * defaults to "mysql".  Allowed values are "mysql", "postgres", or "sqlite".  Patches are welcome for the rest.
@@ -70,7 +70,7 @@ class MC_Google_Visualization {
         'boolean' => 'FALSE:TRUE',
         'number' => 'num:0'
     );
-    
+
     /**
      * The current supported version of the Data Source protocol
      * @var float
@@ -91,7 +91,7 @@ class MC_Google_Visualization {
         $this->setDB($db);
         $this->setSqlDialect($dialect);
     }
-    
+
     /**
      * Set the database connection to use when handling the entire request or getting pivot values
      * @param PDO|null $db the database connection to use - or null if you want to handle your own queries
@@ -102,10 +102,10 @@ class MC_Google_Visualization {
         } elseif($db !== null) {
             $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         }
-        
+
         $this->db = $db;
     }
-    
+
     /**
      * Set the dialect to use when generating SQL statements
      * @param string $dialect one of "mysql", "postgres", or "sqlite"
@@ -114,7 +114,7 @@ class MC_Google_Visualization {
         if($dialect != 'mysql' && $dialect != 'postgres' && $dialect != 'sqlite') {
             throw new MC_Google_Visualization_Error('SQL dialects must be one of "mysql", "postgres", or "sqlite" - not "' . $dialect . '"');
         }
-        
+
         $this->sql_dialect = $dialect;
     }
 
@@ -140,13 +140,13 @@ class MC_Google_Visualization {
             list($name, $val) = explode(':', $paramstr);
             $params[$name] = $val;
         }
-        
+
         $params['reqId'] = (int) $params['reqId'];
         $params['version'] = (float) $params['version'];
         if($params['version'] > $this->version) {
             throw new MC_Google_Visualization_Error('Data Source version ' . $params['version'] . ' is unsupported at this time');
         }
-        
+
         if(isset($_GET['responseHandler'])) {
             $params['responseHandler'] = $_GET['responseHandler'];
         }
@@ -169,6 +169,7 @@ class MC_Google_Visualization {
             $query = $this->parseQuery($query);
             $meta = $this->generateMetadata($query);
             $sql = $this->generateSQL($meta);
+            error_log($sql);
             $meta['req_id'] = $reqid;
             $meta['req_params'] = $params;
 
@@ -187,9 +188,9 @@ class MC_Google_Visualization {
         } catch(MC_Google_Visualization_Error $e) {
             echo $this->handleError($reqid, $e->getMessage(), $params['responseHandler'], $e->type, $e->summary);
         } catch(PDOException $e) {
-            echo $this->handleError($reqid, $e->getMessage(), $params['responseHandler'], 'invalid_query', 'Invalid Query');
+            echo $this->handleError($reqid, $e->getMessage(), $params['responseHandler'], 'invalid_query', 'Invalid Query - PDO exception');
         } catch(MC_Parser_ParseError $e) {
-            echo $this->handleError($reqid, $e->getMessage(), $params['responseHandler'], 'invalid_query', 'Invalid Query');
+            echo $this->handleError($reqid, $e->getMessage(), $params['responseHandler'], 'invalid_query', 'Invalid Query - Parse Error');
         } catch(Exception $e) {
             echo $this->handleError($reqid, $e->getMessage(), $params['responseHandler']);
         }
@@ -206,7 +207,7 @@ class MC_Google_Visualization {
     public function handleError($reqid, $detail_msg, $handler='google.visualization.Query.setResponse', $code='error', $summary_msg=null) {
         if($summary_msg === null) $summary_msg = $detail_msg;
         $handler = ($handler) ? $handler : 'google.visualization.Query.setResponse';
-        return $handler . '({version:"' . $this->version . '"reqId:"' . $reqid . '",status:"error",errors:[{reason:' . $this->jsonEncode($code) . ',message:' . $this->jsonEncode($summary_msg) . ',detailed_message:' . $this->jsonEncode($detail_msg) . '}]});';
+        return $handler . '({version:"' . $this->version . '",reqId:"' . $reqid . '",status:"error",errors:[{reason:' . $this->jsonEncode($code) . ',message:' . $this->jsonEncode($summary_msg) . ',detailed_message:' . $this->jsonEncode($detail_msg) . '}]});';
     }
 
     /**
@@ -216,7 +217,7 @@ class MC_Google_Visualization {
      */
     public function generateSQL(&$meta) {
         if(!isset($meta['query_fields'])) $meta['query_fields'] = $meta['select'];
-        
+
         if(isset($meta['pivot'])) {
             //Pivot queries are special - they require an entity to be passed and modify the query directly
             $entity = $meta['entity'];
@@ -298,7 +299,7 @@ class MC_Google_Visualization {
                         $where_part['value'] = strtoupper(implode(' ', $where_part['value']));
                         break;
                 }
-                
+
                 $where_str[] = $where_part['value'];
             }
             $where_str = implode(' ', $where_str);
@@ -333,7 +334,7 @@ class MC_Google_Visualization {
                 }
                 $spec = $meta['field_spec'][$field];
                 if(!$first) $sql .= ',';
-                
+
                 $sql .= ' ' . $this->getFieldSQL($field, $spec) . ' ' . strtoupper($dir);
                 $first = false;
             }
@@ -345,7 +346,7 @@ class MC_Google_Visualization {
 
         return $sql;
     }
-    
+
     /**
      * Convert a visualization date into the appropriate date-literal format for the SQL dialect
      * @param string $value the date as a string "YYY-MM-DD"
@@ -354,7 +355,7 @@ class MC_Google_Visualization {
     protected function convertDate($value) {
         return "'" . $value . "'";
     }
-    
+
     /**
      * Convert a visualization date/time into the appropriate literal format for the SQL dialect
      * @param string $value the date/time as a string "YYY-MM-DD HH:NN:SS"
@@ -363,7 +364,7 @@ class MC_Google_Visualization {
     protected function convertDateTime($value) {
         return "'" . $value . "'";
     }
-    
+
     /**
      * Convert a visualization time into the appropriate literal format for the SQL dialect
      * @param string $value the time as a string "HH:NN:SS"
@@ -372,7 +373,7 @@ class MC_Google_Visualization {
     protected function convertTime($value) {
         return "'" . $value . "'";
     }
-    
+
     /**
      * Convert the limit and offset clauses from the visualization query into SQL
      * @param integer|null $limit the limit value, or null if not provided
@@ -385,7 +386,7 @@ class MC_Google_Visualization {
         if($offset !== null) $sql .= ' OFFSET ' . $offset;
         return $sql;
     }
-    
+
     /**
      * Return the character used to quote aliases for this query SQL dialect
      * $return string the quote character
@@ -398,7 +399,7 @@ class MC_Google_Visualization {
                 return '`';
         }
     }
-    
+
     /**
      * Helper function to generate the SQL for a given entity field
      * @param string $name the name of the field to generate SQL for
@@ -428,10 +429,10 @@ class MC_Google_Visualization {
         } elseif($alias) {
             $sql .= ' AS ' . $name;
         }
-        
+
         return $sql;
     }
-    
+
     /**
      * Given the results of parseQuery(), introspect against the entity definitions provided and return the metadata array used to generate the SQL
      * @param array $query the visualization query broken up into sections
@@ -444,27 +445,27 @@ class MC_Google_Visualization {
         } elseif(!isset($query['from'])) {
             $query['from'] = $this->default_entity;
         }
-        
+
         if(!isset($this->entities[$query['from']])) {
             throw new MC_Google_Visualization_QueryError('Unknown table "' . $query['from'] . '"');
         }
-        
+
         $meta['entity_name'] = $query['from'];
         $entity = $this->entities[$query['from']];
         $meta['entity'] = $entity;
         $meta['table'] = $entity['table'];
         if(isset($entity['where'])) $meta['global_where'] = $entity['where'];
-        
+
         if(!isset($query['select'])) {
             //By default, return all fields defined for an entity
             $query['select'] = array_keys($entity['fields']);
         }
-        
+
         //The query fields might be different from the "select" fields (callback dependant fields will not be returned)
         $meta['query_fields'] = array();
         $meta['joins'] = array();
         $meta['field_spec'] = array();
-        
+
         $field_meta = array();
         foreach($query['select'] as $sfield) {
             if(is_array($sfield)) {
@@ -472,35 +473,35 @@ class MC_Google_Visualization {
             } else {
                 $field = $sfield;
             }
-            
+
             if(!isset($entity['fields'][$field])) {
                 throw new MC_Google_Visualization_QueryError('Unknown column "' . $field . '"');
             }
-            
+
             $field_spec = $entity['fields'][$field];
             if(isset($field_spec['join']) && !isset($meta['joins'][$field_spec['join']])) {
                 $meta['joins'][$field_spec['join']] = $entity['joins'][$field_spec['join']];
             }
-            
+
             if(isset($field_spec['callback'])) {
                 if(isset($meta['pivot'])) {
                     throw new MC_Google_Visualization_QueryError('Callback-based fields cannot be used in pivot queries');
                 }
-                
+
                 if(is_array($sfield)) {
                     throw new MC_Google_Visualization_Error('Callback-based fields cannot have functions called on them');
                 }
-                
+
                 $this->addDependantCallbackFields($field_spec, $entity, $meta);
             } elseif(!in_array($sfield, $meta['query_fields'])) {
                 $meta['query_fields'][] = $sfield;
             }
-            
+
             $meta['field_spec'][$field] = $field_spec;
         }
-        
+
         $meta['select'] = $query['select'];
-        
+
         if(isset($query['where'])) {
             //Parse the where clauses and error out on non-existant and callback fields and add joins
             foreach($query['where'] as $where_token) {
@@ -511,24 +512,24 @@ class MC_Google_Visualization {
                     } elseif(isset($entity['fields'][$field]['callback'])) {
                         throw new MC_Google_Visualization_QueryError('Callback fields cannot be included in WHERE clauses');
                     }
-                    
+
                     $field_spec = $entity['fields'][$field];
                     if(isset($field_spec['join']) && !isset($meta['joins'][$field_spec['join']])) {
                         $meta['joins'][$field_spec['join']] = $entity['joins'][$field_spec['join']];
                     }
-                    
+
                     $meta['field_spec'][$field] = $field_spec;
                 }
             }
         }
-        
+
         //Also add the joins & field spec information for the orderby, groupby, and pivot clauses
         if(isset($query['pivot'])) {
             foreach($query['pivot'] as $field) {
                 if(!isset($entity['fields'][$field])) {
                     throw new MC_Google_Visualization_QueryError('Unknown column in PIVOT clause "' . $field . '"');
                 }
-                
+
                 $field_spec = $entity['fields'][$field];
                 if(isset($field_spec['join']) && !isset($meta['joins'][$field_spec['join']])) {
                     $meta['joins'][$field_spec['join']] = $entity['joins'][$field_spec['join']];
@@ -536,51 +537,51 @@ class MC_Google_Visualization {
                 $meta['field_spec'][$field] = $field_spec;
             }
         }
-        
+
         if(isset($query['groupby'])) {
             foreach($query['groupby'] as $field) {
                 if(!isset($entity['fields'][$field])) {
                     throw new MC_Google_Visualization_QueryError('Unknown column in GROUP BY clause "' . $field . '"');
                 }
-                
+
                 $field_spec = $entity['fields'][$field];
-                
+
                 if(isset($field_spec['callback'])) {
                     throw new MC_Google_Visualization_QueryError('Callback-based fields cannot be used in GROUP BY clauses');
                 }
-                
+
                 if(isset($field_spec['join']) && !isset($meta['joins'][$field_spec['join']])) {
                     $meta['joins'][$field_spec['join']] = $entity['joins'][$field_spec['join']];
                 }
                 $meta['field_spec'][$field] = $field_spec;
             }
         }
-        
+
         if(isset($query['orderby'])) {
             foreach($query['orderby'] as $field => $dir) {
                 if(!isset($entity['fields'][$field])) {
                     throw new MC_Google_Visualization_QueryError('Unknown column in ORDER BY clause "' . $field . '"');
                 }
-                
+
                 $field_spec = $entity['fields'][$field];
                 $meta['field_spec'][$field] = $field_spec;
-                
+
                 if(isset($field_spec['sort_field'])) {
                     $field = $field_spec['sort_field'];
                     $field_spec = $entity['fields'][$field_spec['sort_field']];
                 }
-                
+
                 if(isset($field_spec['callback'])) {
                     throw new MC_Google_Visualization_QueryError('Callback-based fields cannot be used in ORDER BY clauses');
                 }
-                
+
                 if(isset($field_spec['join']) && !isset($meta['joins'][$field_spec['join']])) {
                     $meta['joins'][$field_spec['join']] = $entity['joins'][$field_spec['join']];
                 }
                 $meta['field_spec'][$field] = $field_spec;
             }
         }
-        
+
         //Some of the query information we just copy into the metadata array
         $copy_keys = array('where', 'orderby', 'groupby', 'pivot', 'limit', 'offset', 'labels', 'formats', 'options');
         foreach($copy_keys as $copy_key) {
@@ -588,7 +589,7 @@ class MC_Google_Visualization {
         }
         return $meta;
     }
-    
+
     /**
      * Recursively process the dependant fields for callback entity fields
      * @param array $field the spec array for the field to add (must have a "callback" key)
@@ -600,7 +601,7 @@ class MC_Google_Visualization {
             if(!isset($entity['fields'][$dependant])) {
                 throw new MC_Google_Visualization_Error('Unknown callback required field "' . $dependant . '"');
             }
-            
+
             $dependant_field = $entity['fields'][$dependant];
             $meta['field_spec'][$dependant] = $dependant_field;
             if(isset($dependant_field['callback'])) {
@@ -640,7 +641,7 @@ class MC_Google_Visualization {
             $fields[] = $token->value;
         }
     }
-    
+
     /**
      * Helper method for the query parser to recursively scan and flatten the where clause's conditions
      * @param MC_Parser_Token $token the token or token group to parse
@@ -771,7 +772,7 @@ class MC_Google_Visualization {
                     throw new MC_Google_Visualization_QueryError('Unknown query clause "' . $token->name . '"');
             }
         }
-        
+
         return $query;
 
     }
@@ -784,24 +785,24 @@ class MC_Google_Visualization {
     public function addEntity($name, $spec=array()) {
         $entity = array('table' => ($spec['table']) ? $spec['table'] : $name, 'fields' => array(), 'joins' => array());
         $this->entities[$name] = $entity;
-        
+
         if(isset($spec['fields'])) {
             foreach($spec['fields'] as $field_name => $field_spec) {
                 $this->addEntityField($name, $field_name, $field_spec);
             }
         }
-        
+
         if(isset($spec['joins'])) {
             foreach($spec['joins'] as $join_name => $join_sql) {
                 $this->addEntityJoin($name, $join_name, $join_sql);
             }
         }
-        
+
         if(isset($spec['where'])) {
             $this->setEntityWhere($name, $spec['where']);
         }
     }
-    
+
     /**
      * Add a new field to an entity table
      * @param string $entity the name of the entity to add the field to
@@ -812,18 +813,18 @@ class MC_Google_Visualization {
         if(!isset($spec['field']) && !isset($spec['callback'])) {
             throw new MC_Google_Visualization_Error('Entity fields must either be mapped to database fields or given callback functions');
         }
-        
+
         if(!isset($this->entities[$entity])) {
             throw new MC_Google_Visualization_Error('No entity table defined with name "' . $entity . '"');
         }
-        
+
         if(!isset($spec['callback']) && (isset($spec['fields']) || isset($spec['extra']))) {
             throw new MC_Google_Visualization_Error('"fields" and "extra" parameters only apply to callback fields');
         }
-        
+
         $this->entities[$entity]['fields'][$field] = $spec;
     }
-    
+
     /**
      * Add a new optional join to the entity table.  If fields associated with this join are selected, the join will be added to the SQL query
      * @param string $entity the name of the entity table to add the join to
@@ -834,10 +835,10 @@ class MC_Google_Visualization {
         if(!isset($this->entities[$entity])) {
             throw new MC_Google_Visualization_Error('No entity table defined with name "' . $entity . '"');
         }
-        
+
         $this->entities[$entity]['joins'][$join] = $sql;
     }
-    
+
     /**
      * Add a particular "WHERE" clause to all queries against an entity table
      * @param string $entity the name of the entity to add the filter to
@@ -847,10 +848,10 @@ class MC_Google_Visualization {
         if(!isset($this->entities[$entity])) {
             throw new MC_Google_Visualization_Error('No entity table defined with name "' . $entity . '"');
         }
-        
+
         $this->entities[$entity]['where'] = $where;
     }
-    
+
 
     /**
      * Set the default entity to be used when a "from" clause is omitted from a query.  Set to null to require a "from" clause for all queries
@@ -898,9 +899,10 @@ class MC_Google_Visualization {
             $label = (isset($meta['labels'][$field])) ? $meta['labels'][$field] : $field_id;
             $type = (isset($meta['field_spec'][$field]['type'])) ? $meta['field_spec'][$field]['type'] : 'text';
             if(isset($function)) $type = 'number';
-            
+
             switch($type) {
                 case 'text':
+                case 'binary':
                     $rtype = 'string';
                     break;
                 case 'number':
@@ -971,7 +973,7 @@ class MC_Google_Visualization {
             } elseif(isset($this->default_format[$type])) {
                 $format = $this->default_format[$type];
             }
-            
+
             switch($type) {
                 case '':
                 case null:
@@ -1023,7 +1025,8 @@ class MC_Google_Visualization {
                 case 'timestamp':
                     $time = strtotime($val);
                     list($year, $month, $day, $hour, $minute, $second) = explode('-', date('Y-m-d-H-i-s', $time));
-                    $val = 'new Date(' . (int) $year . ',' . ($month - 1) . ',' . (int) $day . ',' . (int) $hour . ',' . (int) $minute . ',' . (int) $second . ')';
+                    # MALC - Force us to consider the date as UTC...
+                    $val = 'new Date(Date.UTC(' . (int) $year . ',' . ($month - 1) . ',' . (int) $day . ',' . (int) $hour . ',' . (int) $minute . ',' . (int) $second . '))';
                     $formatted = date($format, $time);
                     break;
                 case 'time':
@@ -1031,6 +1034,11 @@ class MC_Google_Visualization {
                     list($hour, $minute, $second) = explode('-', date('H-i-s', $time));
                     $val = '[' . (int) $hour . ',' . (int) $minute . ',' . (int) $second . ',0]';
                     $formatted = date($format, $time);
+                    break;
+                case 'binary':
+                    $formatted = "0x" . array_shift(unpack('H*', $val));
+                    $val = "0x" . array_shift(unpack('H*', $val));
+                    $val = $this->jsonEncode((string) $val);
                     break;
                 default:
                     throw new MC_Google_Visualization_Error('Unknown field type "' . $type . '"');
@@ -1044,7 +1052,7 @@ class MC_Google_Visualization {
             } else {
                 $cell = '{f:' . $this->jsonEncode($formatted);
             }
-            
+
             $vals[] =  $cell . '}';
         }
         return '{c:[' . implode(',', $vals) . ']}';
@@ -1091,6 +1099,7 @@ class MC_Google_Visualization {
 
         $literal = $p->oneOf(
             $p->number()->name('number'),
+            $p->hexNumber()->name('number'),
             $p->quotedString()->name('string'),
             $p->boolean('lower')->name('boolean'),
             $p->set($p->keyword('date', true), $p->quotedString())->name('date'),
@@ -1107,7 +1116,8 @@ class MC_Google_Visualization {
         $select = $p->set($p->keyword('select', true), $p->oneOf($p->keyword('*'), $p->delimitedList($p->oneOf($function, $ident))))->name('select');
         $from = $p->set($p->keyword('from', true), $ident)->name('from');
 
-        $comparison = $p->oneOf($p->literal('<'), $p->literal('<='), $p->literal('>'), $p->literal('>='), $p->literal('='), $p->literal('!='), $p->literal('<>'))->name('operator');
+        # Malc - Added 'Like' 20130219
+        $comparison = $p->oneOf($p->literal('like'),$p->literal('<'), $p->literal('<='), $p->literal('>'), $p->literal('>='), $p->literal('='), $p->literal('!='), $p->literal('<>'))->name('operator');
 
         $expr = $p->recursive();
         $value = $p->oneOf($literal, $ident->name('where_field'));

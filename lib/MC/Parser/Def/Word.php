@@ -25,13 +25,13 @@ class MC_Parser_Def_Word extends MC_Parser_Def_Regex {
         if($rest_chars === null) $rest_chars = $first_chars;
         $this->first_chars = $first_chars;
         $this->rest_chars = $rest_chars;
-        
+
         if($first_chars === $rest_chars) {
-            $this->regex = '[' . preg_quote($first_chars) . ']+';
+            $this->regex = '[' . $first_chars . ']+';
         } else {
-            $this->regex = '[' . preg_quote($first_chars) . '][' . preg_quote($rest_chars) . ']*';
+            $this->regex = '[' . $first_chars . '][' . $rest_chars . ']*';
         }
-        
+
     }
 }
 

@@ -14,17 +14,17 @@
  */
 
 class MC_Parser_Def_Recursive extends MC_Parser_Def {
-    
+
     public $replacement = null;
-    
+
     public function _parse($str, $loc) {
         if($this->replacement === null) {
             throw new MC_Parser_DefError('You must replace the recursive placeholder before parsing a grammar');
         }
-        
+
         return $this->replacement->_parse($str, $loc);
     }
-    
+
     /**
      * When actually parsing the grammar, use this rule to validate the recursive rule - this must be called before parsing begins
      * @param MC_Parser_Def $expr
@@ -34,7 +34,7 @@ class MC_Parser_Def_Recursive extends MC_Parser_Def {
         $this->replacement = $expr;
         return $this;
     }
-    
+
     public function _name() {
         if($this->replacement === null) return 'placeholder';
         return $this->replacement->getName();

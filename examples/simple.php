@@ -8,7 +8,7 @@ if(isset($_GET['tq'])) {
             'name' => array('field' => 'name', 'type' => 'text')
         )
     ));
-    
+
     $vis->handleRequest();
     die();
 }

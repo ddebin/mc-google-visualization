@@ -2,7 +2,7 @@
 require_once 'init.php';
 
 if(isset($_GET['tq'])) {
-    
+
     function most_common($row) {
         $forms = array('pill', 'iud', 'condom', 'sterile_total', 'other_modern', 'traditional');
         $max_form = -1;
@@ -13,10 +13,10 @@ if(isset($_GET['tq'])) {
                 $form_name = $form;
             }
         }
-        
+
         return $form_name;
     }
-    
+
     $vis->addEntity('birth_control', array(
         'fields' => array(
             'country' => array('field' => 'c.name', 'type' => 'text', 'join' => 'country'),
@@ -35,7 +35,7 @@ if(isset($_GET['tq'])) {
         'joins' => array('country' => 'INNER JOIN countries c ON c.id=country_id'),
         'where' => 'year=2000'
     ));
-    
+
     $vis->handleRequest();
     die();
 }

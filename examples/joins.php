@@ -18,7 +18,7 @@ if(isset($_GET['tq'])) {
             'finance' => 'INNER JOIN finance f ON f.country_id=c.id'
         )
     ));
-    
+
     $vis->handleRequest();
     die();
 }
@@ -51,7 +51,7 @@ if(isset($_GET['tq'])) {
                     }
                 });
             });
-            
+
         });
     </script>
 </head>

@@ -24,25 +24,25 @@ class MC_Parser_Def_Regex extends MC_Parser_Def {
     public $flags = 'u';
     public $errstr = null;
     public $retgroup = 0;
-    
+
     public function __construct($regex=null, $flags=null, $errstr=null) {
         if($regex !== null) $this->regex = $regex;
         if($flags !== null) $this->flags = $flags;
         if($errstr !== null) $this->errstr = $errstr;
     }
-    
+
     public function _parse($str, $loc) {
         preg_match('/^' . $this->regex . '/' . $this->flags, substr($str, $loc), $matches,  PREG_OFFSET_CAPTURE);
         $success = $matches[$this->retgroup];
         if(empty($success) || $success[1] != 0) {
             throw new MC_Parser_ParseError('Expected: ' . (($this->errstr) ? $this->errstr : 'matching ' . $this->regex), $str, $loc);
         }
-        
+
         $loc += strlen($success[0]);
-        
+
         return array($loc, $this->token($success[0]));
     }
-    
+
     public function _name() {
         if($this->errstr) return $this->errstr;
         return 'matches: ' . $this->regex;

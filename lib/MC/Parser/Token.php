@@ -21,24 +21,24 @@ require_once 'MC/Parser/Token/Group.php';
 class MC_Parser_Token {
     public $name = null;
     public $value = null;
-    
+
     public function __construct($value, $name=null) {
         $this->value = $value;
         $this->name = $name;
     }
-    
+
     public function getValues() {
         return array($this->value);
     }
-    
+
     public function getNameValues() {
         return array(array($this->name, $this->value));
     }
-    
+
     public function hasChildren() {
         return false;
     }
-    
+
     public function getChildren() {
         return array();
     }

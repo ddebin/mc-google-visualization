@@ -18,15 +18,15 @@
  */
 class MC_Parser_Def_Set extends MC_Parser_Def {
     public $exprs = array();
-    
+
     public function __construct($exprs=array()) {
         if(!is_array($exprs)) {
             throw new MC_Parser_DefError('Set sub-expressions must be an array');
         }
-        
+
         $this->exprs = $exprs;
     }
-    
+
     /**
      * @param string $str the string to parse
      * @param integer $loc the index to start parsing
@@ -40,16 +40,16 @@ class MC_Parser_Def_Set extends MC_Parser_Def {
                 $res->append($toks);
             }
         }
-        
+
         return array($loc, $res);
     }
-    
+
     public function _name() {
         $names = array();
         foreach($this->exprs as $expr) {
             $names[] = $expr->getName();
         }
-        
+
         return '[' . implode(', ', $names) . ']';
     }
 }

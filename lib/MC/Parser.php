@@ -21,7 +21,7 @@ class MC_Parser_DefError extends MC_Parser_Error {}
 class MC_Parser_ParseError extends MC_Parser_Error {
     public $data;
     public $loc;
-    
+
     public function __construct($msg, $str, $loc) {
         $this->data = $str;
         $this->loc = $loc;
@@ -38,7 +38,7 @@ class MC_Parser {
      * @var string
      */
     public static $whitespace = " \t\n\r";
-    
+
     /**
      * Return a MC_Parser_Def_Set with the function arguments as the subexpressions
      * @return MC_Parser_Def_Set
@@ -46,7 +46,7 @@ class MC_Parser {
     public function set() {
         return new MC_Parser_Def_Set(func_get_args());
     }
-    
+
     /**
      * Return a MC_Parser_Def_OneOf with the function arguments as the possible expressions
      * @return MC_Parser_Def_OneOf
@@ -54,7 +54,7 @@ class MC_Parser {
     public function oneOf() {
         return new MC_Parser_Def_OneOf(func_get_args());
     }
-    
+
     /**
      * Return a MC_Parser_Def_Word that matches a set of possible characters not separated by whitespace
      * @param string $first_chars
@@ -64,7 +64,7 @@ class MC_Parser {
     public function word($first_chars, $rest_chars=null) {
         return new MC_Parser_Def_Word($first_chars, $rest_chars);
     }
-    
+
     /**
      * Return a MC_Parser_Def_Regex that matches a typical optionally-escaped quoted string
      * @param string $quote_chars
@@ -75,20 +75,20 @@ class MC_Parser {
         $quote_chars = trim($quote_chars);
         if(!$quote_chars) throw new MC_Parser_DefError('$quote_chars cannot be an empty string');
         if(strlen($esc_char) > 1) throw new MC_Parser_DefError('Only one $esc_char can be defined');
-        
+
         $quote_chars = str_split($quote_chars);
         if($esc_char) $esc_char = preg_quote($esc_char);
-        
+
         $tpl = '(?:Q(?:[^Q\n\rE]|(?:QQ)|(?:Ex[0-9a-fA-F]+)|(?:E.))*Q)';
         foreach($quote_chars as $quote) {
             $quote = preg_quote($quote);
             $pats[] = str_replace(array('Q', 'E'), array($quote, $esc_char), $tpl);
         }
-        
+
         $regex = implode('|', $pats);
         return new MC_Parser_Def_Regex($regex, 'mus', 'quoted string');
     }
-    
+
     /**
      * wrapper around MC_Parser_Def_Regex that matches numerical values (like 7, 3.5, and -42)
      * @return MC_Parser_Def_Regex
@@ -96,7 +96,11 @@ class MC_Parser {
     public function number() {
         return new MC_Parser_Def_Regex('[+\-]?\d+(\.\d+)?', null, 'number');
     }
-    
+
+    public function hexNumber() {
+        return new MC_Parser_Def_Regex('0x[0-9,a-f,A-F]+', null, 'number');
+    }
+
     /**
      * wrapper around MC_Parser_Def_OneOf that matches true and false, depending on case requirements
      * @param string $case which case is supported, one of "upper", "lower", "first", or "mixed"
@@ -116,7 +120,7 @@ class MC_Parser {
                 throw new MC_Parser_DefError('Boolean case must be one of "upper", "lower", "first" or "mixed" - got "' . $case . '"');
         }
     }
-    
+
     /**
      * Returns a MC_Parser_Def_Literal that matches a literal word
      * @param string $str the exact string to match
@@ -126,7 +130,7 @@ class MC_Parser {
     public function literal($str, $caseless=false, $fullword=false) {
         return new MC_Parser_Def_Literal($str, $caseless, $fullword);
     }
-    
+
     /**
      * Returns a MC_Parser_Def_Literal that matches a literal word (but with non-whitespace following characters turned off)
      * @param string $str the exact string to match
@@ -136,7 +140,7 @@ class MC_Parser {
     public function keyword($str, $caseless=false, $fullword=true) {
         return new MC_Parser_Def_Literal($str, $caseless, $fullword);
     }
-    
+
     /**
      * Returns a MC_Parser_Def_Set that matches a set of expressions delimited by a literal and optional whitespace
      * @param MC_Parser_Def $expr the expression that is delimited
@@ -146,7 +150,7 @@ class MC_Parser {
     public function delimitedList(MC_Parser_Def $expr, $delim=',') {
         return $this->set($expr, $this->zeroOrMore($this->set($this->literal($delim, false, false)->suppress(), $expr)));
     }
-    
+
     /**
      * Returns a MC_Parser_Def_NOrMore that matches zero or more expressions
      * @param MC_Parser_Def $expr the expression to match zero or more of
@@ -164,7 +168,7 @@ class MC_Parser {
     public function oneOrMore(MC_Parser_Def $expr) {
         return new MC_Parser_Def_NOrMore($expr, 1);
     }
-    
+
     /**
      * Returns a MC_Parser_Def_Recursive placeholder def that can be used to create recursive grammars
      * @return MC_Parser_Def_Recursive
@@ -172,7 +176,7 @@ class MC_Parser {
     public function recursive() {
         return new MC_Parser_Def_Recursive();
     }
-    
+
     /**
      * Returns a MC_Parser_Def_OneOf that matches zero or one expressions
      * @return MC_Parser_Def_OneOf
@@ -181,7 +185,7 @@ class MC_Parser {
         $empty = new MC_Parser_Def_Empty();
         return $this->oneOf($expr, $empty);
     }
-    
+
     /**
      * Helper function returning a regex range of all the characters in the english alphabet
      * @return string
@@ -189,7 +193,7 @@ class MC_Parser {
     public function alphas() {
         return 'a-zA-Z';
     }
-    
+
     /**
      * Helper function returning a string of all alphabet and digit characters
      * @return string
@@ -197,7 +201,7 @@ class MC_Parser {
     public function alphanums() {
         return $this->alphas() . $this->nums();
     }
-    
+
     /**
      * Helper function returning a regex range of all digit characters
      * @return string
@@ -205,7 +209,7 @@ class MC_Parser {
     public function nums() {
         return '0-9';
     }
-    
+
     /**
      * Simple test for whether a character is a whitespace character
      * @return boolean
