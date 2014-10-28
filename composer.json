@@ -21,8 +21,8 @@
         "ext-pdo": "*"
     },
     "autoload": {
-        "psr-0": {
-            "": "lib/"
-        }
+        "classmap": [
+            "lib/MC/Google/Visualization.php"
+        ]
     }
 }

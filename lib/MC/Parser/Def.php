@@ -13,14 +13,14 @@
  * @version    0.1
  */
 
-require_once 'MC/Parser/Def/Empty.php';
-require_once 'MC/Parser/Def/Literal.php';
-require_once 'MC/Parser/Def/NOrMore.php';
-require_once 'MC/Parser/Def/OneOf.php';
-require_once 'MC/Parser/Def/Recursive.php';
-require_once 'MC/Parser/Def/Regex.php';
-require_once 'MC/Parser/Def/Set.php';
-require_once 'MC/Parser/Def/Word.php';
+require_once __DIR__.'/Def/Empty.php';
+require_once __DIR__.'/Def/Literal.php';
+require_once __DIR__.'/Def/NOrMore.php';
+require_once __DIR__.'/Def/OneOf.php';
+require_once __DIR__.'/Def/Recursive.php';
+require_once __DIR__.'/Def/Regex.php';
+require_once __DIR__.'/Def/Set.php';
+require_once __DIR__.'/Def/Word.php';
 
 
 /**

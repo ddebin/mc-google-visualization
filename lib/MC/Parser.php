@@ -13,8 +13,8 @@
  * @version    0.1
  */
 
-require_once 'MC/Parser/Def.php';
-require_once 'MC/Parser/Token.php';
+require_once __DIR__.'/Parser/Def.php';
+require_once __DIR__.'/Parser/Token.php';
 
 class MC_Parser_Error extends Exception {}
 class MC_Parser_DefError extends MC_Parser_Error {}

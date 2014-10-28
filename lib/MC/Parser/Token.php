@@ -13,7 +13,7 @@
  * @version    0.1
  */
 
-require_once 'MC/Parser/Token/Group.php';
+require_once __DIR__.'/Token/Group.php';
 
 /**
  * An instance of a parsed token
