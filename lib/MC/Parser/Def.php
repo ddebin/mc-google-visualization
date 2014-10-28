@@ -55,7 +55,7 @@ abstract class MC_Parser_Def {
     public function parsePart($str, $loc) {
         list($loc, $tok) = $this->_parse($str, $loc);
 
-        $char = $str[$loc++];
+        $char = @$str[$loc++];
         while($char && MC_Parser::isWhitespace($char)) {
             $char = $str[$loc++];
         }

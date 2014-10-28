@@ -268,6 +268,7 @@ class MC_Google_Visualization {
         $join_sql = $meta['joins'];
         foreach($meta['query_fields'] as $field) {
             $func = null;
+            $pivot_cond = null;
             if(is_array($field)) {
                 $func = $field[0];
                 $pivot_cond = (isset($field[2])) ? $field[2] : null;
@@ -751,7 +752,7 @@ class MC_Google_Visualization {
                         $field = $formats[$i];
                         $formatstr = trim($formats[$i + 1], '\'"');
 
-                        if($entity['fields'][$field]['type'] == 'boolean' && strpos($formatstr, ':') === false) {
+                        if(@$entity['fields'][$field]['type'] == 'boolean' && strpos($formatstr, ':') === false) {
                             throw new MC_Google_Visualization_QueryError('Invalid boolean format string: "' . $formatstr . '"');
                         }
 
@@ -954,7 +955,7 @@ class MC_Google_Visualization {
             }
 
             $field_meta = $meta['field_spec'][$field];
-            if($field_meta['callback']) {
+            if(isset($field_meta['callback'])) {
                 if(isset($field_meta['extra'])) {
                     $params = array($row, $field_meta['fields']);
                     $params = array_merge($params, $field_meta['extra']);
@@ -987,9 +988,9 @@ class MC_Google_Visualization {
                         $digits = (int) $matches[1];
                         $extras = $matches[2];
                         if($extras) {
-                            $formatted = $prefix . number_format($val, $digits, $extras[0], $extras[1]);
+                            $formatted = number_format($val, $digits, $extras[0], $extras[1]);
                         } else {
-                            $formatted = $prefix . number_format($val, $digits);
+                            $formatted = number_format($val, $digits);
                         }
                     } elseif($format == 'dollars') {
                         $formatted = '$' . number_format($val, 2);

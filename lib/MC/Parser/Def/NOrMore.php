@@ -33,8 +33,8 @@ class MC_Parser_Def_NOrMore extends MC_Parser_Def {
             //Ignore parsing errors - that just means we're done
         }
 
-        if($toks->count() < $min) {
-            throw new MC_Parser_ParseError('Expected: ' . $min . ' or more ' . $expr->name, $str, $loc);
+        if($toks->count() < $this->min) {
+            throw new MC_Parser_ParseError('Expected: ' . $this->min . ' or more ' . $expr->name, $str, $loc);
         }
 
         if($toks->count() == 0) {

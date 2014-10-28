@@ -33,7 +33,7 @@ class MC_Parser_Def_Regex extends MC_Parser_Def {
 
     public function _parse($str, $loc) {
         preg_match('/^' . $this->regex . '/' . $this->flags, substr($str, $loc), $matches,  PREG_OFFSET_CAPTURE);
-        $success = $matches[$this->retgroup];
+        $success = @$matches[$this->retgroup];
         if(empty($success) || $success[1] != 0) {
             throw new MC_Parser_ParseError('Expected: ' . (($this->errstr) ? $this->errstr : 'matching ' . $this->regex), $str, $loc);
         }
