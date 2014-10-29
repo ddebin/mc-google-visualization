@@ -956,14 +956,21 @@ class MC_Google_Visualization {
                 $key = $field;
             }
 
+            $callback_response = null;
+
             $field_meta = $meta['field_spec'][$field];
             if(isset($field_meta['callback'])) {
                 if(isset($field_meta['extra'])) {
                     $params = array($row, $field_meta['fields']);
                     $params = array_merge($params, $field_meta['extra']);
-                    $val = call_user_func_array($field_meta['callback'], $params);
+                    $callback_response = call_user_func_array($field_meta['callback'], $params);
                 } else {
-                    $val = call_user_func($field_meta['callback'], $row, $field_meta['fields']);
+                    $callback_response = call_user_func($field_meta['callback'], $row, $field_meta['fields']);
+                }
+                if(is_array($callback_response)) {
+                    $val = $callback_response['value'];
+                } else {
+                    $val = $callback_response;
                 }
             } else {
                 $val = $row[$key];
@@ -1045,6 +1052,10 @@ class MC_Google_Visualization {
                     break;
                 default:
                     throw new MC_Google_Visualization_Error('Unknown field type "' . $type . '"');
+            }
+
+            if(isset($callback_response['formatted'])) {
+                $formatted = $callback_response['formatted'];
             }
 
             if(!isset($meta['options']['no_values'])) {
