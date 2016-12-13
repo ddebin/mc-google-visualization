@@ -170,7 +170,6 @@ class MC_Google_Visualization {
             $query = $this->parseQuery($query);
             $meta = $this->generateMetadata($query);
             $sql = $this->generateSQL($meta);
-            error_log($sql);
             $meta['req_id'] = $reqid;
             $meta['req_params'] = $params;
 
