@@ -1,13 +1,14 @@
 <?php
-require_once 'init.php';
+/** @noinspection PhpUnhandledExceptionInspection */
+require_once __DIR__.'/init.php';
 
-if(isset($_GET['tq'])) {
-    $vis->addEntity('countries', array(
-        'fields' => array(
-            'id' => array('field' => 'id', 'type' => 'number'),
-            'name' => array('field' => 'name', 'type' => 'text')
-        )
-    ));
+if (isset($_GET['tq'])) {
+    $vis->addEntity('countries', [
+        'fields' => [
+            'id' => ['field' => 'id', 'type' => 'number'],
+            'name' => ['field' => 'name', 'type' => 'text'],
+        ],
+    ]);
 
     $vis->handleRequest();
     die();
@@ -16,10 +17,10 @@ if(isset($_GET['tq'])) {
 <html>
 <head>
     <title>Simple single-table visualization example</title>
-    <script type="text/javascript" src="http://www.google.com/jsapi"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script type="text/javascript">
-        google.load('visualization', '1', {'packages': ['table']});
-        google.setOnLoadCallback(function() {
+        google.charts.load('current', {'packages': ['table']});
+        window.addEventListener('DOMContentLoaded', function() { google.charts.setOnLoadCallback(function() {
             var query = new google.visualization.Query('simple.php');
             query.setQuery('select id, name from countries order by name label id "ID", name "Name"');
             query.send(function(res) {
@@ -30,7 +31,7 @@ if(isset($_GET['tq'])) {
                     table.draw(res.getDataTable(), {'page': 'enable', 'pageSize': 20});
                 }
             });
-        });
+        }); });
     </script>
 </head>
 <body>

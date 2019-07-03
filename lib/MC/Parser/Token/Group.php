@@ -1,63 +1,68 @@
 <?php
-/**
- * Parser Generator for PHP
- *
- * LICENSE
- *
- * This source file is subject to the MIT license that is bundled
- * with this package in the file LICENSE.
- *
- * @package    MC_Parser
- * @author     Chadwick Morris <chad@mailchimp.com>
- * @license    http://www.opensource.org/licenses/mit-license.php
- * @version    0.1
- */
 
-class MC_Parser_Token_Group extends MC_Parser_Token implements Countable {
-    public $subtoks = array();
+namespace MC\Parser\Token;
 
-    public function __construct($name) {
+use Countable;
+use MC\Parser\Token;
+
+class Group extends Token implements Countable
+{
+    /** @var Token[] */
+    public $subtoks = [];
+
+    public function __construct($name)
+    {
         parent::__construct(null, $name);
     }
 
     /**
-     * Append one or more tokens to this group
-     * @param array|MC_Parser_Token one or more token instances
+     * Append one or more tokens to this group.
+     *
+     * @param null|Token|Token[] $toks one or more token instances
      */
-    public function append($toks) {
-        if($toks === null) return;
-        if(!is_array($toks)) $toks = array($toks);
+    public function append($toks)
+    {
+        if (null === $toks) {
+            return;
+        }
+        if (!is_array($toks)) {
+            $toks = [$toks];
+        }
         $this->subtoks = array_merge($this->subtoks, $toks);
     }
 
-    public function count() {
+    public function count()
+    {
         return count($this->subtoks);
     }
 
-    public function getValues() {
-        $values = array();
-        foreach($this->subtoks as $tok) {
+    public function getValues()
+    {
+        $values = [];
+        foreach ($this->subtoks as $tok) {
             $values = array_merge($values, $tok->getValues());
         }
 
         return $values;
     }
 
-    public function getNameValues() {
-        $values = array();
-        foreach($this->subtoks as $tok) {
+    public function getNameValues()
+    {
+        $values = [];
+        foreach ($this->subtoks as $tok) {
             $values = array_merge($values, $tok->getNameValues());
         }
+
         return $values;
     }
 
-    public function hasChildren() {
+    public function hasChildren()
+    {
         return !empty($this->subtoks);
     }
 
-    public function getChildren() {
+    public function getChildren()
+    {
         return $this->subtoks;
     }
 }
-
-?>

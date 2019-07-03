@@ -1,14 +1,15 @@
 <?php
-require_once 'init.php';
+/** @noinspection PhpUnhandledExceptionInspection */
+require_once __DIR__.'/init.php';
 
-if(isset($_GET['tq'])) {
-
-    function most_common($row) {
-        $forms = array('pill', 'iud', 'condom', 'sterile_total', 'other_modern', 'traditional');
+if (isset($_GET['tq'])) {
+    function most_common($row)
+    {
+        $forms = ['pill', 'iud', 'condom', 'sterile_total', 'other_modern', 'traditional'];
         $max_form = -1;
         $form_name = null;
-        foreach($forms as $form) {
-            if($row[$form] > $max_form) {
+        foreach ($forms as $form) {
+            if ($row[$form] > $max_form) {
                 $max_form = $row[$form];
                 $form_name = $form;
             }
@@ -17,30 +18,30 @@ if(isset($_GET['tq'])) {
         return $form_name;
     }
 
-    $vis->addEntity('birth_control', array(
-        'fields' => array(
-            'country' => array('field' => 'c.name', 'type' => 'text', 'join' => 'country'),
-            'year' => array('field' => 'year', 'type' => 'number'),
-            'pill' => array('field' => 'pill', 'type' => 'number'),
-            'iud' => array('field' => 'iud', 'type' => 'number'),
-            'condom' => array('field' => 'condom', 'type' => 'number'),
-            'sterile_total' => array('field' => 'steril_total', 'type' => 'number'),
-            'other_modern' => array('field' => 'other_modern', 'type' => 'number'),
-            'traditional' => array('field' => 'traditional',  'type' => 'number'),
-            'most_common' => array(
+    $vis->addEntity('birth_control', [
+        'fields' => [
+            'country' => ['field' => 'c.name', 'type' => 'text', 'join' => 'country'],
+            'year' => ['field' => 'year', 'type' => 'number'],
+            'pill' => ['field' => 'pill', 'type' => 'number'],
+            'iud' => ['field' => 'iud', 'type' => 'number'],
+            'condom' => ['field' => 'condom', 'type' => 'number'],
+            'sterile_total' => ['field' => 'steril_total', 'type' => 'number'],
+            'other_modern' => ['field' => 'other_modern', 'type' => 'number'],
+            'traditional' => ['field' => 'traditional',  'type' => 'number'],
+            'most_common' => [
                 'callback' => 'most_common',
-                'fields' => array('pill', 'iud', 'condom', 'sterile_total', 'other_modern', 'traditional'),
-                'type' => 'text')
-        ),
-        'joins' => array('country' => 'INNER JOIN countries c ON c.id=country_id'),
-        'where' => 'year=2000'
-    ));
+                'fields' => ['pill', 'iud', 'condom', 'sterile_total', 'other_modern', 'traditional'],
+                'type' => 'text', ],
+        ],
+        'joins' => ['country' => 'INNER JOIN countries c ON c.id=country_id'],
+        'where' => 'year=2000',
+    ]);
 
     $vis->handleRequest();
     die();
 }
 ?>
-<html>
+<html lang="en">
 <head>
     <title>Callback fields visualization example</title>
     <script type="text/javascript" src="http://www.google.com/jsapi"></script>

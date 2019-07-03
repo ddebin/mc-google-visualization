@@ -1,52 +1,58 @@
 <?php
-/**
- * Parser Generator for PHP
- *
- * LICENSE
- *
- * This source file is subject to the MIT license that is bundled
- * with this package in the file LICENSE.
- *
- * @package    MC_Parser
- * @author     Chadwick Morris <chad@mailchimp.com>
- * @license    http://www.opensource.org/licenses/mit-license.php
- * @version    0.1
- */
 
-class MC_Parser_Def_NOrMore extends MC_Parser_Def {
+namespace MC\Parser\Def;
+
+use MC\Parser\Def;
+use MC\Parser\ParseError;
+
+class NOrMore extends Def
+{
+    /** @var Def */
     public $expr;
+
     public $min;
 
-    public function __construct(MC_Parser_Def $expr, $min) {
+    public function __construct(Def $expr, $min)
+    {
         $this->expr = $expr;
         $this->min = (int) $min;
     }
 
-    public function _parse($str, $loc) {
+    /**
+     * @param string $str
+     * @param int    $loc
+     *
+     * @throws ParseError
+     *
+     * @return array
+     */
+    public function _parse($str, $loc)
+    {
         $toks = $this->tokenGroup();
+
         try {
-            while(true) {
+            while (true) {
                 list($loc, $tok) = $this->expr->parsePart($str, $loc);
                 $toks->append($tok);
             }
-        } catch(MC_Parser_ParseError $e) {
-            //Ignore parsing errors - that just means we're done
+        } catch (ParseError $e) {
+            // Ignore parsing errors - that just means we're done
         }
 
-        if($toks->count() < $this->min) {
-            throw new MC_Parser_ParseError('Expected: ' . $this->min . ' or more ' . $expr->name, $str, $loc);
+        if ($toks->count() < $this->min) {
+            throw new ParseError('Expected: '.$this->min.' or more '.$this->expr->name, $str, $loc);
         }
 
-        if($toks->count() == 0) {
+        if (0 === $toks->count()) {
             //If this token is empty, remove it from the result group
             $toks = null;
         }
-        return array($loc, $toks);
+
+        return [$loc, $toks];
     }
 
-    public function _name() {
-        return $this->min . ' or more: ' . $this->expr->getName();
+    public function _name()
+    {
+        return $this->min.' or more: '.$this->expr->getName();
     }
 }
-
-?>
