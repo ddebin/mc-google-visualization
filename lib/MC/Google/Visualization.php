@@ -144,9 +144,13 @@ class Visualization
     /**
      * Handle the entire request, pulling the query from the $_GET variables, and printing the results directly.
      *
+     * @param bool $echo print response and set header
+     *
      * @throws Visualization_Error
+     *
+     * @return string the javascript response
      */
-    public function handleRequest()
+    public function handleRequest($echo = true)
     {
         $query = $_GET['tq'];
         $params = ['version' => $this->version, 'responseHandler' => 'google.visualization.Query.setResponse'];
@@ -166,8 +170,14 @@ class Visualization
             $params['responseHandler'] = $_GET['responseHandler'];
         }
 
-        @header('Content-Type: text/javascript; charset=utf-8');
-        $this->handleQuery($query, $params);
+        $response = $this->handleQuery($query, $params);
+
+        if ($echo) {
+            header('Content-Type: text/javascript; charset=utf-8');
+            echo $response;
+        }
+
+        return $response;
     }
 
     /**
@@ -175,10 +185,13 @@ class Visualization
      *
      * @param string $query  the visualization query to parse and execute
      * @param array  $params all extra params sent along with the query - must include at least "reqId" key
+     *
+     * @return string the javascript response
      */
     public function handleQuery($query, $params)
     {
         $reqid = null;
+        $response = '';
 
         try {
             if (!($this->db instanceof PDO)) {
@@ -194,26 +207,28 @@ class Visualization
 
             $stmt = $this->db->query($sql);
             //If we got here, there's no errors
-            echo $this->getSuccessInit($meta);
+            $response .= $this->getSuccessInit($meta);
             $first = true;
             foreach ($stmt as $row) {
                 if (!$first) {
-                    echo ',';
+                    $response .= ',';
                 }
-                echo $this->getRowValues($row, $meta);
+                $response .= $this->getRowValues($row, $meta);
                 $first = false;
             }
 
-            echo $this->getSuccessClose();
+            $response .= $this->getSuccessClose();
         } catch (Visualization_Error $e) {
-            echo $this->handleError($reqid, $e->getMessage(), $params['responseHandler'], $e->type, $e->summary);
+            $response .= $this->handleError($reqid, $e->getMessage(), $params['responseHandler'], $e->type, $e->summary);
         } catch (PDOException $e) {
-            echo $this->handleError($reqid, $e->getMessage(), $params['responseHandler'], 'invalid_query', 'Invalid Query - PDO exception');
+            $response .= $this->handleError($reqid, $e->getMessage(), $params['responseHandler'], 'invalid_query', 'Invalid Query - PDO exception');
         } catch (ParseError $e) {
-            echo $this->handleError($reqid, $e->getMessage(), $params['responseHandler'], 'invalid_query', 'Invalid Query - Parse Error');
+            $response .= $this->handleError($reqid, $e->getMessage(), $params['responseHandler'], 'invalid_query', 'Invalid Query - Parse Error');
         } catch (Exception $e) {
-            echo $this->handleError($reqid, $e->getMessage(), $params['responseHandler']);
+            $response .= $this->handleError($reqid, $e->getMessage(), $params['responseHandler']);
         }
+
+        return $response;
     }
 
     /**

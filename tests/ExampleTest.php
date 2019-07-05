@@ -50,9 +50,7 @@ final class ExampleTest extends PHPUnit_Framework_TestCase
         $_GET['tq'] = 'select country, year, birth_control, infant_mort where birth_control!=0 AND infant_mort!=0 group by country, year label country "Country", year "Year", birth_control "Birth Control Penetration", gdp_us "Per-capita GDP (US Dollars)", savings_rate "Savings Rate", investment_rate "Investment Rate", infant_mort "Infant Mortality", life_expect "Life Expectancy" format year "%d"';
         $_GET['tqx'] = 'reqId:1';
 
-        ob_start();
-        $vis->handleRequest();
-        $output = ob_get_clean();
+        $output = $vis->handleRequest(false);
 
         //file_put_contents(__DIR__.'/result1.js', $output);
         static::assertStringEqualsFile(__DIR__.'/result1.js', $output);
@@ -75,9 +73,7 @@ final class ExampleTest extends PHPUnit_Framework_TestCase
         $_GET['tq'] = 'select id, name from countries order by name label id "ID", name "Name"';
         $_GET['tqx'] = 'reqId:2';
 
-        ob_start();
-        $vis->handleRequest();
-        $output = ob_get_clean();
+        $output = $vis->handleRequest(false);
 
         //file_put_contents(__DIR__.'/result2.js', $output);
         static::assertStringEqualsFile(__DIR__.'/result2.js', $output);
@@ -110,9 +106,7 @@ final class ExampleTest extends PHPUnit_Framework_TestCase
         $_GET['tq'] = 'select avg(life_male), avg(life_female), avg(life_both) from countries label life_male "Life Expectancy (Male)", life_female "Life Expectancy (Female)", life_both "Life Expectancy (Combined)" format life_male "%.2f years", life_female "%.2f years", life_both "%.2f years"';
         $_GET['tqx'] = 'reqId:3';
 
-        ob_start();
-        $vis->handleRequest();
-        $output = ob_get_clean();
+        $output = $vis->handleRequest(false);
 
         //file_put_contents(__DIR__.'/result3.js', $output);
         static::assertStringEqualsFile(__DIR__.'/result3.js', $output);
