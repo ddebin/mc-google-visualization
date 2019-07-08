@@ -91,8 +91,6 @@ class Visualization
      * Set the database connection to use when handling the entire request or getting pivot values.
      *
      * @param null|PDO $db the database connection to use - or null if you want to handle your own queries
-     *
-     * @throws Visualization_Error
      */
     public function setDB(PDO $db = null)
     {
@@ -232,187 +230,6 @@ class Visualization
         }
 
         return $response;
-    }
-
-    /**
-     * Return the response appropriate to tell the visualization client that an error has occurred.
-     *
-     * @param int    $reqid       the request ID that caused the error
-     * @param string $detail_msg  the detailed message to send along with the error
-     * @param string $handler
-     * @param string $code        the code for the error (like "error", "server_error", "invalid_query", "access_denied", etc.)
-     * @param string $summary_msg a short description of the error, appropriate to show to end users
-     *
-     * @return string the string to output that will cause the visualization client to detect an error
-     */
-    public function handleError($reqid, $detail_msg, $handler = 'google.visualization.Query.setResponse', $code = 'error', $summary_msg = null)
-    {
-        if (null === $summary_msg) {
-            $summary_msg = $detail_msg;
-        }
-        $handler = $handler ?: 'google.visualization.Query.setResponse';
-
-        return $handler.'({version:"'.$this->version.'",reqId:"'.$reqid.'",status:"error",errors:[{reason:'.json_encode($code).',message:'.json_encode($summary_msg).',detailed_message:'.json_encode($detail_msg).'}]});';
-    }
-
-    /**
-     * Given the metadata for a query and the entities it's working against, generate the SQL.
-     *
-     * @param array $meta the results of generateMetadata() on the parsed visualization query
-     *
-     * @throws Visualization_QueryError
-     *
-     * @return string the SQL version of the visualization query
-     */
-    public function generateSQL(array &$meta)
-    {
-        if (!isset($meta['query_fields'])) {
-            $meta['query_fields'] = $meta['select'];
-        }
-
-        if (isset($meta['pivot'])) {
-            //Pivot queries are special - they require an entity to be passed and modify the query directly
-            $entity = $meta['entity'];
-            $pivot_fields = [];
-            $pivot_joins = [];
-            $pivot_group = [];
-            foreach ($meta['pivot'] as $entity_field) {
-                $field = $entity['fields'][$entity_field];
-                if (isset($field['callback'])) {
-                    throw new Visualization_QueryError('Callback fields cannot be used as pivots: "'.$entity_field.'"');
-                }
-                $pivot_fields[] = $field['field'].' AS '.$entity_field;
-                $pivot_group[] = $entity_field;
-                if (isset($field['join']) && !in_array($entity['joins'][$field['join']], $pivot_joins, true)) {
-                    $pivot_joins[] = $entity['joins'][$field['join']];
-                }
-            }
-
-            $pivot_sql = 'SELECT '.implode(', ', $pivot_fields).' FROM '.$meta['table'];
-            if (!empty($pivot_joins)) {
-                $pivot_sql .= ' '.implode(' ', $pivot_joins);
-            }
-            $pivot_sql .= ' GROUP BY '.implode(', ', $pivot_group);
-
-            $func_fields = [];
-            $new_fields = [];
-            foreach ($meta['query_fields'] as $field) {
-                if (is_array($field)) {
-                    $func_fields[] = $field;
-                } else {
-                    $new_fields[] = $field;
-                }
-            }
-            $meta['query_fields'] = $new_fields;
-
-            $stmt = $this->db->query($pivot_sql);
-            foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
-                //Create a version of all function-ed fields for each unique combination of pivot values
-                foreach ($func_fields as $field) {
-                    $field[2] = $row;
-
-                    $meta['query_fields'][] = $field;
-                }
-            }
-
-            //For pivot queries, the fields we return and the fields we query against are always the same
-            $meta['select'] = $meta['query_fields'];
-        }
-
-        $query_sql = [];
-        $join_sql = $meta['joins'];
-        foreach ($meta['query_fields'] as $field) {
-            $func = null;
-            $pivot_cond = null;
-            if (is_array($field)) {
-                $func = $field[0];
-                $pivot_cond = isset($field[2]) ? $field[2] : null;
-                $field = $field[1];
-            }
-            $query_sql[] = $this->getFieldSQL($field, $meta['field_spec'][$field], true, $func, $pivot_cond, $meta['field_spec']);
-        }
-
-        $where_str = null;
-        if (isset($meta['where'])) {
-            $where_str = [];
-            foreach ($meta['where'] as &$where_part) {
-                //Replace field references with their SQL forms
-                switch ($where_part['type']) {
-                    case 'where_field':
-                        $where_part['value'] = $this->getFieldSQL($where_part['value'], $meta['field_spec'][$where_part['value']]);
-
-                        break;
-                    case 'datetime':
-                    case 'timestamp':
-                        $where_part['value'] = $this->convertDateTime(trim($where_part['value'][1], '\'"'));
-
-                        break;
-                    case 'timeofday':
-                        $where_part['value'] = $this->convertTime(trim($where_part['value'][1], '\'"'));
-
-                        break;
-                    case 'date':
-                        $where_part['value'] = $this->convertDate(trim($where_part['value'][1], '\'"'));
-
-                        break;
-                    case 'null':
-                    case 'notnull':
-                        $where_part['value'] = strtoupper(implode(' ', $where_part['value']));
-
-                        break;
-                }
-
-                $where_str[] = $where_part['value'];
-            }
-            $where_str = implode(' ', $where_str);
-        }
-
-        $sql = 'SELECT '.implode(', ', $query_sql).' FROM '.$meta['table'];
-        if (!empty($join_sql)) {
-            $sql .= ' '.implode(' ', $join_sql);
-        }
-
-        if ($where_str || isset($meta['global_where'])) {
-            if (!$where_str) {
-                $where_str = '1=1';
-            }
-            $sql .= ' WHERE ('.$where_str.')';
-            if (isset($meta['global_where'])) {
-                $sql .= ' AND '.$meta['global_where'];
-            }
-        }
-
-        if (isset($meta['groupby'])) {
-            $group_sql = [];
-            foreach ($meta['groupby'] as $group) {
-                $group_sql[] = $this->getFieldSQL($group, $meta['field_spec'][$group]);
-            }
-            $sql .= ' GROUP BY '.implode(', ', $group_sql);
-        }
-
-        if (isset($meta['orderby'])) {
-            $sql .= ' ORDER BY';
-            $first = true;
-            foreach ($meta['orderby'] as $field => $dir) {
-                if (isset($meta['field_spec'][$field]['sort_field'])) {
-                    //An entity field can delegate sorting to another field by using the "sort_field" key
-                    $field = $meta['field_spec'][$field]['sort_field'];
-                }
-                $spec = $meta['field_spec'][$field];
-                if (!$first) {
-                    $sql .= ',';
-                }
-
-                $sql .= ' '.$this->getFieldSQL($field, $spec).' '.strtoupper($dir);
-                $first = false;
-            }
-        }
-
-        if (isset($meta['limit']) || isset($meta['offset'])) {
-            $sql .= $this->convertLimit($meta['limit'], $meta['offset']);
-        }
-
-        return $sql;
     }
 
     /**
@@ -585,137 +402,6 @@ class Visualization
     }
 
     /**
-     * Parse the query according to the visualization query grammar, and break down the constituent parts.
-     *
-     * @param string $str the query string to parse
-     *
-     * @throws ParseError
-     * @throws Visualization_QueryError
-     * @throws Parser\DefError
-     *
-     * @return array the parsed query as an array, keyed by each part of the query (select, from, where, groupby, pivot, orderby, limit, offset, label, format, options
-     */
-    public function parseQuery($str)
-    {
-        $query = [];
-        $tokens = $this->getGrammar()->parse($str);
-
-        foreach ($tokens->getChildren() as $token) {
-            switch ($token->name) {
-                case 'select':
-                    $sfields = $token->getChildren();
-                    $sfields = $sfields[1];
-
-                    $this->parseFieldTokens($sfields, $fields);
-                    $query['select'] = $fields;
-
-                    break;
-                case 'from':
-                    $vals = $token->getValues();
-                    $query['from'] = $vals[1];
-
-                    break;
-                case 'where':
-                    $where_tokens = $token->getChildren();
-                    $where_tokens = $where_tokens[1];
-                    $this->parseWhereTokens($where_tokens, $where);
-                    $query['where'] = $where;
-
-                    break;
-                case 'groupby':
-                    $groupby = $token->getValues();
-                    array_shift($groupby);
-                    array_shift($groupby);
-                    $query['groupby'] = $groupby;
-
-                    break;
-                case 'pivot':
-                    if (null === $this->db) {
-                        throw new Visualization_QueryError('Pivots require a PDO database connection');
-                    }
-                    $pivot = $token->getValues();
-                    array_shift($pivot);
-                    $query['pivot'] = $pivot;
-
-                    break;
-                case 'orderby':
-                    $orderby = $token->getValues();
-                    array_shift($orderby);
-                    array_shift($orderby);
-                    $field_dir = [];
-                    $order_cnt = count($orderby);
-                    for ($i = 0; $i < $order_cnt; ++$i) {
-                        $field = $orderby[$i];
-                        $dir = 'asc';
-                        if (isset($orderby[$i + 1])) {
-                            $dir = strtolower($orderby[$i + 1]);
-                            if ('asc' === $dir || 'desc' === $dir) {
-                                ++$i;
-                            } else {
-                                $dir = 'asc';
-                            }
-                        }
-                        $field_dir[$field] = $dir;
-                    }
-                    $query['orderby'] = $field_dir;
-
-                    break;
-                case 'limit':
-                    $limit = $token->getValues();
-                    $limit = $limit[1];
-                    $query['limit'] = $limit;
-
-                    break;
-                case 'offset':
-                    $offset = $token->getValues();
-                    $offset = $offset[1];
-                    $query['offset'] = $offset;
-
-                    break;
-                case 'label':
-                    $labels = $token->getValues();
-                    array_shift($labels);
-
-                    $query_labels = [];
-                    for ($i = 0; $i < count($labels); $i += 2) {
-                        $field = $labels[$i];
-                        $label = trim($labels[$i + 1], '\'"');
-                        $query_labels[$field] = $label;
-                    }
-                    $query['labels'] = $query_labels;
-
-                    break;
-                case 'format':
-                    $formats = $token->getValues();
-                    array_shift($formats);
-
-                    $query_formats = [];
-                    for ($i = 0; $i < count($formats); $i += 2) {
-                        $field = $formats[$i];
-                        $query_formats[$field] = trim($formats[$i + 1], '\'"');
-                    }
-                    $query['formats'] = $query_formats;
-
-                    break;
-                case 'options':
-                    $qoptions = $token->getValues();
-                    array_shift($qoptions);
-                    $options = [];
-                    foreach ($qoptions as $option) {
-                        $options[$option] = true;
-                    }
-                    $query['options'] = $options;
-
-                    break;
-                default:
-                    throw new Visualization_QueryError('Unknown query clause "'.$token->name.'"');
-            }
-        }
-
-        return $query;
-    }
-
-    /**
      * Add a new entity (table) to the visualization server that maps onto one or more SQL database tables.
      *
      * @param string $name the name of the entity - should be used in the "from" clause of visualization queries
@@ -746,67 +432,6 @@ class Visualization
     }
 
     /**
-     * Add a new field to an entity table.
-     *
-     * @param string $entity the name of the entity to add the field to
-     * @param string $field  the name of the field
-     * @param array  $spec   the metadata for the field as a set of key-value pairs - allowed keys are "field", "callback", "fields", "extra", "sort_field", "type", and "join"
-     *
-     * @throws Visualization_Error
-     */
-    public function addEntityField($entity, $field, array $spec)
-    {
-        if (!isset($spec['field']) && !isset($spec['callback'])) {
-            throw new Visualization_Error('Entity fields must either be mapped to database fields or given callback functions');
-        }
-
-        if (!isset($this->entities[$entity])) {
-            throw new Visualization_Error('No entity table defined with name "'.$entity.'"');
-        }
-
-        if (!isset($spec['callback']) && (isset($spec['fields']) || isset($spec['extra']))) {
-            throw new Visualization_Error('"fields" and "extra" parameters only apply to callback fields');
-        }
-
-        $this->entities[$entity]['fields'][$field] = $spec;
-    }
-
-    /**
-     * Add a new optional join to the entity table.  If fields associated with this join are selected, the join will be added to the SQL query.
-     *
-     * @param string $entity the name of the entity table to add the join to
-     * @param string $join   the name of the join.  Set the entity field's "join" key to this
-     * @param string $sql    the SQL for the join that will be injected into the query
-     *
-     * @throws Visualization_Error
-     */
-    public function addEntityJoin($entity, $join, $sql)
-    {
-        if (!isset($this->entities[$entity])) {
-            throw new Visualization_Error('No entity table defined with name "'.$entity.'"');
-        }
-
-        $this->entities[$entity]['joins'][$join] = $sql;
-    }
-
-    /**
-     * Add a particular "WHERE" clause to all queries against an entity table.
-     *
-     * @param string $entity the name of the entity to add the filter to
-     * @param string $where  the SQL WHERE condition to add to all queries against $entity
-     *
-     * @throws Visualization_Error
-     */
-    public function setEntityWhere($entity, $where)
-    {
-        if (!isset($this->entities[$entity])) {
-            throw new Visualization_Error('No entity table defined with name "'.$entity.'"');
-        }
-
-        $this->entities[$entity]['where'] = $where;
-    }
-
-    /**
      * Set the default entity to be used when a "from" clause is omitted from a query.  Set to null to require a "from" clause for all queries.
      *
      * @param null|string $default the new default entity
@@ -820,92 +445,6 @@ class Visualization
         }
 
         $this->default_entity = $default;
-    }
-
-    /**
-     * Return the beginning of a visualization response from the query metadata (everything before the actual row data).
-     *
-     * @param array $meta the metadata for the query - generally generated by MC_Google_Visualization::generateMetadata
-     *
-     * @throws Visualization_Error
-     *
-     * @return string the initial output string for a successful query
-     */
-    public function getSuccessInit(array $meta)
-    {
-        $handler = $meta['req_params']['responseHandler'] ?: 'google.visualization.Query.setResponse';
-        $version = $meta['req_params']['version'] ?: $this->version;
-
-        return $handler."({version:'".$version."',reqId:'".$meta['req_id']."',status:'ok',table:".$this->getTableInit($meta);
-    }
-
-    /**
-     * Return the table metadata section of the visualization response for a successful query.
-     *
-     * @param array $meta the metadata for the query - generally generated by MC_Google_Visualization::generateMetadata
-     *
-     * @throws Visualization_Error
-     *
-     * @return string
-     */
-    public function getTableInit(array $meta)
-    {
-        $field_init = [];
-        foreach ($meta['select'] as $field) {
-            if (is_array($field)) {
-                $function = $field[0];
-                if (!isset($field[2])) {
-                    $field_id = $function.'-'.$field[1];
-                } else {
-                    $field_id = implode(',', $field[2]).' '.$function.'-'.$field[1];
-                }
-                $field = $field[1];
-            } else {
-                $function = null;
-                $field_id = $field;
-            }
-
-            $label = isset($meta['labels'][$field]) ? $meta['labels'][$field] : $field_id;
-            $type = isset($meta['field_spec'][$field]['type']) ? $meta['field_spec'][$field]['type'] : 'text';
-            if (isset($function)) {
-                $type = 'number';
-            }
-
-            switch ($type) {
-                case 'text':
-                case 'binary':
-                    $rtype = 'string';
-
-                    break;
-                case 'number':
-                    $rtype = 'number';
-
-                    break;
-                case 'boolean':
-                    $rtype = 'boolean';
-
-                    break;
-                case 'date':
-                    $rtype = 'date';
-
-                    break;
-                case 'datetime':
-                case 'timestamp':
-                    $rtype = 'datetime';
-
-                    break;
-                case 'time':
-                    $rtype = 'time';
-
-                    break;
-                default:
-                    throw new Visualization_Error('Unknown field type "'.$type.'"');
-            }
-
-            $field_init[] = "{id:'".$field_id."',label:".json_encode($label).",type:'".$rtype."'}";
-        }
-
-        return '{cols: ['.implode(',', $field_init).'],rows: [';
     }
 
     /**
@@ -1062,11 +601,6 @@ class Visualization
         return '{c:['.implode(',', $vals).']}';
     }
 
-    public function getSuccessClose()
-    {
-        return ']}});';
-    }
-
     /**
      * A utility method for testing - take a visualization query, and return the SQL that would be generated.
      *
@@ -1153,6 +687,470 @@ class Visualization
         $options = $p->set($p->keyword('options', true), $p->delimitedList($p->word($p->alphas().'_')))->name('options');
 
         return $p->set($p->optional($select), $p->optional($from), $p->optional($where), $p->optional($groupby), $p->optional($pivot), $p->optional($orderby), $p->optional($limit), $p->optional($offset), $p->optional($label), $p->optional($format), $p->optional($options));
+    }
+
+    /**
+     * Parse the query according to the visualization query grammar, and break down the constituent parts.
+     *
+     * @param string $str the query string to parse
+     *
+     * @throws ParseError
+     * @throws Visualization_QueryError
+     * @throws Parser\DefError
+     *
+     * @return array the parsed query as an array, keyed by each part of the query (select, from, where, groupby, pivot, orderby, limit, offset, label, format, options
+     */
+    public function parseQuery($str)
+    {
+        $query = [];
+        $tokens = $this->getGrammar()->parse($str);
+
+        foreach ($tokens->getChildren() as $token) {
+            switch ($token->name) {
+                case 'select':
+                    $sfields = $token->getChildren();
+                    $sfields = $sfields[1];
+
+                    $this->parseFieldTokens($sfields, $fields);
+                    $query['select'] = $fields;
+
+                    break;
+                case 'from':
+                    $vals = $token->getValues();
+                    $query['from'] = $vals[1];
+
+                    break;
+                case 'where':
+                    $where_tokens = $token->getChildren();
+                    $where_tokens = $where_tokens[1];
+                    $this->parseWhereTokens($where_tokens, $where);
+                    $query['where'] = $where;
+
+                    break;
+                case 'groupby':
+                    $groupby = $token->getValues();
+                    array_shift($groupby);
+                    array_shift($groupby);
+                    $query['groupby'] = $groupby;
+
+                    break;
+                case 'pivot':
+                    if (null === $this->db) {
+                        throw new Visualization_QueryError('Pivots require a PDO database connection');
+                    }
+                    $pivot = $token->getValues();
+                    array_shift($pivot);
+                    $query['pivot'] = $pivot;
+
+                    break;
+                case 'orderby':
+                    $orderby = $token->getValues();
+                    array_shift($orderby);
+                    array_shift($orderby);
+                    $field_dir = [];
+                    $order_cnt = count($orderby);
+                    for ($i = 0; $i < $order_cnt; ++$i) {
+                        $field = $orderby[$i];
+                        $dir = 'asc';
+                        if (isset($orderby[$i + 1])) {
+                            $dir = strtolower($orderby[$i + 1]);
+                            if ('asc' === $dir || 'desc' === $dir) {
+                                ++$i;
+                            } else {
+                                $dir = 'asc';
+                            }
+                        }
+                        $field_dir[$field] = $dir;
+                    }
+                    $query['orderby'] = $field_dir;
+
+                    break;
+                case 'limit':
+                    $limit = $token->getValues();
+                    $limit = $limit[1];
+                    $query['limit'] = $limit;
+
+                    break;
+                case 'offset':
+                    $offset = $token->getValues();
+                    $offset = $offset[1];
+                    $query['offset'] = $offset;
+
+                    break;
+                case 'label':
+                    $labels = $token->getValues();
+                    array_shift($labels);
+
+                    $query_labels = [];
+                    for ($i = 0; $i < count($labels); $i += 2) {
+                        $field = $labels[$i];
+                        $label = trim($labels[$i + 1], '\'"');
+                        $query_labels[$field] = $label;
+                    }
+                    $query['labels'] = $query_labels;
+
+                    break;
+                case 'format':
+                    $formats = $token->getValues();
+                    array_shift($formats);
+
+                    $query_formats = [];
+                    for ($i = 0; $i < count($formats); $i += 2) {
+                        $field = $formats[$i];
+                        $query_formats[$field] = trim($formats[$i + 1], '\'"');
+                    }
+                    $query['formats'] = $query_formats;
+
+                    break;
+                case 'options':
+                    $qoptions = $token->getValues();
+                    array_shift($qoptions);
+                    $options = [];
+                    foreach ($qoptions as $option) {
+                        $options[$option] = true;
+                    }
+                    $query['options'] = $options;
+
+                    break;
+                default:
+                    throw new Visualization_QueryError('Unknown query clause "'.$token->name.'"');
+            }
+        }
+
+        return $query;
+    }
+
+    /**
+     * Return the response appropriate to tell the visualization client that an error has occurred.
+     *
+     * @param int    $reqid       the request ID that caused the error
+     * @param string $detail_msg  the detailed message to send along with the error
+     * @param string $handler
+     * @param string $code        the code for the error (like "error", "server_error", "invalid_query", "access_denied", etc.)
+     * @param string $summary_msg a short description of the error, appropriate to show to end users
+     *
+     * @return string the string to output that will cause the visualization client to detect an error
+     */
+    protected function handleError($reqid, $detail_msg, $handler = 'google.visualization.Query.setResponse', $code = 'error', $summary_msg = null)
+    {
+        if (null === $summary_msg) {
+            $summary_msg = $detail_msg;
+        }
+        $handler = $handler ?: 'google.visualization.Query.setResponse';
+
+        return $handler.'({version:"'.$this->version.'",reqId:"'.$reqid.'",status:"error",errors:[{reason:'.json_encode($code).',message:'.json_encode($summary_msg).',detailed_message:'.json_encode($detail_msg).'}]});';
+    }
+
+    /**
+     * Add a new field to an entity table.
+     *
+     * @param string $entity the name of the entity to add the field to
+     * @param string $field  the name of the field
+     * @param array  $spec   the metadata for the field as a set of key-value pairs - allowed keys are "field", "callback", "fields", "extra", "sort_field", "type", and "join"
+     *
+     * @throws Visualization_Error
+     */
+    protected function addEntityField($entity, $field, array $spec)
+    {
+        if (!isset($spec['field']) && !isset($spec['callback'])) {
+            throw new Visualization_Error('Entity fields must either be mapped to database fields or given callback functions');
+        }
+
+        if (!isset($this->entities[$entity])) {
+            throw new Visualization_Error('No entity table defined with name "'.$entity.'"');
+        }
+
+        if (!isset($spec['callback']) && (isset($spec['fields']) || isset($spec['extra']))) {
+            throw new Visualization_Error('"fields" and "extra" parameters only apply to callback fields');
+        }
+
+        $this->entities[$entity]['fields'][$field] = $spec;
+    }
+
+    /**
+     * Add a new optional join to the entity table.  If fields associated with this join are selected, the join will be added to the SQL query.
+     *
+     * @param string $entity the name of the entity table to add the join to
+     * @param string $join   the name of the join.  Set the entity field's "join" key to this
+     * @param string $sql    the SQL for the join that will be injected into the query
+     *
+     * @throws Visualization_Error
+     */
+    protected function addEntityJoin($entity, $join, $sql)
+    {
+        if (!isset($this->entities[$entity])) {
+            throw new Visualization_Error('No entity table defined with name "'.$entity.'"');
+        }
+
+        $this->entities[$entity]['joins'][$join] = $sql;
+    }
+
+    /**
+     * Add a particular "WHERE" clause to all queries against an entity table.
+     *
+     * @param string $entity the name of the entity to add the filter to
+     * @param string $where  the SQL WHERE condition to add to all queries against $entity
+     *
+     * @throws Visualization_Error
+     */
+    protected function setEntityWhere($entity, $where)
+    {
+        if (!isset($this->entities[$entity])) {
+            throw new Visualization_Error('No entity table defined with name "'.$entity.'"');
+        }
+
+        $this->entities[$entity]['where'] = $where;
+    }
+
+    /**
+     * Given the metadata for a query and the entities it's working against, generate the SQL.
+     *
+     * @param array $meta the results of generateMetadata() on the parsed visualization query
+     *
+     * @throws Visualization_QueryError
+     *
+     * @return string the SQL version of the visualization query
+     */
+    protected function generateSQL(array &$meta)
+    {
+        if (!isset($meta['query_fields'])) {
+            $meta['query_fields'] = $meta['select'];
+        }
+
+        if (isset($meta['pivot'])) {
+            //Pivot queries are special - they require an entity to be passed and modify the query directly
+            $entity = $meta['entity'];
+            $pivot_fields = [];
+            $pivot_joins = [];
+            $pivot_group = [];
+            foreach ($meta['pivot'] as $entity_field) {
+                $field = $entity['fields'][$entity_field];
+                if (isset($field['callback'])) {
+                    throw new Visualization_QueryError('Callback fields cannot be used as pivots: "'.$entity_field.'"');
+                }
+                $pivot_fields[] = $field['field'].' AS '.$entity_field;
+                $pivot_group[] = $entity_field;
+                if (isset($field['join']) && !in_array($entity['joins'][$field['join']], $pivot_joins, true)) {
+                    $pivot_joins[] = $entity['joins'][$field['join']];
+                }
+            }
+
+            $pivot_sql = 'SELECT '.implode(', ', $pivot_fields).' FROM '.$meta['table'];
+            if (!empty($pivot_joins)) {
+                $pivot_sql .= ' '.implode(' ', $pivot_joins);
+            }
+            $pivot_sql .= ' GROUP BY '.implode(', ', $pivot_group);
+
+            $func_fields = [];
+            $new_fields = [];
+            foreach ($meta['query_fields'] as $field) {
+                if (is_array($field)) {
+                    $func_fields[] = $field;
+                } else {
+                    $new_fields[] = $field;
+                }
+            }
+            $meta['query_fields'] = $new_fields;
+
+            $stmt = $this->db->query($pivot_sql);
+            foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
+                //Create a version of all function-ed fields for each unique combination of pivot values
+                foreach ($func_fields as $field) {
+                    $field[2] = $row;
+
+                    $meta['query_fields'][] = $field;
+                }
+            }
+
+            //For pivot queries, the fields we return and the fields we query against are always the same
+            $meta['select'] = $meta['query_fields'];
+        }
+
+        $query_sql = [];
+        $join_sql = $meta['joins'];
+        foreach ($meta['query_fields'] as $field) {
+            $func = null;
+            $pivot_cond = null;
+            if (is_array($field)) {
+                $func = $field[0];
+                $pivot_cond = isset($field[2]) ? $field[2] : null;
+                $field = $field[1];
+            }
+            $query_sql[] = $this->getFieldSQL($field, $meta['field_spec'][$field], true, $func, $pivot_cond, $meta['field_spec']);
+        }
+
+        $where_str = null;
+        if (isset($meta['where'])) {
+            $where_str = [];
+            foreach ($meta['where'] as &$where_part) {
+                //Replace field references with their SQL forms
+                switch ($where_part['type']) {
+                    case 'where_field':
+                        $where_part['value'] = $this->getFieldSQL($where_part['value'], $meta['field_spec'][$where_part['value']]);
+
+                        break;
+                    case 'datetime':
+                    case 'timestamp':
+                        $where_part['value'] = $this->convertDateTime(trim($where_part['value'][1], '\'"'));
+
+                        break;
+                    case 'timeofday':
+                        $where_part['value'] = $this->convertTime(trim($where_part['value'][1], '\'"'));
+
+                        break;
+                    case 'date':
+                        $where_part['value'] = $this->convertDate(trim($where_part['value'][1], '\'"'));
+
+                        break;
+                    case 'null':
+                    case 'notnull':
+                        $where_part['value'] = strtoupper(implode(' ', $where_part['value']));
+
+                        break;
+                }
+
+                $where_str[] = $where_part['value'];
+            }
+            $where_str = implode(' ', $where_str);
+        }
+
+        $sql = 'SELECT '.implode(', ', $query_sql).' FROM '.$meta['table'];
+        if (!empty($join_sql)) {
+            $sql .= ' '.implode(' ', $join_sql);
+        }
+
+        if ($where_str || isset($meta['global_where'])) {
+            if (!$where_str) {
+                $where_str = '1=1';
+            }
+            $sql .= ' WHERE ('.$where_str.')';
+            if (isset($meta['global_where'])) {
+                $sql .= ' AND '.$meta['global_where'];
+            }
+        }
+
+        if (isset($meta['groupby'])) {
+            $group_sql = [];
+            foreach ($meta['groupby'] as $group) {
+                $group_sql[] = $this->getFieldSQL($group, $meta['field_spec'][$group]);
+            }
+            $sql .= ' GROUP BY '.implode(', ', $group_sql);
+        }
+
+        if (isset($meta['orderby'])) {
+            $sql .= ' ORDER BY';
+            $first = true;
+            foreach ($meta['orderby'] as $field => $dir) {
+                if (isset($meta['field_spec'][$field]['sort_field'])) {
+                    //An entity field can delegate sorting to another field by using the "sort_field" key
+                    $field = $meta['field_spec'][$field]['sort_field'];
+                }
+                $spec = $meta['field_spec'][$field];
+                if (!$first) {
+                    $sql .= ',';
+                }
+
+                $sql .= ' '.$this->getFieldSQL($field, $spec).' '.strtoupper($dir);
+                $first = false;
+            }
+        }
+
+        if (isset($meta['limit']) || isset($meta['offset'])) {
+            $sql .= $this->convertLimit($meta['limit'], $meta['offset']);
+        }
+
+        return $sql;
+    }
+
+    /**
+     * Return the beginning of a visualization response from the query metadata (everything before the actual row data).
+     *
+     * @param array $meta the metadata for the query - generally generated by MC_Google_Visualization::generateMetadata
+     *
+     * @throws Visualization_Error
+     *
+     * @return string the initial output string for a successful query
+     */
+    protected function getSuccessInit(array $meta)
+    {
+        $handler = $meta['req_params']['responseHandler'] ?: 'google.visualization.Query.setResponse';
+        $version = $meta['req_params']['version'] ?: $this->version;
+
+        return $handler."({version:'".$version."',reqId:'".$meta['req_id']."',status:'ok',table:".$this->getTableInit($meta);
+    }
+
+    /**
+     * Return the table metadata section of the visualization response for a successful query.
+     *
+     * @param array $meta the metadata for the query - generally generated by MC_Google_Visualization::generateMetadata
+     *
+     * @throws Visualization_Error
+     *
+     * @return string
+     */
+    protected function getTableInit(array $meta)
+    {
+        $field_init = [];
+        foreach ($meta['select'] as $field) {
+            if (is_array($field)) {
+                $function = $field[0];
+                if (!isset($field[2])) {
+                    $field_id = $function.'-'.$field[1];
+                } else {
+                    $field_id = implode(',', $field[2]).' '.$function.'-'.$field[1];
+                }
+                $field = $field[1];
+            } else {
+                $function = null;
+                $field_id = $field;
+            }
+
+            $label = isset($meta['labels'][$field]) ? $meta['labels'][$field] : $field_id;
+            $type = isset($meta['field_spec'][$field]['type']) ? $meta['field_spec'][$field]['type'] : 'text';
+            if (isset($function)) {
+                $type = 'number';
+            }
+
+            switch ($type) {
+                case 'text':
+                case 'binary':
+                    $rtype = 'string';
+
+                    break;
+                case 'number':
+                    $rtype = 'number';
+
+                    break;
+                case 'boolean':
+                    $rtype = 'boolean';
+
+                    break;
+                case 'date':
+                    $rtype = 'date';
+
+                    break;
+                case 'datetime':
+                case 'timestamp':
+                    $rtype = 'datetime';
+
+                    break;
+                case 'time':
+                    $rtype = 'time';
+
+                    break;
+                default:
+                    throw new Visualization_Error('Unknown field type "'.$type.'"');
+            }
+
+            $field_init[] = "{id:'".$field_id."',label:".json_encode($label).",type:'".$rtype."'}";
+        }
+
+        return '{cols: ['.implode(',', $field_init).'],rows: [';
+    }
+
+    protected function getSuccessClose()
+    {
+        return ']}});';
     }
 
     /**
