@@ -11,11 +11,20 @@ class IsEmpty extends Def
 {
     public $suppress = true;
 
+    /**
+     * @param string $str
+     * @param int    $loc
+     *
+     * @return array
+     */
     public function _parse($str, $loc)
     {
         return [$loc, $this->token(null)];
     }
 
+    /**
+     * @return string
+     */
     public function _name()
     {
         return 'empty string';

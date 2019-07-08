@@ -19,7 +19,7 @@ class Set extends Def
      *
      * @throws DefError
      */
-    public function __construct($exprs = [])
+    public function __construct(array $exprs = [])
     {
         if (!is_array($exprs)) {
             throw new DefError('Set sub-expressions must be an array');
@@ -47,6 +47,9 @@ class Set extends Def
         return [$loc, $res];
     }
 
+    /**
+     * @return string
+     */
     public function _name()
     {
         $names = [];

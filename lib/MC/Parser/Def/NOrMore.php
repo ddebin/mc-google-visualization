@@ -12,6 +12,10 @@ class NOrMore extends Def
 
     public $min;
 
+    /**
+     * @param Def $expr
+     * @param int $min
+     */
     public function __construct(Def $expr, $min)
     {
         $this->expr = $expr;
@@ -51,6 +55,9 @@ class NOrMore extends Def
         return [$loc, $toks];
     }
 
+    /**
+     * @return string
+     */
     public function _name()
     {
         return $this->min.' or more: '.$this->expr->getName();

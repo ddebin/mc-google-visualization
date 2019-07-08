@@ -18,6 +18,11 @@ class Regex extends Def
     public $errstr;
     public $retgroup = 0;
 
+    /**
+     * @param null|string $regex
+     * @param null|string $flags
+     * @param null|string $errstr
+     */
     public function __construct($regex = null, $flags = null, $errstr = null)
     {
         if (null !== $regex) {
@@ -52,9 +57,12 @@ class Regex extends Def
         return [$loc, $this->token($success[0])];
     }
 
+    /**
+     * @return string
+     */
     public function _name()
     {
-        if ($this->errstr) {
+        if (null !== $this->errstr) {
             return $this->errstr;
         }
 

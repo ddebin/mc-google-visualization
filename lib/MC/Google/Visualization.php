@@ -77,7 +77,7 @@ class Visualization
      *
      * @throws Visualization_Error
      */
-    public function __construct($db = null, $dialect = 'mysql')
+    public function __construct(PDO $db = null, $dialect = 'mysql')
     {
         if (!function_exists('json_encode')) {
             throw new Visualization_Error('You must include the PHP json extension installed to use the MC Google Visualization Server');
@@ -90,15 +90,12 @@ class Visualization
     /**
      * Set the database connection to use when handling the entire request or getting pivot values.
      *
-     * @param null|mixed|PDO $db the database connection to use - or null if you want to handle your own queries
+     * @param null|PDO $db the database connection to use - or null if you want to handle your own queries
      *
      * @throws Visualization_Error
      */
-    public function setDB($db = null)
+    public function setDB(PDO $db = null)
     {
-        if (null !== $db && !($db instanceof PDO)) {
-            throw new Visualization_Error('You must give a PDO database connection');
-        }
         if (null !== $db) {
             $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         }
@@ -142,19 +139,25 @@ class Visualization
     }
 
     /**
-     * Handle the entire request, pulling the query from the $_GET variables, and printing the results directly.
+     * Handle the entire request, pulling the query from the $_GET variables and printing the results directly
+     * if not specified otherwise.
      *
-     * @param bool $echo print response and set header
+     * @param bool  $echo         print response and set header
+     * @param array $query_params query parameters
      *
      * @throws Visualization_Error
      *
      * @return string the javascript response
      */
-    public function handleRequest($echo = true)
+    public function handleRequest($echo = true, array $query_params = null)
     {
-        $query = $_GET['tq'];
+        if (null === $query_params) {
+            $query_params = $_GET;
+        }
+
+        $query = $query_params['tq'];
         $params = ['version' => $this->version, 'responseHandler' => 'google.visualization.Query.setResponse'];
-        $paramlist = explode(';', $_GET['tqx']);
+        $paramlist = explode(';', $query_params['tqx']);
         foreach ($paramlist as $paramstr) {
             list($name, $val) = explode(':', $paramstr);
             $params[$name] = $val;
@@ -166,8 +169,8 @@ class Visualization
             throw new Visualization_Error('Data Source version '.$params['version'].' is unsupported at this time');
         }
 
-        if (isset($_GET['responseHandler'])) {
-            $params['responseHandler'] = $_GET['responseHandler'];
+        if (isset($query_params['responseHandler'])) {
+            $params['responseHandler'] = $query_params['responseHandler'];
         }
 
         $response = $this->handleQuery($query, $params);
@@ -188,7 +191,7 @@ class Visualization
      *
      * @return string the javascript response
      */
-    public function handleQuery($query, $params)
+    public function handleQuery($query, array $params)
     {
         $reqid = null;
         $response = '';
@@ -261,7 +264,7 @@ class Visualization
      *
      * @return string the SQL version of the visualization query
      */
-    public function generateSQL(&$meta)
+    public function generateSQL(array &$meta)
     {
         if (!isset($meta['query_fields'])) {
             $meta['query_fields'] = $meta['select'];
@@ -422,7 +425,7 @@ class Visualization
      *
      * @return array the metadata array from merging the query with the entity table definitions
      */
-    public function generateMetadata($query)
+    public function generateMetadata(array $query)
     {
         $meta = [];
         if (!isset($query['from']) && null === $this->default_entity) {
@@ -720,7 +723,7 @@ class Visualization
      *
      * @throws Visualization_Error
      */
-    public function addEntity($name, $spec = [])
+    public function addEntity($name, array $spec = [])
     {
         $entity = ['table' => isset($spec['table']) ? $spec['table'] : $name, 'fields' => [], 'joins' => []];
         $this->entities[$name] = $entity;
@@ -751,7 +754,7 @@ class Visualization
      *
      * @throws Visualization_Error
      */
-    public function addEntityField($entity, $field, $spec)
+    public function addEntityField($entity, $field, array $spec)
     {
         if (!isset($spec['field']) && !isset($spec['callback'])) {
             throw new Visualization_Error('Entity fields must either be mapped to database fields or given callback functions');
@@ -828,7 +831,7 @@ class Visualization
      *
      * @return string the initial output string for a successful query
      */
-    public function getSuccessInit($meta)
+    public function getSuccessInit(array $meta)
     {
         $handler = $meta['req_params']['responseHandler'] ?: 'google.visualization.Query.setResponse';
         $version = $meta['req_params']['version'] ?: $this->version;
@@ -845,7 +848,7 @@ class Visualization
      *
      * @return string
      */
-    public function getTableInit($meta)
+    public function getTableInit(array $meta)
     {
         $field_init = [];
         foreach ($meta['select'] as $field) {
@@ -915,7 +918,7 @@ class Visualization
      *
      * @return string the string fragment to include in the results back to the javascript client
      */
-    public function getRowValues($row, $meta)
+    public function getRowValues(array $row, array $meta)
     {
         $vals = [];
         foreach ($meta['select'] as $field) {
@@ -1235,7 +1238,7 @@ class Visualization
      *
      * @return string the SQL string for this field, with an op
      */
-    protected function getFieldSQL($name, $spec, $alias = false, $func = null, $pivot = null, $pivot_fields = null)
+    protected function getFieldSQL($name, $spec, $alias = false, $func = null, array $pivot = null, array $pivot_fields = null)
     {
         $sql = $spec['field'];
         $q = $this->getFieldQuote();
@@ -1272,7 +1275,7 @@ class Visualization
      *
      * @throws Visualization_Error
      */
-    protected function addDependantCallbackFields($field, $entity, &$meta)
+    protected function addDependantCallbackFields(array $field, array $entity, array &$meta)
     {
         foreach ($field['fields'] as $dependant) {
             if (!isset($entity['fields'][$dependant])) {
@@ -1295,10 +1298,10 @@ class Visualization
     /**
      * Helper method for the query parser to recursively scan the delimited list of select fields.
      *
-     * @param Token $token  the token or token group to recursively parse
-     * @param array $fields the collector array reference to receive the flattened select field values
+     * @param Token      $token  the token or token group to recursively parse
+     * @param null|array $fields the collector array reference to receive the flattened select field values
      */
-    protected function parseFieldTokens($token, &$fields)
+    protected function parseFieldTokens($token, array &$fields = null)
     {
         if ('*' === $token->value) {
             return;
@@ -1326,10 +1329,10 @@ class Visualization
     /**
      * Helper method for the query parser to recursively scan and flatten the where clause's conditions.
      *
-     * @param Token $token the token or token group to parse
-     * @param array $where the collector array of tokens that make up the where clause
+     * @param Token      $token the token or token group to parse
+     * @param null|array $where the collector array of tokens that make up the where clause
      */
-    protected function parseWhereTokens($token, &$where)
+    protected function parseWhereTokens($token, array &$where = null)
     {
         if (!is_array($where)) {
             $where = [];

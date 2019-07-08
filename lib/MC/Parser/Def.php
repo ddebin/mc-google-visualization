@@ -93,7 +93,7 @@ abstract class Def
      *
      * @param string $name
      *
-     * @return Def $this - chainable method
+     * @return self - chainable method
      */
     public function name($name)
     {
@@ -104,6 +104,8 @@ abstract class Def
 
     /**
      * Toggle suppressing the token from the results.
+     *
+     * @return self - chainable method
      */
     public function suppress()
     {

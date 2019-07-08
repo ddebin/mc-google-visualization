@@ -64,6 +64,9 @@ class OneOf extends Def
         return [$max_match, $res];
     }
 
+    /**
+     * @return string
+     */
     public function _name()
     {
         $names = [];

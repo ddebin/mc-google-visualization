@@ -55,6 +55,9 @@ class Literal extends Def
         return [$loc, $this->token($this->search)];
     }
 
+    /**
+     * @return string
+     */
     public function _name()
     {
         return $this->search;

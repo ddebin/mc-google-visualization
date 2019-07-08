@@ -43,6 +43,9 @@ class Recursive extends Def
         return $this;
     }
 
+    /**
+     * @return string
+     */
     public function _name()
     {
         if (null === $this->replacement) {
