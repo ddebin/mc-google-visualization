@@ -1,6 +1,14 @@
 <?php
+
 /** @noinspection PhpUnhandledExceptionInspection */
-require_once __DIR__.'/init.php';
+
+use MC\Google\Visualization;
+
+require_once __DIR__.'/../vendor/autoload.php';
+
+$db = new PDO('sqlite:example.db');
+
+$vis = new Visualization($db);
 
 if (isset($_GET['tq'])) {
     $vis->addEntity('timeline', [

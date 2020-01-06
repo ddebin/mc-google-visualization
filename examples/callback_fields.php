@@ -1,23 +1,31 @@
 <?php
+
 /** @noinspection PhpUnhandledExceptionInspection */
-require_once __DIR__.'/init.php';
 
-if (isset($_GET['tq'])) {
-    function most_common($row)
-    {
-        $forms = ['pill', 'iud', 'condom', 'sterile_total', 'other_modern', 'traditional'];
-        $max_form = -1;
-        $form_name = null;
-        foreach ($forms as $form) {
-            if ($row[$form] > $max_form) {
-                $max_form = $row[$form];
-                $form_name = $form;
-            }
+use MC\Google\Visualization;
+
+require_once __DIR__.'/../vendor/autoload.php';
+
+function most_common($row)
+{
+    $forms = ['pill', 'iud', 'condom', 'sterile_total', 'other_modern', 'traditional'];
+    $max_form = -1;
+    $form_name = null;
+    foreach ($forms as $form) {
+        if ($row[$form] > $max_form) {
+            $max_form = $row[$form];
+            $form_name = $form;
         }
-
-        return $form_name;
     }
 
+    return $form_name;
+}
+
+$db = new PDO('sqlite:example.db');
+
+$vis = new Visualization($db);
+
+if (isset($_GET['tq'])) {
     $vis->addEntity('birth_control', [
         'fields' => [
             'country' => ['field' => 'c.name', 'type' => 'text', 'join' => 'country'],

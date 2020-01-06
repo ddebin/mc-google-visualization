@@ -17,8 +17,8 @@ final class ParserTest extends PHPUnit_Framework_TestCase
         parent::setUp();
 
         // cf. https://stackoverflow.com/a/46390357/377645
-        ini_set('precision', 15);
-        ini_set('serialize_precision', -1);
+        ini_set('precision', '15');
+        ini_set('serialize_precision', '-1');
     }
 
     /**
