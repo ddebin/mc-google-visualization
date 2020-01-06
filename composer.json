@@ -43,5 +43,9 @@
         "platform": {
             "php": "5.4"
         }
+    },
+    "scripts": {
+        "phpunit": "bin/phpunit",
+        "phpstan": "phpstan analyse -l 5 lib tests examples"
     }
 }
