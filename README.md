@@ -10,14 +10,10 @@ It's a fork of https://code.google.com/p/mc-goog-visualization/.
 
 ## Installing
 
-To include `mc-google-visualization` in your project, add it to your `composer.json` file:
+Install via [Composer](https://getcomposer.org/):
 
-```json
-{
-    "require": {
-        "ddebin/mc-google-visualization": "^0.4"
-    }
-}
+```bash
+composer require ddebin/mc-google-visualization
 ```
 
 ## Examples
