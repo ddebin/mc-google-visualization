@@ -15,6 +15,8 @@ use MC\Parser\DefError;
 
 /**
  * Parser-generator class with an easy PHP-based API, similar to the pyparsing module in philosophy.
+ *
+ * @see \Tests\ParserTest
  */
 class Parser
 {
@@ -28,11 +30,9 @@ class Parser
     /**
      * Return a Set with the function arguments as the subexpressions.
      *
-     * @throws Parser\DefError
-     *
      * @return Set
      */
-    public function set()
+    public function set(): Set
     {
         return new Set(func_get_args());
     }
@@ -40,11 +40,9 @@ class Parser
     /**
      * Return a OneOf with the function arguments as the possible expressions.
      *
-     * @throws Parser\DefError
-     *
      * @return OneOf
      */
-    public function oneOf()
+    public function oneOf(): OneOf
     {
         return new OneOf(func_get_args());
     }
@@ -52,46 +50,46 @@ class Parser
     /**
      * Return a Word that matches a set of possible characters not separated by whitespace.
      *
-     * @param string      $first_chars
-     * @param null|string $rest_chars
+     * @param string      $firstChars
+     * @param null|string $restChars
      *
      * @return Word
      */
-    public function word($first_chars, $rest_chars = null)
+    public function word(string $firstChars, $restChars = null): Word
     {
-        return new Word($first_chars, $rest_chars);
+        return new Word($firstChars, $restChars);
     }
 
     /**
      * Return a Regex that matches a typical optionally-escaped quoted string.
      *
-     * @param string $quote_chars
-     * @param string $esc_char
+     * @param string $quoteChars
+     * @param string $escChar
      *
      * @throws DefError
      *
      * @return Regex
      */
-    public function quotedString($quote_chars = '\'"', $esc_char = '\\')
+    public function quotedString(string $quoteChars = '\'"', string $escChar = '\\'): Regex
     {
-        $quote_chars = trim($quote_chars);
-        if (!$quote_chars) {
-            throw new DefError('$quote_chars cannot be an empty string');
+        $quoteChars = trim($quoteChars);
+        if ($quoteChars === '') {
+            throw new DefError('$quoteChars cannot be an empty string');
         }
-        if (strlen($esc_char) > 1) {
-            throw new DefError('Only one $esc_char can be defined');
+        if (strlen($escChar) > 1) {
+            throw new DefError('Only one $escChar can be defined');
         }
 
-        $quote_chars = str_split($quote_chars);
-        if ($esc_char) {
-            $esc_char = preg_quote($esc_char);
+        $quoteCharsArray = str_split($quoteChars);
+        if ($escChar !== '') {
+            $escChar = preg_quote($escChar, Regex::DELIMITER);
         }
 
         $tpl = '(?:Q(?:[^Q\n\rE]|(?:QQ)|(?:Ex[0-9a-fA-F]+)|(?:E.))*Q)';
         $pats = [];
-        foreach ($quote_chars as $quote) {
-            $quote = preg_quote($quote);
-            $pats[] = str_replace(['Q', 'E'], [$quote, $esc_char], $tpl);
+        foreach ($quoteCharsArray as $quote) {
+            $quote = preg_quote($quote, Regex::DELIMITER);
+            $pats[] = str_replace(['Q', 'E'], [$quote, $escChar], $tpl);
         }
 
         $regex = implode('|', $pats);
@@ -104,12 +102,12 @@ class Parser
      *
      * @return Regex
      */
-    public function number()
+    public function number(): Regex
     {
         return new Regex('[+\-]?\d+(\.\d+)?', null, 'number');
     }
 
-    public function hexNumber()
+    public function hexNumber(): Regex
     {
         return new Regex('0x[0-9,a-f,A-F]+', null, 'number');
     }
@@ -123,7 +121,7 @@ class Parser
      *
      * @return OneOf
      */
-    public function boolean($case = 'mixed')
+    public function boolean(string $case = 'mixed'): OneOf
     {
         switch ($case) {
             case 'lower':
@@ -148,7 +146,7 @@ class Parser
      *
      * @return Literal
      */
-    public function literal($str, $caseless = false, $fullword = false)
+    public function literal(string $str, bool $caseless = false, bool $fullword = false): Literal
     {
         return new Literal($str, $caseless, $fullword);
     }
@@ -162,7 +160,7 @@ class Parser
      *
      * @return Literal
      */
-    public function keyword($str, $caseless = false, $fullword = true)
+    public function keyword(string $str, bool $caseless = false, bool $fullword = true): Literal
     {
         return new Literal($str, $caseless, $fullword);
     }
@@ -173,11 +171,9 @@ class Parser
      * @param Def    $expr  the expression that is delimited
      * @param string $delim the delimiting literal - defaults to ,
      *
-     * @throws Parser\DefError
-     *
      * @return Set
      */
-    public function delimitedList(Def $expr, $delim = ',')
+    public function delimitedList(Def $expr, string $delim = ','): Set
     {
         return $this->set($expr, $this->zeroOrMore($this->set($this->literal($delim, false, false)->suppress(), $expr)));
     }
@@ -189,7 +185,7 @@ class Parser
      *
      * @return NOrMore
      */
-    public function zeroOrMore(Def $expr)
+    public function zeroOrMore(Def $expr): NOrMore
     {
         return new NOrMore($expr, 0);
     }
@@ -201,7 +197,7 @@ class Parser
      *
      * @return NOrMore
      */
-    public function oneOrMore(Def $expr)
+    public function oneOrMore(Def $expr): NOrMore
     {
         return new NOrMore($expr, 1);
     }
@@ -211,7 +207,7 @@ class Parser
      *
      * @return Recursive
      */
-    public function recursive()
+    public function recursive(): Recursive
     {
         return new Recursive();
     }
@@ -221,11 +217,9 @@ class Parser
      *
      * @param Def $expr
      *
-     * @throws Parser\DefError
-     *
      * @return OneOf
      */
-    public function optional(Def $expr)
+    public function optional(Def $expr): OneOf
     {
         $empty = new IsEmpty();
 
@@ -237,7 +231,7 @@ class Parser
      *
      * @return string
      */
-    public function alphas()
+    public function alphas(): string
     {
         return 'a-zA-Z';
     }
@@ -247,7 +241,7 @@ class Parser
      *
      * @return string
      */
-    public function alphanums()
+    public function alphanums(): string
     {
         return $this->alphas().$this->nums();
     }
@@ -257,7 +251,7 @@ class Parser
      *
      * @return string
      */
-    public function nums()
+    public function nums(): string
     {
         return '0-9';
     }
@@ -269,7 +263,7 @@ class Parser
      *
      * @return bool
      */
-    public static function isWhitespace($test)
+    public static function isWhitespace($test): bool
     {
         return false !== strpos(self::$whitespace, $test);
     }

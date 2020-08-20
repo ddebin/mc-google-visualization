@@ -8,21 +8,17 @@ namespace MC\Parser\Def;
 class Word extends Regex
 {
     /**
-     * @param string $first_chars the characters allowed as the first character in the word
-     * @param string $rest_chars  the characters allwed as the rest of the word - defaults to same as $first_chars
+     * @param string $firstChars the characters allowed as the first character in the word
+     * @param string|null $restChars  the characters allwed as the rest of the word - defaults to same as $first_chars
      */
-    public function __construct($first_chars, $rest_chars = null)
+    public function __construct(string $firstChars, $restChars = null)
     {
         parent::__construct();
 
-        if (null === $rest_chars) {
-            $rest_chars = $first_chars;
+        if (null === $restChars) {
+            $restChars = $firstChars;
         }
 
-        if ($first_chars === $rest_chars) {
-            $this->regex = '['.$first_chars.']+';
-        } else {
-            $this->regex = '['.$first_chars.']['.$rest_chars.']*';
-        }
+        $this->regex = $firstChars === $restChars ? '['.$firstChars.']+' : '['.$firstChars.']['.$restChars.']*';
     }
 }

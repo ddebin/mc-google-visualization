@@ -22,12 +22,14 @@
         }
     ],
     "require": {
-        "php": "^5.4 || ^7.0",
+        "php": "^7.0",
         "ext-json": "*",
         "ext-pdo": "*"
     },
     "require-dev": {
-        "phpunit/phpunit": "^4"
+        "phpunit/phpunit": "^6.0|^7.0",
+        "phpstan/phpstan": "^0.9|^0.10|^0.11",
+        "phpstan/phpstan-phpunit": "^0.9|^0.10|^0.11"
     },
     "autoload": {
         "psr-4": {
@@ -39,13 +41,8 @@
             "Tests\\": "tests"
         }
     },
-    "config": {
-        "platform": {
-            "php": "5.4"
-        }
-    },
     "scripts": {
-        "phpunit": "bin/phpunit",
-        "phpstan": "phpstan analyse -l 5 lib tests examples"
+        "phpunit": "phpunit",
+        "phpstan": "phpstan analyse -l max lib tests"
     }
 }

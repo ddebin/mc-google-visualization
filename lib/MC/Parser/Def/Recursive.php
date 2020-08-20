@@ -18,9 +18,9 @@ class Recursive extends Def
      * @throws DefError
      * @throws ParseError
      *
-     * @return array|mixed
+     * @return mixed[]
      */
-    public function _parse($str, $loc)
+    public function _parse(string $str, int $loc): array
     {
         if (null === $this->replacement) {
             throw new DefError('You must replace the recursive placeholder before parsing a grammar');
@@ -36,7 +36,7 @@ class Recursive extends Def
      *
      * @return Recursive chainable method - returns $this
      */
-    public function replace(Def $expr)
+    public function replace(Def $expr): self
     {
         $this->replacement = $expr;
 
@@ -46,7 +46,7 @@ class Recursive extends Def
     /**
      * @return string
      */
-    public function _name()
+    public function _name(): string
     {
         if (null === $this->replacement) {
             return 'placeholder';

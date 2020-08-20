@@ -9,6 +9,7 @@ use MC\Parser\Def;
  */
 class IsEmpty extends Def
 {
+    /** @var bool */
     public $suppress = true;
 
     /**
@@ -17,7 +18,7 @@ class IsEmpty extends Def
      *
      * @return array
      */
-    public function _parse($str, $loc)
+    public function _parse(string $str, int $loc): array
     {
         return [$loc, $this->token(null)];
     }
@@ -25,7 +26,7 @@ class IsEmpty extends Def
     /**
      * @return string
      */
-    public function _name()
+    public function _name(): string
     {
         return 'empty string';
     }

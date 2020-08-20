@@ -1,5 +1,7 @@
 <?php
 
+/** @noinspection SlowArrayOperationsInLoopInspection */
+
 namespace MC\Parser\Token;
 
 use Countable;
@@ -11,7 +13,7 @@ class Group extends Token implements Countable
     public $subtoks = [];
 
     /**
-     * @param string $name
+     * @param string|null $name
      */
     public function __construct($name)
     {
@@ -37,15 +39,15 @@ class Group extends Token implements Countable
     /**
      * @return int
      */
-    public function count()
+    public function count(): int
     {
         return count($this->subtoks);
     }
 
     /**
-     * @return array
+     * @return mixed[]
      */
-    public function getValues()
+    public function getValues(): array
     {
         $values = [];
         foreach ($this->subtoks as $tok) {
@@ -56,9 +58,9 @@ class Group extends Token implements Countable
     }
 
     /**
-     * @return array
+     * @return mixed[]
      */
-    public function getNameValues()
+    public function getNameValues(): array
     {
         $values = [];
         foreach ($this->subtoks as $tok) {
@@ -71,7 +73,7 @@ class Group extends Token implements Countable
     /**
      * @return bool
      */
-    public function hasChildren()
+    public function hasChildren(): bool
     {
         return !empty($this->subtoks);
     }
@@ -79,7 +81,7 @@ class Group extends Token implements Countable
     /**
      * @return Token[]
      */
-    public function getChildren()
+    public function getChildren(): array
     {
         return $this->subtoks;
     }

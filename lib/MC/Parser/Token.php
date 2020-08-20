@@ -7,7 +7,10 @@ namespace MC\Parser;
  */
 class Token
 {
+    /** @var null|string */
     public $name;
+
+    /** @var mixed */
     public $value;
 
     /**
@@ -16,24 +19,24 @@ class Token
      * @param mixed       $value
      * @param null|string $name
      */
-    public function __construct($value, $name = null)
+    public function __construct($value, $name)
     {
         $this->value = $value;
         $this->name = $name;
     }
 
     /**
-     * @return array
+     * @return mixed[]
      */
-    public function getValues()
+    public function getValues(): array
     {
         return [$this->value];
     }
 
     /**
-     * @return array
+     * @return mixed[]
      */
-    public function getNameValues()
+    public function getNameValues(): array
     {
         return [[$this->name, $this->value]];
     }
@@ -41,7 +44,7 @@ class Token
     /**
      * @return bool
      */
-    public function hasChildren()
+    public function hasChildren(): bool
     {
         return false;
     }
@@ -49,7 +52,7 @@ class Token
     /**
      * @return Token[]
      */
-    public function getChildren()
+    public function getChildren(): array
     {
         return [];
     }

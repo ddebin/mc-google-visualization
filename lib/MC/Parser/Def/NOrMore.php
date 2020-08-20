@@ -10,16 +10,17 @@ class NOrMore extends Def
     /** @var Def */
     public $expr;
 
+    /** @var int */
     public $min;
 
     /**
      * @param Def $expr
      * @param int $min
      */
-    public function __construct(Def $expr, $min)
+    public function __construct(Def $expr, int $min)
     {
         $this->expr = $expr;
-        $this->min = (int) $min;
+        $this->min = $min;
     }
 
     /**
@@ -28,9 +29,9 @@ class NOrMore extends Def
      *
      * @throws ParseError
      *
-     * @return array
+     * @return mixed[]
      */
-    public function _parse($str, $loc)
+    public function _parse(string $str, int $loc): array
     {
         $toks = $this->tokenGroup();
 
@@ -39,7 +40,7 @@ class NOrMore extends Def
                 list($loc, $tok) = $this->expr->parsePart($str, $loc);
                 $toks->append($tok);
             }
-        } catch (ParseError $e) {
+        } catch (ParseError $parseError) {
             // Ignore parsing errors - that just means we're done
         }
 
@@ -58,7 +59,7 @@ class NOrMore extends Def
     /**
      * @return string
      */
-    public function _name()
+    public function _name(): string
     {
         return $this->min.' or more: '.$this->expr->getName();
     }

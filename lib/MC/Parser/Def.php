@@ -10,7 +10,10 @@ use MC\Parser\Token\Group;
  */
 abstract class Def
 {
+    /** @var string|null */
     public $name;
+
+    /** @var bool */
     public $suppress = false;
 
     /**
@@ -22,7 +25,7 @@ abstract class Def
      *
      * @return Token
      */
-    public function parse($str)
+    public function parse(string $str): Token
     {
         $str = ltrim($str);
 
@@ -44,7 +47,7 @@ abstract class Def
      *
      * @return array A two-item array of the string location where parsing stopped, and the MC_Token instance that matches the grammar conditions
      */
-    public function parsePart($str, $loc)
+    public function parsePart(string $str, int $loc): array
     {
         list($loc, $tok) = $this->_parse($str, $loc);
 
@@ -67,19 +70,19 @@ abstract class Def
      *
      * @return array A two-item array of the string location where parsing stopped, and the MC_Token instance that matches the grammar conditions
      */
-    abstract public function _parse($str, $loc);
+    abstract public function _parse(string $str, int $loc): array;
 
     /**
      * Each definition type should have some way of giving itself a name if the user didn't provide one.
      *
      * @return string
      */
-    abstract public function _name();
+    abstract public function _name(): string;
 
     /**
      * Return the user-provided name, if given, or the generated one otherwise.
      */
-    public function getName()
+    public function getName(): string
     {
         if (null !== $this->name) {
             return $this->name;
@@ -95,7 +98,7 @@ abstract class Def
      *
      * @return self - chainable method
      */
-    public function name($name)
+    public function name(string $name): self
     {
         $this->name = $name;
 
@@ -107,7 +110,7 @@ abstract class Def
      *
      * @return self - chainable method
      */
-    public function suppress()
+    public function suppress(): self
     {
         $this->suppress = true;
 
@@ -136,7 +139,7 @@ abstract class Def
      *
      * @return Group
      */
-    public function tokenGroup()
+    public function tokenGroup(): Group
     {
         return new Group($this->name);
     }

@@ -3,28 +3,22 @@
 namespace MC\Parser\Def;
 
 use MC\Parser\Def;
-use MC\Parser\DefError;
 
 /**
  * Verify that the string matches a series of subexpressions in the specified order.
  */
 class Set extends Def
 {
+    /** @var array */
     public $exprs = [];
 
     /**
      * Set constructor.
      *
      * @param array $exprs
-     *
-     * @throws DefError
      */
     public function __construct(array $exprs = [])
     {
-        if (!is_array($exprs)) {
-            throw new DefError('Set sub-expressions must be an array');
-        }
-
         $this->exprs = $exprs;
     }
 
@@ -32,9 +26,9 @@ class Set extends Def
      * @param string $str the string to parse
      * @param int    $loc the index to start parsing
      *
-     * @return array
+     * @return mixed[]
      */
-    public function _parse($str, $loc)
+    public function _parse(string $str, int $loc): array
     {
         $res = $this->tokenGroup();
         foreach ($this->exprs as $expr) {
@@ -50,7 +44,7 @@ class Set extends Def
     /**
      * @return string
      */
-    public function _name()
+    public function _name(): string
     {
         $names = [];
         foreach ($this->exprs as $expr) {

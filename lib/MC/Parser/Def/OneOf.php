@@ -3,7 +3,6 @@
 namespace MC\Parser\Def;
 
 use MC\Parser\Def;
-use MC\Parser\DefError;
 use MC\Parser\ParseError;
 
 /**
@@ -17,16 +16,10 @@ class OneOf extends Def
     /**
      * OneOf constructor.
      *
-     * @param array $exprs
-     *
-     * @throws DefError
+     * @param mixed[] $exprs
      */
-    public function __construct($exprs = [])
+    public function __construct(array $exprs = [])
     {
-        if (!is_array($exprs)) {
-            throw new DefError('alternative sub-expressions must be an array');
-        }
-
         $this->exprs = $exprs;
     }
 
@@ -36,38 +29,38 @@ class OneOf extends Def
      *
      * @throws ParseError
      *
-     * @return array
+     * @return mixed[]
      */
-    public function _parse($str, $loc)
+    public function _parse(string $str, int $loc): array
     {
-        $max_match = -1;
+        $maxMatch = -1;
         $res = null;
         foreach ($this->exprs as $expr) {
             try {
                 list($loc2, $toks) = $expr->parsePart($str, $loc);
-                if ($loc2 > $max_match) {
-                    $max_match = $loc2;
+                if ($loc2 > $maxMatch) {
+                    $maxMatch = $loc2;
                     $res = $toks;
                 }
-            } catch (ParseError $e) {
+            } catch (ParseError $parseError) {
                 //Ignore any non-matching conditions
             }
         }
 
-        if (-1 === $max_match) {
+        if (-1 === $maxMatch) {
             throw new ParseError('No alternative options match', $str, $loc);
         }
         if ($this->name && !$res->name) {
             $res->name = $this->name;
         }
 
-        return [$max_match, $res];
+        return [$maxMatch, $res];
     }
 
     /**
      * @return string
      */
-    public function _name()
+    public function _name(): string
     {
         $names = [];
         foreach ($this->exprs as $expr) {

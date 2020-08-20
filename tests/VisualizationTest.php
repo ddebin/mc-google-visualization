@@ -8,12 +8,12 @@ use MC\Google\Visualization_QueryError;
 use MC\Parser\DefError;
 use MC\Parser\ParseError;
 use PDO;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @internal
  */
-final class VisualizationTest extends PHPUnit_Framework_TestCase
+final class VisualizationTest extends TestCase
 {
     protected function setUp()
     {
@@ -145,7 +145,7 @@ final class VisualizationTest extends PHPUnit_Framework_TestCase
                 'req_callback' => [
                     'fields' => ['field'],
                     'type' => 'text',
-                    'callback' => ['Tests\VisualizationTest', 'callbackTest'],
+                    'callback' => [__CLASS__, 'callbackTest'],
                 ],
             ],
         ]);
@@ -230,7 +230,9 @@ final class VisualizationTest extends PHPUnit_Framework_TestCase
 
         $db = new PDO('sqlite::memory:');
         $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
         $vis = new Visualization($db);
+
         $vis->addEntity('users', [
             'fields' => [
                 'id' => ['field' => 'unique_id', 'type' => 'number'],
@@ -239,11 +241,12 @@ final class VisualizationTest extends PHPUnit_Framework_TestCase
         ]);
 
         $db->exec('CREATE TABLE users (unique_id, username);');
+
         $db->exec('INSERT INTO users VALUES (1, "user1");');
         $db->exec('INSERT INTO users VALUES (2, "user2");');
 
         $sql = $vis->getSQL('select count(id) from users pivot username');
-        static::assertSame('SELECT COUNT(CASE WHEN username=\'user1\' THEN unique_id ELSE NULL END) AS `user1 count-id`, COUNT(CASE WHEN username=\'user2\' THEN unique_id ELSE NULL END) AS `user2 count-id` FROM users', $sql);
+        static::assertSame("SELECT COUNT(CASE WHEN username='user1' THEN unique_id ELSE NULL END) AS `user1 count-id`, COUNT(CASE WHEN username='user2' THEN unique_id ELSE NULL END) AS `user2 count-id` FROM users", $sql);
     }
 
     /**
@@ -354,7 +357,7 @@ final class VisualizationTest extends PHPUnit_Framework_TestCase
         static::assertSame('SELECT id AS id FROM orders WHERE (product IS NOT NULL)', $sql);
     }
 
-    public static function callbackTest($row)
+    public static function callbackTest(array $row): string
     {
         return 'callback-'.$row['field'];
     }

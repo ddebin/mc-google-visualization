@@ -10,12 +10,23 @@ use MC\Parser\ParseError;
  */
 class Regex extends Def
 {
-    /**
+    /** @var string */
+    const DELIMITER = '/';
+
+    /*
      * Subclasses of this can just modify the $regex, $flags, and $errstr properties.
      */
+
+    /** @var string|null  */
     public $regex;
+
+    /** @var string|null */
     public $flags = 'u';
+
+    /** @var string|null */
     public $errstr;
+
+    /** @var int */
     public $retgroup = 0;
 
     /**
@@ -42,11 +53,11 @@ class Regex extends Def
      *
      * @throws ParseError
      *
-     * @return array
+     * @return mixed[]
      */
-    public function _parse($str, $loc)
+    public function _parse(string $str, int $loc): array
     {
-        preg_match('/^'.$this->regex.'/'.$this->flags, substr($str, $loc), $matches, PREG_OFFSET_CAPTURE);
+        preg_match(self::DELIMITER.'^'.$this->regex.self::DELIMITER.$this->flags, substr($str, $loc), $matches, PREG_OFFSET_CAPTURE);
         $success = @$matches[$this->retgroup];
         if (empty($success) || 0 !== $success[1]) {
             throw new ParseError('Expected: '.($this->errstr ?: 'matching '.$this->regex), $str, $loc);
@@ -60,7 +71,7 @@ class Regex extends Def
     /**
      * @return string
      */
-    public function _name()
+    public function _name(): string
     {
         if (null !== $this->errstr) {
             return $this->errstr;

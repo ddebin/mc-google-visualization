@@ -5,12 +5,13 @@ namespace Tests;
 use MC\Parser;
 use MC\Parser\DefError;
 use MC\Parser\ParseError;
-use PHPUnit_Framework_TestCase;
+use MC\Parser\Token;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @internal
  */
-final class ParserTest extends PHPUnit_Framework_TestCase
+final class ParserTest extends TestCase
 {
     protected function setUp()
     {
@@ -23,7 +24,6 @@ final class ParserTest extends PHPUnit_Framework_TestCase
 
     /**
      * @throws ParseError
-     * @throws DefError
      */
     public function testLiteral()
     {
@@ -54,7 +54,8 @@ final class ParserTest extends PHPUnit_Framework_TestCase
         $select = $p->keyword('select');
 
         $token = $select->token('test');
-        static::assertInstanceOf('MC\Parser\Token', $token);
+        assert($token !== null);
+        static::assertInstanceOf(Token::class, $token);
         static::assertSame([[null, 'test']], $token->getNameValues());
         static::assertSame([], $token->getChildren());
     }
@@ -65,7 +66,6 @@ final class ParserTest extends PHPUnit_Framework_TestCase
         $select = $p->keyword('select');
 
         $group = $select->tokenGroup();
-        static::assertInstanceOf('MC\Parser\Token\Group', $group);
         static::assertSame([], $group->getNameValues());
         static::assertSame([], $group->getChildren());
 
@@ -75,7 +75,6 @@ final class ParserTest extends PHPUnit_Framework_TestCase
 
     /**
      * @throws ParseError
-     * @throws DefError
      */
     public function testOneOf()
     {
@@ -89,7 +88,6 @@ final class ParserTest extends PHPUnit_Framework_TestCase
 
     /**
      * @throws ParseError
-     * @throws DefError
      */
     public function testOptional()
     {
@@ -105,7 +103,6 @@ final class ParserTest extends PHPUnit_Framework_TestCase
 
     /**
      * @throws ParseError
-     * @throws DefError
      */
     public function testWord()
     {
@@ -118,7 +115,6 @@ final class ParserTest extends PHPUnit_Framework_TestCase
 
     /**
      * @throws ParseError
-     * @throws DefError
      */
     public function testDelimitedList()
     {
@@ -131,7 +127,6 @@ final class ParserTest extends PHPUnit_Framework_TestCase
 
     /**
      * @throws ParseError
-     * @throws DefError
      */
     public function testRecursive()
     {
@@ -230,21 +225,21 @@ final class ParserTest extends PHPUnit_Framework_TestCase
 
     /**
      * @throws DefError
-     * @expectedException \MC\Parser\DefError
      */
     public function testQuotedStringEx1()
     {
         $p = new Parser();
+        $this->expectException(DefError::class);
         $p->quotedString(' ');
     }
 
     /**
      * @throws DefError
-     * @expectedException \MC\Parser\DefError
      */
     public function testQuotedStringEx2()
     {
         $p = new Parser();
+        $this->expectException(DefError::class);
         $p->quotedString('test', 'error');
     }
 }

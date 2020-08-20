@@ -3,13 +3,14 @@
 namespace Tests;
 
 use MC\Google\Visualization;
+use MC\Google\Visualization_Error;
 use PDO;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @internal
  */
-final class ExampleTest extends PHPUnit_Framework_TestCase
+final class ExampleTest extends TestCase
 {
     protected function setUp()
     {
@@ -21,7 +22,7 @@ final class ExampleTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @throws \MC\Google\Visualization_Error
+     * @throws Visualization_Error
      */
     public function testQueryComplete()
     {
@@ -59,7 +60,7 @@ final class ExampleTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @throws \MC\Google\Visualization_Error
+     * @throws Visualization_Error
      */
     public function testQuerySimple()
     {
@@ -84,7 +85,7 @@ final class ExampleTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @throws \MC\Google\Visualization_Error
+     * @throws Visualization_Error
      */
     public function testQueryJoins()
     {

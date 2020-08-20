@@ -6,19 +6,23 @@ use MC\Google\Visualization;
 
 require_once __DIR__.'/../vendor/autoload.php';
 
+/**
+ * @param mixed $row
+ * @return string|null
+ */
 function most_common($row)
 {
     $forms = ['pill', 'iud', 'condom', 'sterile_total', 'other_modern', 'traditional'];
-    $max_form = -1;
-    $form_name = null;
+    $maxForm = -1;
+    $formName = null;
     foreach ($forms as $form) {
-        if ($row[$form] > $max_form) {
-            $max_form = $row[$form];
-            $form_name = $form;
+        if ($row[$form] > $maxForm) {
+            $maxForm = $row[$form];
+            $formName = $form;
         }
     }
 
-    return $form_name;
+    return $formName;
 }
 
 $db = new PDO('sqlite:example.db');
