@@ -61,7 +61,7 @@ class Parser
     public function quotedString(string $quoteChars = '\'"', string $escChar = '\\'): Regex
     {
         $quoteChars = trim($quoteChars);
-        if (mb_strlen($escChar) > 1) {
+        if (strlen($escChar) > 1) {
             throw new DefError('Only one $escChar can be defined');
         }
         if ('' !== $escChar) {
@@ -71,8 +71,7 @@ class Parser
         if ('' === $quoteChars) {
             throw new DefError('$quoteChars cannot be an empty string');
         }
-        $quoteCharsArray = mb_str_split($quoteChars);
-        assert(is_array($quoteCharsArray));
+        $quoteCharsArray = str_split($quoteChars);
 
         $tpl = '(?:Q(?:[^Q\n\rE]|(?:QQ)|(?:Ex[0-9a-fA-F]+)|(?:E.))*Q)';
         $pats = [];
@@ -229,6 +228,6 @@ class Parser
      */
     public static function isWhitespace($test): bool
     {
-        return false !== mb_strpos(self::$whitespace, $test);
+        return false !== strpos(self::$whitespace, $test);
     }
 }

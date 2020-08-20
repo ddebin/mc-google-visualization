@@ -137,7 +137,7 @@ class Visualization
         if (!isset($this->defaultFormat[$type])) {
             throw new Visualization_Error('Unknown or unformattable type: "'.$type.'"');
         }
-        if ('boolean' === $type && false === mb_strpos($format, ':')) {
+        if ('boolean' === $type && false === strpos($format, ':')) {
             throw new Visualization_Error('Invalid boolean format string: "'.$format.'"');
         }
         $this->defaultFormat[$type] = $format;
@@ -535,14 +535,14 @@ class Visualization
                     break;
 
                 case 'date':
-                    if (!is_numeric($val) || (is_string($val) && (6 !== mb_strlen($val)))) {
+                    if (!is_numeric($val) || (is_string($val) && (6 !== strlen($val)))) {
                         $time = strtotime($val);
                         list($year, $month, $day) = explode('-', date('Y-m-d', $time));
                         $formatted = date($format, $time);
                     } else {
                         assert(is_string($val));
-                        $year = mb_substr($val, 0, 4);
-                        $week = mb_substr($val, -2);
+                        $year = substr($val, 0, 4);
+                        $week = substr($val, -2);
                         $time = strtotime($year.'0104 +'.$week.' weeks');
                         assert(false !== $time);
                         $monday = strtotime('-'.((int) date('w', $time) - 1).' days', $time);
@@ -754,7 +754,7 @@ class Visualization
                         $field = $orderby[$i];
                         $dir = 'asc';
                         if (isset($orderby[$i + 1])) {
-                            $dir = mb_strtolower($orderby[$i + 1]);
+                            $dir = strtolower($orderby[$i + 1]);
                             if ('asc' === $dir || 'desc' === $dir) {
                                 ++$i;
                             } else {
@@ -1015,7 +1015,7 @@ class Visualization
 
                     case 'null':
                     case 'notnull':
-                        $wherePart['value'] = mb_strtoupper(implode(' ', $wherePart['value']));
+                        $wherePart['value'] = strtoupper(implode(' ', $wherePart['value']));
                         break;
                 }
 
@@ -1064,7 +1064,7 @@ class Visualization
                     $sql .= ',';
                 }
 
-                $sql .= ' '.$this->getFieldSQL($field, $spec).' '.mb_strtoupper($dir);
+                $sql .= ' '.$this->getFieldSQL($field, $spec).' '.strtoupper($dir);
                 $first = false;
             }
         }
@@ -1248,7 +1248,7 @@ class Visualization
         $q = $this->getFieldQuote();
         if (null !== $func) {
             if (null === $pivot) {
-                $sql = mb_strtoupper($func).'('.$sql.')';
+                $sql = strtoupper($func).'('.$sql.')';
                 if ($alias) {
                     $sql .= ' AS '.$q.$func.'-'.$name.$q;
                 }
@@ -1260,7 +1260,7 @@ class Visualization
                     $pivotField = $pivotFields[$key];
                     $casewhen[] = $pivotField['field'].'='.$this->db->quote($val);
                 }
-                $sql = mb_strtoupper($func).'(CASE WHEN '.implode(' AND ', $casewhen).' THEN '.$sql.' ELSE NULL END)';
+                $sql = strtoupper($func).'(CASE WHEN '.implode(' AND ', $casewhen).' THEN '.$sql.' ELSE NULL END)';
                 if ($alias) {
                     $sql .= ' AS '.$q.implode(',', $pivot).' '.$func.'-'.$name.$q;
                 }
@@ -1320,7 +1320,7 @@ class Visualization
         if ($token->hasChildren()) {
             if ('function' === $token->name) {
                 $field = $token->getValues();
-                $field[0] = mb_strtolower($field[0]);
+                $field[0] = strtolower($field[0]);
                 $fields[] = $field;
             } else {
                 foreach ($token->getChildren() as $field) {

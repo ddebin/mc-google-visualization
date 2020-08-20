@@ -28,8 +28,8 @@ abstract class Def
         $str = ltrim($str);
 
         list($loc, $tok) = $this->parsePart($str, 0);
-        if ($loc !== mb_strlen($str)) {
-            throw new ParseError('An error occurred: "'.mb_substr($str, $loc).'"', $str, $loc);
+        if ($loc !== strlen($str)) {
+            throw new ParseError('An error occurred: "'.substr($str, $loc).'"', $str, $loc);
         }
 
         return $tok;

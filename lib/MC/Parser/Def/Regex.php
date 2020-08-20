@@ -49,13 +49,13 @@ class Regex extends Def
      */
     public function _parse(string $str, int $loc): array
     {
-        preg_match(self::DELIMITER.'^'.$this->regex.self::DELIMITER.$this->flags, mb_substr($str, $loc), $matches, PREG_OFFSET_CAPTURE);
+        preg_match(self::DELIMITER.'^'.$this->regex.self::DELIMITER.$this->flags, substr($str, $loc), $matches, PREG_OFFSET_CAPTURE);
         $success = $matches[$this->retgroup] ?? null;
         if ((null === $success) || 0 !== $success[1]) {
             throw new ParseError('Expected: '.($this->errstr ?: 'matching '.$this->regex), $str, $loc);
         }
 
-        $loc += mb_strlen($success[0]);
+        $loc += strlen($success[0]);
 
         return [$loc, $this->token($success[0])];
     }

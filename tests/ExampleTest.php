@@ -51,7 +51,7 @@ final class ExampleTest extends TestCase
         $vis->setDefaultEntity('timeline');
 
         $parameters = [
-            'tq' => 'select country, year, birth_control, infant_mort where birth_control!=0 AND infant_mort!=0 group by country, year label country "Country", year "Year", birth_control "Birth Control Penetration", gdp_us "Per-capita GDP (US Dollars)", savings_rate "Savings Rate", investment_rate "Investment Rate", infant_mort "Infant Mortality", life_expect "Life Expectancy" format year "%d"',
+            'tq' => 'select country, year, birth_control, infant_mort where birth_control!=0 AND infant_mort!=0 group by country, year label country "Country", year "Année", birth_control "Birth Control Penetration", gdp_us "Per-capita GDP (US Dollars)", savings_rate "Savings Rate", investment_rate "Investment Rate", infant_mort "Infant Mortality", life_expect "Life Expectancy" format year "%d"',
             'tqx' => 'reqId:1',
         ];
 

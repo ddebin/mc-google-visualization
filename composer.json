@@ -24,8 +24,7 @@
     "require": {
         "php": "^7.0",
         "ext-json": "*",
-        "ext-pdo": "*",
-        "symfony/polyfill-php74": "^1.0"
+        "ext-pdo": "*"
     },
     "require-dev": {
         "phpunit/phpunit": "^6.0|^7.0",

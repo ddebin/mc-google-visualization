@@ -40,15 +40,15 @@ class Literal extends Def
      */
     public function _parse(string $str, int $loc): array
     {
-        $match = !$this->caseless ? mb_strpos($str, $this->search, $loc) : mb_stripos($str, $this->search, $loc);
+        $match = !$this->caseless ? strpos($str, $this->search, $loc) : stripos($str, $this->search, $loc);
 
         if ($match !== $loc) {
             throw new ParseError('Expected: '.$this->search, $str, $loc);
         }
 
-        $loc += mb_strlen($this->search);
+        $loc += strlen($this->search);
 
-        if ($this->fullword && $loc < mb_strlen($str) && !Parser::isWhitespace($str[$loc])) {
+        if ($this->fullword && $loc < strlen($str) && !Parser::isWhitespace($str[$loc])) {
             throw new ParseError('Expected: '.$this->search, $str, $loc);
         }
 

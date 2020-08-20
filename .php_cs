@@ -30,7 +30,6 @@ return Config::create()
         'final_static_access' => true,
         'global_namespace_import' => true,
         'linebreak_after_opening_tag' => true,
-        'mb_str_functions' => true,
         'native_function_invocation' => false,
         'no_unset_on_property' => false,
         'php_unit_test_case_static_method_calls' => ['call_type' => 'self'],
