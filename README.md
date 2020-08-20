@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/ddebin/mc-google-visualization.svg?branch=master)](https://travis-ci.org/ddebin/mc-google-visualization)
+![Build Status](https://github.com/ddebin/mc-google-visualization/workflows/CI/badge.svg)
 
 # MC_Google_Visualization: Google Visualization datasource with your own database
 
