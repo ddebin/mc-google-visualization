@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace MC\Parser\Def;
 
 use MC\Parser\Def;
@@ -13,28 +15,21 @@ class Regex extends Def
     /** @var string */
     const DELIMITER = '/';
 
-    /*
-     * Subclasses of this can just modify the $regex, $flags, and $errstr properties.
-     */
+    // Subclasses of this can just modify the $regex, $flags, and $errstr properties.
 
-    /** @var string|null  */
+    /** @var null|string */
     public $regex;
 
-    /** @var string|null */
+    /** @var null|string */
     public $flags = 'u';
 
-    /** @var string|null */
+    /** @var null|string */
     public $errstr;
 
     /** @var int */
     public $retgroup = 0;
 
-    /**
-     * @param null|string $regex
-     * @param null|string $flags
-     * @param null|string $errstr
-     */
-    public function __construct($regex = null, $flags = null, $errstr = null)
+    public function __construct(string $regex = null, string $flags = null, string $errstr = null)
     {
         if (null !== $regex) {
             $this->regex = $regex;
@@ -48,29 +43,23 @@ class Regex extends Def
     }
 
     /**
-     * @param string $str
-     * @param int    $loc
-     *
      * @throws ParseError
      *
      * @return mixed[]
      */
     public function _parse(string $str, int $loc): array
     {
-        preg_match(self::DELIMITER.'^'.$this->regex.self::DELIMITER.$this->flags, substr($str, $loc), $matches, PREG_OFFSET_CAPTURE);
-        $success = @$matches[$this->retgroup];
-        if (empty($success) || 0 !== $success[1]) {
+        preg_match(self::DELIMITER.'^'.$this->regex.self::DELIMITER.$this->flags, mb_substr($str, $loc), $matches, PREG_OFFSET_CAPTURE);
+        $success = $matches[$this->retgroup] ?? null;
+        if ((null === $success) || 0 !== $success[1]) {
             throw new ParseError('Expected: '.($this->errstr ?: 'matching '.$this->regex), $str, $loc);
         }
 
-        $loc += strlen($success[0]);
+        $loc += mb_strlen($success[0]);
 
         return [$loc, $this->token($success[0])];
     }
 
-    /**
-     * @return string
-     */
     public function _name(): string
     {
         if (null !== $this->errstr) {

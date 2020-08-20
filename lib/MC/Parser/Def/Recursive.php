@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace MC\Parser\Def;
 
 use MC\Parser\Def;
@@ -12,9 +14,6 @@ class Recursive extends Def
     public $replacement;
 
     /**
-     * @param string $str
-     * @param int    $loc
-     *
      * @throws DefError
      * @throws ParseError
      *
@@ -31,10 +30,6 @@ class Recursive extends Def
 
     /**
      * When actually parsing the grammar, use this rule to validate the recursive rule - this must be called before parsing begins.
-     *
-     * @param Def $expr
-     *
-     * @return Recursive chainable method - returns $this
      */
     public function replace(Def $expr): self
     {
@@ -43,9 +38,6 @@ class Recursive extends Def
         return $this;
     }
 
-    /**
-     * @return string
-     */
     public function _name(): string
     {
         if (null === $this->replacement) {

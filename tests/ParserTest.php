@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Tests;
 
 use MC\Parser;
@@ -31,11 +33,11 @@ final class ParserTest extends TestCase
         $select = $p->keyword('select', true);
 
         $select->parse('sELECT');
-        static::assertSame(['select'], $select->parse('select    ')->getValues());
+        self::assertSame(['select'], $select->parse('select    ')->getValues());
 
         $from = $p->keyword('from', true);
         $selectfrom = $p->set($select, $from);
-        static::assertSame(['select', 'from'], $selectfrom->parse('select  from   ')->getValues());
+        self::assertSame(['select', 'from'], $selectfrom->parse('select  from   ')->getValues());
     }
 
     public function testName()
@@ -43,9 +45,9 @@ final class ParserTest extends TestCase
         $p = new Parser();
         $select = $p->keyword('select');
 
-        static::assertSame('select', $select->getName());
+        self::assertSame('select', $select->getName());
         $select->name('SELECT');
-        static::assertSame('SELECT', $select->getName());
+        self::assertSame('SELECT', $select->getName());
     }
 
     public function testToken()
@@ -54,10 +56,9 @@ final class ParserTest extends TestCase
         $select = $p->keyword('select');
 
         $token = $select->token('test');
-        assert($token !== null);
-        static::assertInstanceOf(Token::class, $token);
-        static::assertSame([[null, 'test']], $token->getNameValues());
-        static::assertSame([], $token->getChildren());
+        assert($token instanceof Token);
+        self::assertSame([[null, 'test']], $token->getNameValues());
+        self::assertSame([], $token->getChildren());
     }
 
     public function testTokenGroup()
@@ -66,11 +67,11 @@ final class ParserTest extends TestCase
         $select = $p->keyword('select');
 
         $group = $select->tokenGroup();
-        static::assertSame([], $group->getNameValues());
-        static::assertSame([], $group->getChildren());
+        self::assertSame([], $group->getNameValues());
+        self::assertSame([], $group->getChildren());
 
         $group->append(null);
-        static::assertSame([], $group->getChildren());
+        self::assertSame([], $group->getChildren());
     }
 
     /**
@@ -82,8 +83,8 @@ final class ParserTest extends TestCase
         $select = $p->keyword('select');
         $from = $p->keyword('from');
         $oneof = $p->oneOf($select, $from);
-        static::assertSame(['select'], $oneof->parse('select')->getValues());
-        static::assertSame(['from'], $oneof->parse('from')->getValues());
+        self::assertSame(['select'], $oneof->parse('select')->getValues());
+        self::assertSame(['from'], $oneof->parse('from')->getValues());
     }
 
     /**
@@ -95,10 +96,10 @@ final class ParserTest extends TestCase
         $select = $p->keyword('select');
         $from = $p->keyword('from');
         $query = $p->set($p->optional($select), $p->optional($from));
-        static::assertSame([], $query->parse('')->getValues());
-        static::assertSame(['select'], $query->parse('select')->getValues());
-        static::assertSame(['from'], $query->parse('from')->getValues());
-        static::assertSame(['select', 'from'], $query->parse('select from')->getValues());
+        self::assertSame([], $query->parse('')->getValues());
+        self::assertSame(['select'], $query->parse('select')->getValues());
+        self::assertSame(['from'], $query->parse('from')->getValues());
+        self::assertSame(['select', 'from'], $query->parse('select from')->getValues());
     }
 
     /**
@@ -110,7 +111,7 @@ final class ParserTest extends TestCase
         $select = $p->keyword('select');
         $word = $p->word($p->alphas(), $p->alphanums());
         $query = $p->set($select, $word);
-        static::assertSame(['select', 'a90'], $query->parse('select a90  ')->getValues());
+        self::assertSame(['select', 'a90'], $query->parse('select a90  ')->getValues());
     }
 
     /**
@@ -122,7 +123,7 @@ final class ParserTest extends TestCase
         $select = $p->keyword('select');
         $word = $p->word($p->alphas());
         $query = $p->set($select, $p->delimitedList($word));
-        static::assertSame(['select', 'one', 'two'], $query->parse('select one,two')->getValues());
+        self::assertSame(['select', 'one', 'two'], $query->parse('select one,two')->getValues());
     }
 
     /**
@@ -134,7 +135,7 @@ final class ParserTest extends TestCase
         $expr = $p->recursive();
         $expr->replace($p->set($p->literal('{'), $p->optional($expr), $p->literal('}')));
 
-        static::assertSame(['{', '{', '}', '}'], $expr->parse('{{ }}')->getValues());
+        self::assertSame(['{', '{', '}', '}'], $expr->parse('{{ }}')->getValues());
     }
 
     /**
@@ -145,7 +146,7 @@ final class ParserTest extends TestCase
     {
         $p = new Parser();
         $limit = $p->set($p->keyword('limit'), $p->delimitedList($p->set($p->word($p->alphanums()), $p->quotedString())));
-        static::assertSame(['limit', 'field', '"label"', 'field2', '"label2"'], $limit->parse('limit field "label", field2 "label2"')->getValues());
+        self::assertSame(['limit', 'field', '"label"', 'field2', '"label2"'], $limit->parse('limit field "label", field2 "label2"')->getValues());
     }
 
     /**
@@ -208,19 +209,19 @@ final class ParserTest extends TestCase
         $query = $p->set($p->optional($select), $p->optional($from), $p->optional($where), $p->optional($groupby), $p->optional($pivot), $p->optional($limit), $p->optional($offset), $p->optional($label), $p->optional($format), $p->optional($options));
 
         $result = $query->parse('');
-        static::assertSame([], $result->getValues(), 'empty query');
+        self::assertSame([], $result->getValues(), 'empty query');
 
         $result = $query->parse('select *');
-        static::assertSame(['select', '*'], $result->getValues(), 'simple select *');
+        self::assertSame(['select', '*'], $result->getValues(), 'simple select *');
 
         $result = $query->parse('from something');
-        static::assertSame(['from', 'something'], $result->getValues(), 'select-less from');
+        self::assertSame(['from', 'something'], $result->getValues(), 'select-less from');
 
         $result = $query->parse('select one, two from table');
-        static::assertSame(['select', 'one', 'two', 'from', 'table'], $result->getValues(), 'select list');
+        self::assertSame(['select', 'one', 'two', 'from', 'table'], $result->getValues(), 'select list');
 
         $result = $query->parse('select max(one) from table where (two>1.5 and (three < 4)) group by one');
-        static::assertSame(['select', 'max', 'one', 'from', 'table', 'where', '(', 'two', '>', '1.5', 'and', '(', 'three', '<', '4', ')', ')', 'group', 'by', 'one'], $result->getValues());
+        self::assertSame(['select', 'max', 'one', 'from', 'table', 'where', '(', 'two', '>', '1.5', 'and', '(', 'three', '<', '4', ')', ')', 'group', 'by', 'one'], $result->getValues());
     }
 
     /**

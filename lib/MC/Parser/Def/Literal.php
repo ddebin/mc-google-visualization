@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace MC\Parser\Def;
 
 use MC\Parser;
@@ -32,33 +34,27 @@ class Literal extends Def
     }
 
     /**
-     * @param string $str
-     * @param int $loc
-     *
      * @throws ParseError
      *
      * @return mixed[]
      */
     public function _parse(string $str, int $loc): array
     {
-        $match = !$this->caseless ? strpos($str, $this->search, $loc) : stripos($str, $this->search, $loc);
+        $match = !$this->caseless ? mb_strpos($str, $this->search, $loc) : mb_stripos($str, $this->search, $loc);
 
         if ($match !== $loc) {
             throw new ParseError('Expected: '.$this->search, $str, $loc);
         }
 
-        $loc += strlen($this->search);
+        $loc += mb_strlen($this->search);
 
-        if ($this->fullword && $loc < strlen($str) && !Parser::isWhitespace($str[$loc])) {
+        if ($this->fullword && $loc < mb_strlen($str) && !Parser::isWhitespace($str[$loc])) {
             throw new ParseError('Expected: '.$this->search, $str, $loc);
         }
 
         return [$loc, $this->token($this->search)];
     }
 
-    /**
-     * @return string
-     */
     public function _name(): string
     {
         return $this->search;

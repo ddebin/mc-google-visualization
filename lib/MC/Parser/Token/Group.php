@@ -2,6 +2,8 @@
 
 /** @noinspection SlowArrayOperationsInLoopInspection */
 
+declare(strict_types = 1);
+
 namespace MC\Parser\Token;
 
 use Countable;
@@ -13,7 +15,7 @@ class Group extends Token implements Countable
     public $subtoks = [];
 
     /**
-     * @param string|null $name
+     * @param null|string $name
      */
     public function __construct($name)
     {
@@ -36,9 +38,6 @@ class Group extends Token implements Countable
         $this->subtoks = array_merge($this->subtoks, $toks);
     }
 
-    /**
-     * @return int
-     */
     public function count(): int
     {
         return count($this->subtoks);
@@ -70,12 +69,9 @@ class Group extends Token implements Countable
         return $values;
     }
 
-    /**
-     * @return bool
-     */
     public function hasChildren(): bool
     {
-        return !empty($this->subtoks);
+        return count($this->subtoks) > 0;
     }
 
     /**

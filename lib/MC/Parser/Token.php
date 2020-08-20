@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace MC\Parser;
 
 /**
@@ -41,9 +43,6 @@ class Token
         return [[$this->name, $this->value]];
     }
 
-    /**
-     * @return bool
-     */
     public function hasChildren(): bool
     {
         return false;

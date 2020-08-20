@@ -2,13 +2,16 @@
 
 /** @noinspection PhpUnhandledExceptionInspection */
 
+declare(strict_types = 1);
+
 use MC\Google\Visualization;
 
 require_once __DIR__.'/../vendor/autoload.php';
 
 /**
  * @param mixed $row
- * @return string|null
+ *
+ * @return null|string
  */
 function most_common($row)
 {
@@ -60,13 +63,13 @@ if (isset($_GET['tq'])) {
     <script type="text/javascript">
         google.load('visualization', '1', {'packages': ['table']});
         google.setOnLoadCallback(function() {
-            var query = new google.visualization.Query('callback_fields.php');
+            const query = new google.visualization.Query('callback_fields.php');
             query.setQuery('select country, most_common from birth_control order by country label country "Country", most_common "Most Common Method"');
             query.send(function(res) {
                 if(res.isError()) {
                     alert(res.getDetailedMessage());
                 } else {
-                    var table = new google.visualization.Table(document.getElementById('table-div'));
+                    const table = new google.visualization.Table(document.getElementById('table-div'));
                     table.draw(res.getDataTable());
                 }
             });

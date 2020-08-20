@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace MC\Parser;
 
 use MC\Parser;
@@ -10,7 +12,7 @@ use MC\Parser\Token\Group;
  */
 abstract class Def
 {
-    /** @var string|null */
+    /** @var null|string */
     public $name;
 
     /** @var bool */
@@ -19,19 +21,15 @@ abstract class Def
     /**
      * Parse a string, and return the result or throw a parser exception.
      *
-     * @param string $str
-     *
      * @throws ParseError
-     *
-     * @return Token
      */
     public function parse(string $str): Token
     {
         $str = ltrim($str);
 
         list($loc, $tok) = $this->parsePart($str, 0);
-        if ($loc !== strlen($str)) {
-            throw new ParseError('An error occurred: "'.substr($str, $loc).'"', $str, $loc);
+        if ($loc !== mb_strlen($str)) {
+            throw new ParseError('An error occurred: "'.mb_substr($str, $loc).'"', $str, $loc);
         }
 
         return $tok;
@@ -39,9 +37,6 @@ abstract class Def
 
     /**
      * Parse a string, cleaning up whitespace when we're done.
-     *
-     * @param string $str
-     * @param int    $loc
      *
      * @throws ParseError
      *
@@ -52,7 +47,7 @@ abstract class Def
         list($loc, $tok) = $this->_parse($str, $loc);
 
         $char = @$str[$loc++];
-        while ($char && Parser::isWhitespace($char)) {
+        while (('' !== $char) && Parser::isWhitespace($char)) {
             $char = @$str[$loc++];
         }
         --$loc;
@@ -74,8 +69,6 @@ abstract class Def
 
     /**
      * Each definition type should have some way of giving itself a name if the user didn't provide one.
-     *
-     * @return string
      */
     abstract public function _name(): string;
 
@@ -93,10 +86,6 @@ abstract class Def
 
     /**
      * Give this grammar def a name in the results.
-     *
-     * @param string $name
-     *
-     * @return self - chainable method
      */
     public function name(string $name): self
     {
@@ -107,8 +96,6 @@ abstract class Def
 
     /**
      * Toggle suppressing the token from the results.
-     *
-     * @return self - chainable method
      */
     public function suppress(): self
     {
@@ -136,8 +123,6 @@ abstract class Def
     /**
      * Return a token group (a token that can contain subtokens), copying over this Def's name
      * token groups cannot be suppressed.
-     *
-     * @return Group
      */
     public function tokenGroup(): Group
     {

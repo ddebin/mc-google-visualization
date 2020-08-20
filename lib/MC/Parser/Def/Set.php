@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace MC\Parser\Def;
 
 use MC\Parser\Def;
@@ -14,8 +16,6 @@ class Set extends Def
 
     /**
      * Set constructor.
-     *
-     * @param array $exprs
      */
     public function __construct(array $exprs = [])
     {
@@ -33,7 +33,7 @@ class Set extends Def
         $res = $this->tokenGroup();
         foreach ($this->exprs as $expr) {
             list($loc, $toks) = $expr->parsePart($str, $loc);
-            if (!empty($toks)) {
+            if ((null !== $toks) && (!is_array($toks) || (count($toks) > 0))) {
                 $res->append($toks);
             }
         }
@@ -41,9 +41,6 @@ class Set extends Def
         return [$loc, $res];
     }
 
-    /**
-     * @return string
-     */
     public function _name(): string
     {
         $names = [];

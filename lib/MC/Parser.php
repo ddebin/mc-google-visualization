@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace MC;
 
 use MC\Parser\Def;
@@ -29,8 +31,6 @@ class Parser
 
     /**
      * Return a Set with the function arguments as the subexpressions.
-     *
-     * @return Set
      */
     public function set(): Set
     {
@@ -39,8 +39,6 @@ class Parser
 
     /**
      * Return a OneOf with the function arguments as the possible expressions.
-     *
-     * @return OneOf
      */
     public function oneOf(): OneOf
     {
@@ -49,13 +47,8 @@ class Parser
 
     /**
      * Return a Word that matches a set of possible characters not separated by whitespace.
-     *
-     * @param string      $firstChars
-     * @param null|string $restChars
-     *
-     * @return Word
      */
-    public function word(string $firstChars, $restChars = null): Word
+    public function word(string $firstChars, string $restChars = null): Word
     {
         return new Word($firstChars, $restChars);
     }
@@ -63,27 +56,23 @@ class Parser
     /**
      * Return a Regex that matches a typical optionally-escaped quoted string.
      *
-     * @param string $quoteChars
-     * @param string $escChar
-     *
      * @throws DefError
-     *
-     * @return Regex
      */
     public function quotedString(string $quoteChars = '\'"', string $escChar = '\\'): Regex
     {
         $quoteChars = trim($quoteChars);
-        if ($quoteChars === '') {
-            throw new DefError('$quoteChars cannot be an empty string');
-        }
-        if (strlen($escChar) > 1) {
+        if (mb_strlen($escChar) > 1) {
             throw new DefError('Only one $escChar can be defined');
         }
-
-        $quoteCharsArray = str_split($quoteChars);
-        if ($escChar !== '') {
+        if ('' !== $escChar) {
             $escChar = preg_quote($escChar, Regex::DELIMITER);
         }
+
+        if ('' === $quoteChars) {
+            throw new DefError('$quoteChars cannot be an empty string');
+        }
+        $quoteCharsArray = mb_str_split($quoteChars);
+        assert(is_array($quoteCharsArray));
 
         $tpl = '(?:Q(?:[^Q\n\rE]|(?:QQ)|(?:Ex[0-9a-fA-F]+)|(?:E.))*Q)';
         $pats = [];
@@ -99,8 +88,6 @@ class Parser
 
     /**
      * wrapper around Regex that matches numerical values (like 7, 3.5, and -42).
-     *
-     * @return Regex
      */
     public function number(): Regex
     {
@@ -118,18 +105,19 @@ class Parser
      * @param string $case which case is supported, one of "upper", "lower", "first", or "mixed"
      *
      * @throws DefError
-     *
-     * @return OneOf
      */
     public function boolean(string $case = 'mixed'): OneOf
     {
         switch ($case) {
             case 'lower':
                 return $this->oneOf($this->keyword('true'), $this->keyword('false'));
+
             case 'upper':
                 return $this->oneOf($this->keyword('TRUE'), $this->keyword('FALSE'));
+
             case 'first':
                 return $this->oneOf($this->keyword('True'), $this->keyword('False'));
+
             case 'mixed':
                 return $this->oneOf($this->keyword('true', true), $this->keyword('false', true));
             default:
@@ -143,8 +131,6 @@ class Parser
      * @param string $str      the exact string to match
      * @param bool   $caseless flag for triggering case-insensitive searching
      * @param bool   $fullword for triggering literals that can be followed by non-whitespace characters
-     *
-     * @return Literal
      */
     public function literal(string $str, bool $caseless = false, bool $fullword = false): Literal
     {
@@ -157,8 +143,6 @@ class Parser
      * @param string $str      the exact string to match
      * @param bool   $caseless flag for triggering case-insensitive searching
      * @param bool   $fullword for triggering literals that can be followed by non-whitespace characters
-     *
-     * @return Literal
      */
     public function keyword(string $str, bool $caseless = false, bool $fullword = true): Literal
     {
@@ -170,8 +154,6 @@ class Parser
      *
      * @param Def    $expr  the expression that is delimited
      * @param string $delim the delimiting literal - defaults to ,
-     *
-     * @return Set
      */
     public function delimitedList(Def $expr, string $delim = ','): Set
     {
@@ -182,8 +164,6 @@ class Parser
      * Returns a NOrMore that matches zero or more expressions.
      *
      * @param Def $expr the expression to match zero or more of
-     *
-     * @return NOrMore
      */
     public function zeroOrMore(Def $expr): NOrMore
     {
@@ -194,8 +174,6 @@ class Parser
      * Returns a NOrMore that matches one or more expressions.
      *
      * @param Def $expr the expression to match one or more of
-     *
-     * @return NOrMore
      */
     public function oneOrMore(Def $expr): NOrMore
     {
@@ -204,8 +182,6 @@ class Parser
 
     /**
      * Returns a Recursive placeholder def that can be used to create recursive grammars.
-     *
-     * @return Recursive
      */
     public function recursive(): Recursive
     {
@@ -214,10 +190,6 @@ class Parser
 
     /**
      * Returns a OneOf that matches zero or one expressions.
-     *
-     * @param Def $expr
-     *
-     * @return OneOf
      */
     public function optional(Def $expr): OneOf
     {
@@ -228,8 +200,6 @@ class Parser
 
     /**
      * Helper function returning a regex range of all the characters in the english alphabet.
-     *
-     * @return string
      */
     public function alphas(): string
     {
@@ -238,8 +208,6 @@ class Parser
 
     /**
      * Helper function returning a string of all alphabet and digit characters.
-     *
-     * @return string
      */
     public function alphanums(): string
     {
@@ -248,8 +216,6 @@ class Parser
 
     /**
      * Helper function returning a regex range of all digit characters.
-     *
-     * @return string
      */
     public function nums(): string
     {
@@ -260,11 +226,9 @@ class Parser
      * Simple test for whether a character is a whitespace character.
      *
      * @param mixed $test
-     *
-     * @return bool
      */
     public static function isWhitespace($test): bool
     {
-        return false !== strpos(self::$whitespace, $test);
+        return false !== mb_strpos(self::$whitespace, $test);
     }
 }

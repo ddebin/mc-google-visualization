@@ -2,6 +2,8 @@
 
 /** @noinspection PhpUnhandledExceptionInspection */
 
+declare(strict_types = 1);
+
 use MC\Google\Visualization;
 
 require_once __DIR__.'/../vendor/autoload.php';
@@ -45,13 +47,13 @@ if (isset($_GET['tq'])) {
         motion_chart = null;
 
         function loadChart() {
-            var metric1 = document.getElementById('metric-1').value;
-            var metric2 = document.getElementById('metric-2').value;
+            const metric1 = document.getElementById('metric-1').value;
+            const metric2 = document.getElementById('metric-2').value;
             if (metric1 === metric2) return;
 
-            var str = 'select country, year, ' + metric1 + ', ' + metric2 + ' where ' + metric1 + '!=0 AND ' + metric2 + '!=0 group by country, year label country "Country", year "Year", birth_control "Birth Control Penetration", gdp_us "Per-capita GDP (US Dollars)", savings_rate "Savings Rate", investment_rate "Investment Rate", infant_mort "Infant Mortality", life_expect "Life Expectancy" format year "%d"';
+            const str = 'select country, year, ' + metric1 + ', ' + metric2 + ' where ' + metric1 + '!=0 AND ' + metric2 + '!=0 group by country, year label country "Country", year "Year", birth_control "Birth Control Penetration", gdp_us "Per-capita GDP (US Dollars)", savings_rate "Savings Rate", investment_rate "Investment Rate", infant_mort "Infant Mortality", life_expect "Life Expectancy" format year "%d"';
 
-            var query = new google.visualization.Query('complete.php');
+            const query = new google.visualization.Query('complete.php');
             query.setQuery(str);
             query.send(function(res) {
                 if (res.isError()) {

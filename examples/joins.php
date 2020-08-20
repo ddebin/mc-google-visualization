@@ -2,6 +2,8 @@
 
 /** @noinspection PhpUnhandledExceptionInspection */
 
+declare(strict_types = 1);
+
 use MC\Google\Visualization;
 
 require_once __DIR__.'/../vendor/autoload.php';
@@ -39,23 +41,23 @@ if (isset($_GET['tq'])) {
     <script type="text/javascript">
         google.charts.load('current', {'packages': ['columnchart', 'linechart']});
         window.addEventListener('DOMContentLoaded', function() { google.charts.setOnLoadCallback(function() {
-            var query = new google.visualization.Query('joins.php');
+            const query = new google.visualization.Query('joins.php');
             query.setQuery('select avg(life_male), avg(life_female), avg(life_both) from countries label life_male "Life Expectancy (Male)", life_female "Life Expectancy (Female)", life_both "Life Expectancy (Combined)" format life_male "%.2f years", life_female "%.2f years", life_both "%.2f years"');
             query.send(function(res) {
                 if(res.isError()) {
                     alert(res.getDetailedMessage());
                 } else {
-                    var table = new google.visualization.ColumnChart(document.getElementById('chart-div'));
+                    const table = new google.visualization.ColumnChart(document.getElementById('chart-div'));
                     table.draw(res.getDataTable(), {'height': 500});
                 }
 
-                var query2 = new google.visualization.Query('joins.php');
+                const query2 = new google.visualization.Query('joins.php');
                 query2.setQuery('select gdp_year, sum(gdp_us) from countries group by gdp_year label gdp_us "Per-capita GDP (US Dollars)"');
                 query2.send(function(res) {
                     if(res.isError()) {
                         alert(res.getDetailedMessage());
                     } else {
-                        var table = new google.visualization.LineChart(document.getElementById('chart2-div'));
+                        const table = new google.visualization.LineChart(document.getElementById('chart2-div'));
                         table.draw(res.getDataTable(), {'height': 400});
                     }
                 });

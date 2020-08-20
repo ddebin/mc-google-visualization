@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Tests;
 
 use MC\Google\Visualization;
@@ -56,7 +58,7 @@ final class ExampleTest extends TestCase
         $output = $vis->handleRequest(false, $parameters);
 
         //file_put_contents(__DIR__.'/result1.js', $output);
-        static::assertStringEqualsFile(__DIR__.'/result1.js', $output);
+        self::assertStringEqualsFile(__DIR__.'/result1.js', $output);
     }
 
     /**
@@ -81,7 +83,7 @@ final class ExampleTest extends TestCase
         $output = $vis->handleRequest(false, $parameters);
 
         //file_put_contents(__DIR__.'/result2.js', $output);
-        static::assertStringEqualsFile(__DIR__.'/result2.js', $output);
+        self::assertStringEqualsFile(__DIR__.'/result2.js', $output);
     }
 
     /**
@@ -116,6 +118,6 @@ final class ExampleTest extends TestCase
         $output = $vis->handleRequest(false, $parameters);
 
         //file_put_contents(__DIR__.'/result3.js', $output);
-        static::assertStringEqualsFile(__DIR__.'/result3.js', $output);
+        self::assertStringEqualsFile(__DIR__.'/result3.js', $output);
     }
 }

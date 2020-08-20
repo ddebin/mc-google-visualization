@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Tests;
 
 use MC\Google\Visualization;
@@ -60,12 +62,12 @@ final class VisualizationTest extends TestCase
 
         $vis->setDefaultEntity('entity');
 
-        static::assertSame('SELECT unique_id AS id, some_number AS some FROM table', $vis->getSQL('select *'));
-        static::assertSame('SELECT unique_id AS id, some_number AS some FROM table', $vis->getSQL('select id, some from entity'));
+        self::assertSame('SELECT unique_id AS id, some_number AS some FROM table', $vis->getSQL('select *'));
+        self::assertSame('SELECT unique_id AS id, some_number AS some FROM table', $vis->getSQL('select id, some from entity'));
 
-        static::assertSame('SELECT e3.company AS company FROM entity2 INNER JOIN entity3 e3 USING (id)', $vis->getSQL('select company from entity2'));
+        self::assertSame('SELECT e3.company AS company FROM entity2 INNER JOIN entity3 e3 USING (id)', $vis->getSQL('select company from entity2'));
 
-        static::assertSame('SELECT unique_id AS id, name AS name, YEAR(date_created) AS created_year FROM entity2', $vis->getSQL('select id, name, created_year from entity2'));
+        self::assertSame('SELECT unique_id AS id, name AS name, YEAR(date_created) AS created_year FROM entity2', $vis->getSQL('select id, name, created_year from entity2'));
     }
 
     /**
@@ -85,7 +87,7 @@ final class VisualizationTest extends TestCase
         ]);
 
         $sql = $vis->getSQL('select max(opens) from campaigns');
-        static::assertSame('SELECT MAX(opens) AS `max-opens` FROM campaigns', $sql);
+        self::assertSame('SELECT MAX(opens) AS `max-opens` FROM campaigns', $sql);
     }
 
     /**
@@ -107,7 +109,7 @@ final class VisualizationTest extends TestCase
         $query = $vis->parseQuery('select max(opens) from campaigns');
         $meta = $vis->generateMetadata($query);
         $val = $vis->getRowValues(['max-opens' => 10], $meta);
-        static::assertSame('{c:[{v:10,f:"10"}]}', $val);
+        self::assertSame('{c:[{v:10,f:"10"}]}', $val);
     }
 
     /**
@@ -127,7 +129,7 @@ final class VisualizationTest extends TestCase
             ],
         ]);
 
-        static::assertSame('SELECT title AS title FROM campaigns WHERE (( status = "sent" ))', $vis->getSQL('select title from campaigns where (status = "sent")'));
+        self::assertSame('SELECT title AS title FROM campaigns WHERE (( status = "sent" ))', $vis->getSQL('select title from campaigns where (status = "sent")'));
     }
 
     /**
@@ -150,11 +152,11 @@ final class VisualizationTest extends TestCase
             ],
         ]);
 
-        static::assertSame('SELECT campaign_id AS field FROM campaigns', $vis->getSQL('select req_callback from campaigns'));
+        self::assertSame('SELECT campaign_id AS field FROM campaigns', $vis->getSQL('select req_callback from campaigns'));
 
         $query = $vis->parseQuery('select req_callback from campaigns');
         $meta = $vis->generateMetadata($query);
-        static::assertSame('{c:[{v:"callback-1"}]}', $vis->getRowValues(['field' => '1'], $meta));
+        self::assertSame('{c:[{v:"callback-1"}]}', $vis->getRowValues(['field' => '1'], $meta));
     }
 
     /**
@@ -172,7 +174,7 @@ final class VisualizationTest extends TestCase
             ],
         ]);
 
-        static::assertSame('SELECT campaign_id AS id FROM campaigns ORDER BY campaign_id ASC', $vis->getSQL('select id from campaigns order by id'));
+        self::assertSame('SELECT campaign_id AS id FROM campaigns ORDER BY campaign_id ASC', $vis->getSQL('select id from campaigns order by id'));
     }
 
     /**
@@ -195,7 +197,7 @@ final class VisualizationTest extends TestCase
         $query = $vis->parseQuery('select * from campaigns format date_field "m/d/Y", num_field "num:2", bool_field "N:Y"');
         $meta = $vis->generateMetadata($query);
         $val = $vis->getRowValues(['date_field' => '2007-01-01', 'num_field' => '2057.566', 'bool_field' => 0], $meta);
-        static::assertSame('{c:[{v:new Date(2007,0,1),f:"01\/01\/2007"},{v:2057.566,f:"2,057.57"},{v:false,f:"N"}]}', $val);
+        self::assertSame('{c:[{v:new Date(2007,0,1),f:"01\/01\/2007"},{v:2057.566,f:"2,057.57"},{v:false,f:"N"}]}', $val);
     }
 
     /**
@@ -214,7 +216,7 @@ final class VisualizationTest extends TestCase
             ],
         ]);
 
-        static::assertSame('SELECT sub_field AS group_field, SUM(num_field) AS `sum-num_field` FROM campaigns GROUP BY sub_field', $vis->getSQL('select group_field, sum(num_field) from campaigns group by group_field'));
+        self::assertSame('SELECT sub_field AS group_field, SUM(num_field) AS `sum-num_field` FROM campaigns GROUP BY sub_field', $vis->getSQL('select group_field, sum(num_field) from campaigns group by group_field'));
     }
 
     /**
@@ -225,7 +227,7 @@ final class VisualizationTest extends TestCase
     public function testPivot()
     {
         if (!in_array('sqlite', PDO::getAvailableDrivers(), true)) {
-            static::markTestSkipped('Pivot tests require the SQLite PDO drivers to be installed');
+            self::markTestSkipped('Pivot tests require the SQLite PDO drivers to be installed');
         }
 
         $db = new PDO('sqlite::memory:');
@@ -246,7 +248,7 @@ final class VisualizationTest extends TestCase
         $db->exec('INSERT INTO users VALUES (2, "user2");');
 
         $sql = $vis->getSQL('select count(id) from users pivot username');
-        static::assertSame("SELECT COUNT(CASE WHEN username='user1' THEN unique_id ELSE NULL END) AS `user1 count-id`, COUNT(CASE WHEN username='user2' THEN unique_id ELSE NULL END) AS `user2 count-id` FROM users", $sql);
+        self::assertSame("SELECT COUNT(CASE WHEN username='user1' THEN unique_id ELSE NULL END) AS `user1 count-id`, COUNT(CASE WHEN username='user2' THEN unique_id ELSE NULL END) AS `user2 count-id` FROM users", $sql);
     }
 
     /**
@@ -263,7 +265,7 @@ final class VisualizationTest extends TestCase
             'fields' => ['amount' => ['field' => 'amount', 'type' => 'number']],
         ]);
 
-        static::assertSame('SELECT SUM(amount) AS `sum-amount` FROM orders WHERE (amount = true) GROUP BY amount', $vis->getSQL('select sum(amount) from orders where amount=true group by amount label amount "Revenue"'));
+        self::assertSame('SELECT SUM(amount) AS `sum-amount` FROM orders WHERE (amount = true) GROUP BY amount', $vis->getSQL('select sum(amount) from orders where amount=true group by amount label amount "Revenue"'));
     }
 
     /**
@@ -278,7 +280,7 @@ final class VisualizationTest extends TestCase
         $vis->addEntity('orders', [
             'fields' => ['order_date' => ['field' => 'order_date', 'type' => 'datetime']],
         ]);
-        static::assertSame("SELECT order_date AS order_date FROM orders WHERE (order_date > '2008-01-01 00:00:00')", $vis->getSQL('select order_date from orders where order_date > date "2008-01-01 00:00:00"'));
+        self::assertSame("SELECT order_date AS order_date FROM orders WHERE (order_date > '2008-01-01 00:00:00')", $vis->getSQL('select order_date from orders where order_date > date "2008-01-01 00:00:00"'));
     }
 
     /**
@@ -297,7 +299,7 @@ final class VisualizationTest extends TestCase
         $query = $vis->parseQuery('select amount from orders options no_format');
         $meta = $vis->generateMetadata($query);
         $val = $vis->getRowValues(['amount' => 10000], $meta);
-        static::assertSame('{c:[{v:10000}]}', $val);
+        self::assertSame('{c:[{v:10000}]}', $val);
     }
 
     /**
@@ -316,7 +318,7 @@ final class VisualizationTest extends TestCase
         $query = $vis->parseQuery('select amount from orders options no_values');
         $meta = $vis->generateMetadata($query);
         $val = $vis->getRowValues(['amount' => 10000], $meta);
-        static::assertSame('{c:[{f:"10,000"}]}', $val);
+        self::assertSame('{c:[{f:"10,000"}]}', $val);
     }
 
     /**
@@ -336,7 +338,7 @@ final class VisualizationTest extends TestCase
         $query = $vis->parseQuery('select count(id), product from orders group by product');
         $meta = $vis->generateMetadata($query);
         $val = $vis->getRowValues(['count-id' => 2, 'product' => 'test product'], $meta);
-        static::assertSame('{c:[{v:2,f:"2"},{v:"test product"}]}', $val);
+        self::assertSame('{c:[{v:2,f:"2"},{v:"test product"}]}', $val);
     }
 
     /**
@@ -354,7 +356,7 @@ final class VisualizationTest extends TestCase
                 'id' => ['field' => 'id', 'type' => 'text'],
             ], ]);
         $sql = $vis->getSQL('select id from orders where product is not null');
-        static::assertSame('SELECT id AS id FROM orders WHERE (product IS NOT NULL)', $sql);
+        self::assertSame('SELECT id AS id FROM orders WHERE (product IS NOT NULL)', $sql);
     }
 
     public static function callbackTest(array $row): string

@@ -24,12 +24,14 @@
     "require": {
         "php": "^7.0",
         "ext-json": "*",
-        "ext-pdo": "*"
+        "ext-pdo": "*",
+        "symfony/polyfill-php74": "^1.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^6.0|^7.0",
         "phpstan/phpstan": "^0.9|^0.10|^0.11",
-        "phpstan/phpstan-phpunit": "^0.9|^0.10|^0.11"
+        "phpstan/phpstan-phpunit": "^0.9|^0.10|^0.11",
+        "phpstan/phpstan-strict-rules": "^0.9|^0.10|^0.11"
     },
     "autoload": {
         "psr-4": {

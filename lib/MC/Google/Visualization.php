@@ -2,6 +2,8 @@
 
 /** @noinspection SlowArrayOperationsInLoopInspection */
 
+declare(strict_types = 1);
+
 namespace MC\Google;
 
 use Exception;
@@ -26,7 +28,7 @@ class Visualization
      * The default entity that will be used if the "from" part of a query is left out. Setting this to null
      * will make a "from" clause required.
      *
-     * @var string|null
+     * @var null|string
      */
     protected $defaultEntity;
 
@@ -41,7 +43,7 @@ class Visualization
      * If pivots are being used or MC_Google_Visualization is handling the whole request, this must be a PDO
      * connection to your database.
      *
-     * @var PDO|null
+     * @var null|PDO
      */
     protected $db;
 
@@ -77,8 +79,8 @@ class Visualization
      * Create a new instance.  This must be done before the library can be used.  Pass in a PDO connection and
      * dialect if MC_Google_Visualization will handle the entire request cycle.
      *
-     * @param PDO|null    $db      the database connection to use
-     * @param string $dialect the SQL dialect to use - one of "mysql", "postgres", or "sqlite"
+     * @param null|PDO $db      the database connection to use
+     * @param string   $dialect the SQL dialect to use - one of "mysql", "postgres", or "sqlite"
      *
      * @throws Visualization_Error
      */
@@ -135,7 +137,7 @@ class Visualization
         if (!isset($this->defaultFormat[$type])) {
             throw new Visualization_Error('Unknown or unformattable type: "'.$type.'"');
         }
-        if ('boolean' === $type && false === strpos($format, ':')) {
+        if ('boolean' === $type && false === mb_strpos($format, ':')) {
             throw new Visualization_Error('Invalid boolean format string: "'.$format.'"');
         }
         $this->defaultFormat[$type] = $format;
@@ -145,8 +147,8 @@ class Visualization
      * Handle the entire request, pulling the query from the $_GET variables and printing the results directly
      * if not specified otherwise.
      *
-     * @param bool  $echo         print response and set header
-     * @param array|null $queryParams query parameters
+     * @param bool       $echo        print response and set header
+     * @param null|array $queryParams query parameters
      *
      * @throws Visualization_Error
      *
@@ -212,7 +214,7 @@ class Visualization
             $meta['req_params'] = $params;
 
             $stmt = $this->db->query($sql);
-            assert($stmt !== false);
+            assert(false !== $stmt);
             //If we got here, there's no errors
             $response .= $this->getSuccessInit($meta);
             $first = true;
@@ -503,11 +505,11 @@ class Visualization
                 case 'text':
                     $val = json_encode((string) $val);
                     $formatted = null;
-
                     break;
+
                 case 'number':
                     $val = (float) $val;
-                    if (preg_match('#^num:(\d+)(.*)$#i', $format, $matches)) {
+                    if (1 === preg_match('#^num:(\d+)(.*)$#i', $format, $matches)) {
                         $digits = (int) $matches[1];
                         $extras = $matches[2];
                         if (is_array($extras) && (2 === count($extras))) {
@@ -523,34 +525,34 @@ class Visualization
                         $formatted = sprintf($format, $val);
                     }
                     $val = json_encode($val);
-
                     break;
+
                 case 'boolean':
                     $val = (bool) $val;
                     list($formatFalse, $formatTrue) = explode(':', $format, 2);
                     $formatted = $val ? $formatTrue : $formatFalse;
                     $val = json_encode($val);
-
                     break;
+
                 case 'date':
-                    if (!is_numeric($val) || (is_string($val) && (6 !== strlen($val)))) {
+                    if (!is_numeric($val) || (is_string($val) && (6 !== mb_strlen($val)))) {
                         $time = strtotime($val);
                         list($year, $month, $day) = explode('-', date('Y-m-d', $time));
                         $formatted = date($format, $time);
                     } else {
                         assert(is_string($val));
-                        $year = substr($val, 0, 4);
-                        $week = substr($val, -2);
+                        $year = mb_substr($val, 0, 4);
+                        $week = mb_substr($val, -2);
                         $time = strtotime($year.'0104 +'.$week.' weeks');
-                        assert($time !== false);
+                        assert(false !== $time);
                         $monday = strtotime('-'.((int) date('w', $time) - 1).' days', $time);
-                        assert($monday !== false);
+                        assert(false !== $monday);
                         list($year, $month, $day) = explode('-', date('Y-m-d', $monday));
                         $formatted = date($format, $monday);
                     }
                     $val = 'new Date('.(int) $year.','.((int) $month - 1).','.(int) $day.')';
-
                     break;
+
                 case 'datetime':
                 case 'timestamp':
                     $time = strtotime($val);
@@ -558,20 +560,19 @@ class Visualization
                     // MALC - Force us to consider the date as UTC...
                     $val = 'new Date(Date.UTC('.(int) $year.','.((int) $month - 1).','.(int) $day.','.(int) $hour.','.(int) $minute.','.(int) $second.'))';
                     $formatted = date($format, $time);
-
                     break;
+
                 case 'time':
                     $time = strtotime($val);
                     list($hour, $minute, $second) = explode('-', date('H-i-s', $time));
                     $val = '['.(int) $hour.','.(int) $minute.','.(int) $second.',0]';
                     $formatted = date($format, $time);
-
                     break;
+
                 case 'binary':
                     $formatted = '0x'.current(unpack('H*', $val));
                     $val = '0x'.current(unpack('H*', $val));
                     $val = json_encode($val);
-
                     break;
                 default:
                     throw new Visualization_Error('Unknown field type "'.$type.'"');
@@ -710,11 +711,13 @@ class Visualization
                     $query['select'] = $fields;
 
                     break;
+
                 case 'from':
                     $vals = $token->getValues();
                     $query['from'] = $vals[1];
 
                     break;
+
                 case 'where':
                     $whereTokens = $token->getChildren();
                     $whereTokens = $whereTokens[1];
@@ -722,6 +725,7 @@ class Visualization
                     $query['where'] = $where;
 
                     break;
+
                 case 'groupby':
                     $groupby = $token->getValues();
                     array_shift($groupby);
@@ -729,6 +733,7 @@ class Visualization
                     $query['groupby'] = $groupby;
 
                     break;
+
                 case 'pivot':
                     if (null === $this->db) {
                         throw new Visualization_QueryError('Pivots require a PDO database connection');
@@ -738,6 +743,7 @@ class Visualization
                     $query['pivot'] = $pivot;
 
                     break;
+
                 case 'orderby':
                     $orderby = $token->getValues();
                     array_shift($orderby);
@@ -748,7 +754,7 @@ class Visualization
                         $field = $orderby[$i];
                         $dir = 'asc';
                         if (isset($orderby[$i + 1])) {
-                            $dir = strtolower($orderby[$i + 1]);
+                            $dir = mb_strtolower($orderby[$i + 1]);
                             if ('asc' === $dir || 'desc' === $dir) {
                                 ++$i;
                             } else {
@@ -760,18 +766,21 @@ class Visualization
                     $query['orderby'] = $fieldDir;
 
                     break;
+
                 case 'limit':
                     $limit = $token->getValues();
                     $limit = $limit[1];
                     $query['limit'] = $limit;
 
                     break;
+
                 case 'offset':
                     $offset = $token->getValues();
                     $offset = $offset[1];
                     $query['offset'] = $offset;
 
                     break;
+
                 case 'label':
                     $labels = $token->getValues();
                     array_shift($labels);
@@ -786,6 +795,7 @@ class Visualization
                     $query['labels'] = $queryLabels;
 
                     break;
+
                 case 'format':
                     $formats = $token->getValues();
                     array_shift($formats);
@@ -799,6 +809,7 @@ class Visualization
                     $query['formats'] = $queryFormats;
 
                     break;
+
                 case 'options':
                     $qoptions = $token->getValues();
                     array_shift($qoptions);
@@ -820,11 +831,10 @@ class Visualization
     /**
      * Return the response appropriate to tell the visualization client that an error has occurred.
      *
-     * @param int    $reqid       the request ID that caused the error
-     * @param string $detailMsg  the detailed message to send along with the error
-     * @param string $handler
-     * @param string $code        the code for the error (like "error", "server_error", "invalid_query", "access_denied", etc.)
-     * @param string|null $summaryMsg a short description of the error, appropriate to show to end users
+     * @param int         $reqid      the request ID that caused the error
+     * @param string      $detailMsg  the detailed message to send along with the error
+     * @param string      $code       the code for the error (like "error", "server_error", "invalid_query", "access_denied", etc.)
+     * @param null|string $summaryMsg a short description of the error, appropriate to show to end users
      *
      * @return string the string to output that will cause the visualization client to detect an error
      */
@@ -933,7 +943,7 @@ class Visualization
             }
 
             $pivotSql = 'SELECT '.implode(', ', $pivotFields).' FROM '.$meta['table'];
-            if (!empty($pivotJoins)) {
+            if (count($pivotJoins) > 0) {
                 $pivotSql .= ' '.implode(' ', $pivotJoins);
             }
             $pivotSql .= ' GROUP BY '.implode(', ', $pivotGroup);
@@ -949,9 +959,9 @@ class Visualization
             }
             $meta['query_fields'] = $newFields;
 
-            assert($this->db !== null);
+            assert(null !== $this->db);
             $stmt = $this->db->query($pivotSql);
-            assert($stmt !== false);
+            assert(false !== $stmt);
             $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
             assert(is_array($rows));
             foreach ($rows as $row) {
@@ -988,25 +998,24 @@ class Visualization
                 switch ($wherePart['type']) {
                     case 'where_field':
                         $wherePart['value'] = $this->getFieldSQL($wherePart['value'], $meta['field_spec'][$wherePart['value']]);
-
                         break;
+
                     case 'datetime':
                     case 'timestamp':
                         $wherePart['value'] = $this->convertDateTime(trim($wherePart['value'][1], '\'"'));
-
                         break;
+
                     case 'timeofday':
                         $wherePart['value'] = $this->convertTime(trim($wherePart['value'][1], '\'"'));
-
                         break;
+
                     case 'date':
                         $wherePart['value'] = $this->convertDate(trim($wherePart['value'][1], '\'"'));
-
                         break;
+
                     case 'null':
                     case 'notnull':
-                        $wherePart['value'] = strtoupper(implode(' ', $wherePart['value']));
-
+                        $wherePart['value'] = mb_strtoupper(implode(' ', $wherePart['value']));
                         break;
                 }
 
@@ -1018,18 +1027,20 @@ class Visualization
         }
 
         $sql = 'SELECT '.implode(', ', $querySql).' FROM '.$meta['table'];
-        if (!empty($joinSql)) {
+        if (count($joinSql) > 0) {
             $sql .= ' '.implode(' ', $joinSql);
         }
 
-        if ($whereStr || isset($meta['global_where'])) {
-            if (!$whereStr) {
-                $whereStr = '1=1';
-            }
-            $sql .= ' WHERE ('.$whereStr.')';
-            if (isset($meta['global_where'])) {
-                $sql .= ' AND '.$meta['global_where'];
-            }
+        $wheres = [];
+        if (('' !== $whereStr) && (null !== $whereStr)) {
+            $wheres[] = "({$whereStr})";
+        }
+        if (isset($meta['global_where'])) {
+            $wheres[] = $meta['global_where'];
+        }
+
+        if (count($wheres) > 0) {
+            $sql .= ' WHERE '.implode(' AND ', $wheres);
         }
 
         if (isset($meta['groupby'])) {
@@ -1053,7 +1064,7 @@ class Visualization
                     $sql .= ',';
                 }
 
-                $sql .= ' '.$this->getFieldSQL($field, $spec).' '.strtoupper($dir);
+                $sql .= ' '.$this->getFieldSQL($field, $spec).' '.mb_strtoupper($dir);
                 $first = false;
             }
         }
@@ -1088,8 +1099,6 @@ class Visualization
      * @param array $meta the metadata for the query - generally generated by MC_Google_Visualization::generateMetadata
      *
      * @throws Visualization_Error
-     *
-     * @return string
      */
     protected function getTableInit(array $meta): string
     {
@@ -1114,28 +1123,27 @@ class Visualization
                 case 'text':
                 case 'binary':
                     $rtype = 'string';
-
                     break;
+
                 case 'number':
                     $rtype = 'number';
-
                     break;
+
                 case 'boolean':
                     $rtype = 'boolean';
-
                     break;
+
                 case 'date':
                     $rtype = 'date';
-
                     break;
+
                 case 'datetime':
                 case 'timestamp':
                     $rtype = 'datetime';
-
                     break;
+
                 case 'time':
                     $rtype = 'time';
-
                     break;
                 default:
                     throw new Visualization_Error('Unknown field type "'.$type.'"');
@@ -1215,7 +1223,7 @@ class Visualization
      */
     protected function getFieldQuote(): string
     {
-        if ($this->sqlDialect === 'postgres') {
+        if ('postgres' === $this->sqlDialect) {
             return '"';
         }
 
@@ -1225,11 +1233,11 @@ class Visualization
     /**
      * Helper function to generate the SQL for a given entity field.
      *
-     * @param string      $name         the name of the field to generate SQL for
-     * @param array       $spec         the entity spec array for the field
-     * @param bool        $alias        whether to also generate an "AS" alias for the field - defaults to false
-     * @param null|string $func         the function to call against the field (count, avg, sum, max, min)
-     * @param null|array  $pivot        if there was a pivot for this query, this should be an array of values that uniquely identify this field
+     * @param string      $name        the name of the field to generate SQL for
+     * @param array       $spec        the entity spec array for the field
+     * @param bool        $alias       whether to also generate an "AS" alias for the field - defaults to false
+     * @param null|string $func        the function to call against the field (count, avg, sum, max, min)
+     * @param null|array  $pivot       if there was a pivot for this query, this should be an array of values that uniquely identify this field
      * @param null|array  $pivotFields if there was a pivot for this query, this should be an array of the specs for the pivoted fields
      *
      * @return string the SQL string for this field, with an op
@@ -1240,19 +1248,19 @@ class Visualization
         $q = $this->getFieldQuote();
         if (null !== $func) {
             if (null === $pivot) {
-                $sql = strtoupper($func).'('.$sql.')';
+                $sql = mb_strtoupper($func).'('.$sql.')';
                 if ($alias) {
                     $sql .= ' AS '.$q.$func.'-'.$name.$q;
                 }
             } else {
-                assert($pivotFields !== null);
+                assert(null !== $this->db);
+                assert(null !== $pivotFields);
                 $casewhen = [];
                 foreach ($pivot as $key => $val) {
                     $pivotField = $pivotFields[$key];
-                    assert($this->db !== null);
                     $casewhen[] = $pivotField['field'].'='.$this->db->quote($val);
                 }
-                $sql = strtoupper($func).'(CASE WHEN '.implode(' AND ', $casewhen).' THEN '.$sql.' ELSE NULL END)';
+                $sql = mb_strtoupper($func).'(CASE WHEN '.implode(' AND ', $casewhen).' THEN '.$sql.' ELSE NULL END)';
                 if ($alias) {
                     $sql .= ' AS '.$q.implode(',', $pivot).' '.$func.'-'.$name.$q;
                 }
@@ -1312,7 +1320,7 @@ class Visualization
         if ($token->hasChildren()) {
             if ('function' === $token->name) {
                 $field = $token->getValues();
-                $field[0] = strtolower($field[0]);
+                $field[0] = mb_strtolower($field[0]);
                 $fields[] = $field;
             } else {
                 foreach ($token->getChildren() as $field) {
@@ -1335,16 +1343,12 @@ class Visualization
         if (!is_array($where)) {
             $where = [];
         }
-        if ($token->hasChildren()) {
-            if ($token->name) {
-                $where[] = ['type' => $token->name, 'value' => $token->getValues()];
-            } else {
-                foreach ($token->getChildren() as $child) {
-                    $this->parseWhereTokens($child, $where);
-                }
+        if (null !== $token->name) {
+            $where[] = ['type' => $token->name, 'value' => $token->hasChildren() ? $token->getValues() : $token->value];
+        } else {
+            foreach ($token->getChildren() as $child) {
+                $this->parseWhereTokens($child, $where);
             }
-        } elseif ($token->name) {
-            $where[] = ['type' => $token->name, 'value' => $token->value];
         }
     }
 }

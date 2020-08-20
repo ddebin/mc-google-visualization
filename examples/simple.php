@@ -2,6 +2,8 @@
 
 /** @noinspection PhpUnhandledExceptionInspection */
 
+declare(strict_types = 1);
+
 use MC\Google\Visualization;
 
 require_once __DIR__.'/../vendor/autoload.php';
@@ -29,13 +31,13 @@ if (isset($_GET['tq'])) {
     <script type="text/javascript">
         google.charts.load('current', {'packages': ['table']});
         window.addEventListener('DOMContentLoaded', function() { google.charts.setOnLoadCallback(function() {
-            var query = new google.visualization.Query('simple.php');
+            const query = new google.visualization.Query('simple.php');
             query.setQuery('select id, name from countries order by name label id "ID", name "Name"');
             query.send(function(res) {
                 if(res.isError()) {
                     alert(res.getDetailedMessage());
                 } else {
-                    var table = new google.visualization.Table(document.getElementById('table-div'));
+                    const table = new google.visualization.Table(document.getElementById('table-div'));
                     table.draw(res.getDataTable(), {'page': 'enable', 'pageSize': 20});
                 }
             });

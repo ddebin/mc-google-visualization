@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace MC\Parser\Def;
 
 use MC\Parser\Def;
@@ -50,16 +52,13 @@ class OneOf extends Def
         if (-1 === $maxMatch) {
             throw new ParseError('No alternative options match', $str, $loc);
         }
-        if ($this->name && !$res->name) {
+        if ((null !== $res) && (null === $res->name) && (null !== $this->name)) {
             $res->name = $this->name;
         }
 
         return [$maxMatch, $res];
     }
 
-    /**
-     * @return string
-     */
     public function _name(): string
     {
         $names = [];

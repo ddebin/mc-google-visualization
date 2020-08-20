@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace MC\Google;
 
 class Visualization_QueryError extends Visualization_Error

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace MC\Parser\Def;
 
 use MC\Parser\Def;
@@ -13,10 +15,6 @@ class NOrMore extends Def
     /** @var int */
     public $min;
 
-    /**
-     * @param Def $expr
-     * @param int $min
-     */
     public function __construct(Def $expr, int $min)
     {
         $this->expr = $expr;
@@ -24,9 +22,6 @@ class NOrMore extends Def
     }
 
     /**
-     * @param string $str
-     * @param int    $loc
-     *
      * @throws ParseError
      *
      * @return mixed[]
@@ -56,9 +51,6 @@ class NOrMore extends Def
         return [$loc, $toks];
     }
 
-    /**
-     * @return string
-     */
     public function _name(): string
     {
         return $this->min.' or more: '.$this->expr->getName();
