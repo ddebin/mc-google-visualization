@@ -1,8 +1,3 @@
-**/.idea/workspace.xml
-**/.idea/tasks.xml
-**/.idea/*.iws
-**/.idea/dataSources.local.xml
-**/.idea/dictionaries
 /vendor/
 .php_cs.cache
 /tests-report-html/

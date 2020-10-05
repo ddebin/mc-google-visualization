@@ -77,11 +77,7 @@ abstract class Def
      */
     public function getName(): string
     {
-        if (null !== $this->name) {
-            return $this->name;
-        }
-
-        return $this->_name();
+        return $this->name ?? $this->_name();
     }
 
     /**

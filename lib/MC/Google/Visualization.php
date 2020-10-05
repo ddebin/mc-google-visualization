@@ -161,7 +161,10 @@ class Visualization
         }
 
         $query = $queryParams['tq'];
-        $params = ['version' => $this->version, 'responseHandler' => 'google.visualization.Query.setResponse'];
+        $params = [
+            'version' => $this->version,
+            'responseHandler' => $queryParams['responseHandler'] ?? 'google.visualization.Query.setResponse',
+        ];
         $paramlist = explode(';', $queryParams['tqx']);
         foreach ($paramlist as $paramstr) {
             list($name, $val) = explode(':', $paramstr);
@@ -172,10 +175,6 @@ class Visualization
         $params['version'] = (float) $params['version'];
         if ($params['version'] > $this->version) {
             throw new Visualization_Error('Data Source version '.$params['version'].' is unsupported at this time');
-        }
-
-        if (isset($queryParams['responseHandler'])) {
-            $params['responseHandler'] = $queryParams['responseHandler'];
         }
 
         $response = $this->handleQuery($query, $params);
@@ -843,7 +842,6 @@ class Visualization
         if (null === $summaryMsg) {
             $summaryMsg = $detailMsg;
         }
-        $handler = $handler ?: 'google.visualization.Query.setResponse';
 
         return $handler.'({version:"'.$this->version.'",reqId:"'.$reqid.'",status:"error",errors:[{reason:'.json_encode($code).',message:'.json_encode($summaryMsg).',detailed_message:'.json_encode($detailMsg).'}]});';
     }
@@ -1087,8 +1085,8 @@ class Visualization
      */
     protected function getSuccessInit(array $meta): string
     {
-        $handler = $meta['req_params']['responseHandler'] ?: 'google.visualization.Query.setResponse';
-        $version = $meta['req_params']['version'] ?: $this->version;
+        $handler = $meta['req_params']['responseHandler'] ?? 'google.visualization.Query.setResponse';
+        $version = $meta['req_params']['version'] ?? $this->version;
 
         return $handler."({version:'".$version."',reqId:'".$meta['req_id']."',status:'ok',table:".$this->getTableInit($meta);
     }

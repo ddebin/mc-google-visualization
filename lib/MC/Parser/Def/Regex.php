@@ -52,7 +52,7 @@ class Regex extends Def
         preg_match(self::DELIMITER.'^'.$this->regex.self::DELIMITER.$this->flags, substr($str, $loc), $matches, PREG_OFFSET_CAPTURE);
         $success = $matches[$this->retgroup] ?? null;
         if ((null === $success) || 0 !== $success[1]) {
-            throw new ParseError('Expected: '.($this->errstr ?: 'matching '.$this->regex), $str, $loc);
+            throw new ParseError('Expected: '.($this->errstr ?? 'matching '.$this->regex), $str, $loc);
         }
 
         $loc += strlen($success[0]);
@@ -62,10 +62,6 @@ class Regex extends Def
 
     public function _name(): string
     {
-        if (null !== $this->errstr) {
-            return $this->errstr;
-        }
-
-        return 'matches: '.$this->regex;
+        return $this->errstr ?? ('matches: '.$this->regex);
     }
 }

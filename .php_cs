@@ -13,7 +13,6 @@ return Config::create()
     ->setRules([
         '@PhpCsFixer' => true,
         '@PhpCsFixer:risky' => true,
-        '@DoctrineAnnotation' => true,
         '@PHP70Migration:risky' => true,
         '@PHPUnit75Migration:risky' => true,
         'backtick_to_shell_exec' => true,
@@ -22,11 +21,6 @@ return Config::create()
         ],
         'comment_to_phpdoc' => false,
         'declare_equal_normalize' => ['space' => 'single'],
-        'doctrine_annotation_array_assignment' => ['operator' => '='],
-        'doctrine_annotation_spaces' => [
-            'after_array_assignments_equals' => false,
-            'before_array_assignments_equals' => false
-        ],
         'final_static_access' => true,
         'global_namespace_import' => true,
         'linebreak_after_opening_tag' => true,
