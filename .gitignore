@@ -1,4 +1,5 @@
 /vendor/
-.php_cs.cache
+/.*.cache
 /tests-report-html/
 /composer.lock
+/coverage.xml

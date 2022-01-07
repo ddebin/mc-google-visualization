@@ -27,7 +27,7 @@ class Group extends Token implements Countable
      *
      * @param null|Token|Token[] $toks one or more token instances
      */
-    public function append($toks)
+    public function append($toks): void
     {
         if (null === $toks) {
             return;
@@ -43,9 +43,6 @@ class Group extends Token implements Countable
         return count($this->subtoks);
     }
 
-    /**
-     * @return mixed[]
-     */
     public function getValues(): array
     {
         $values = [];
@@ -56,9 +53,6 @@ class Group extends Token implements Countable
         return $values;
     }
 
-    /**
-     * @return mixed[]
-     */
     public function getNameValues(): array
     {
         $values = [];

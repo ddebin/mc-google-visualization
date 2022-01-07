@@ -156,7 +156,7 @@ class Parser
      */
     public function delimitedList(Def $expr, string $delim = ','): Set
     {
-        return $this->set($expr, $this->zeroOrMore($this->set($this->literal($delim, false, false)->suppress(), $expr)));
+        return $this->set($expr, $this->zeroOrMore($this->set($this->literal($delim)->suppress(), $expr)));
     }
 
     /**
@@ -223,10 +223,8 @@ class Parser
 
     /**
      * Simple test for whether a character is a whitespace character.
-     *
-     * @param mixed $test
      */
-    public static function isWhitespace($test): bool
+    public static function isWhitespace(string $test): bool
     {
         return false !== strpos(self::$whitespace, $test);
     }

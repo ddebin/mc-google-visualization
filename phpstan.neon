@@ -4,5 +4,3 @@ includes:
     - vendor/phpstan/phpstan-strict-rules/rules.neon
 parameters:
     checkMissingIterableValueType: false
-    ignoreErrors:
-        - '#has no return typehint#'

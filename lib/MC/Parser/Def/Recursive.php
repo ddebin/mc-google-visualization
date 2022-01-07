@@ -16,8 +16,6 @@ class Recursive extends Def
     /**
      * @throws DefError
      * @throws ParseError
-     *
-     * @return mixed[]
      */
     public function _parse(string $str, int $loc): array
     {

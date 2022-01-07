@@ -15,7 +15,7 @@ use PHPUnit\Framework\TestCase;
  */
 final class ParserTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -27,7 +27,7 @@ final class ParserTest extends TestCase
     /**
      * @throws ParseError
      */
-    public function testLiteral()
+    public function testLiteral(): void
     {
         $p = new Parser();
         $select = $p->keyword('select', true);
@@ -40,7 +40,7 @@ final class ParserTest extends TestCase
         self::assertSame(['select', 'from'], $selectfrom->parse('select  from   ')->getValues());
     }
 
-    public function testName()
+    public function testName(): void
     {
         $p = new Parser();
         $select = $p->keyword('select');
@@ -50,7 +50,7 @@ final class ParserTest extends TestCase
         self::assertSame('SELECT', $select->getName());
     }
 
-    public function testToken()
+    public function testToken(): void
     {
         $p = new Parser();
         $select = $p->keyword('select');
@@ -61,7 +61,7 @@ final class ParserTest extends TestCase
         self::assertSame([], $token->getChildren());
     }
 
-    public function testTokenGroup()
+    public function testTokenGroup(): void
     {
         $p = new Parser();
         $select = $p->keyword('select');
@@ -77,7 +77,7 @@ final class ParserTest extends TestCase
     /**
      * @throws ParseError
      */
-    public function testOneOf()
+    public function testOneOf(): void
     {
         $p = new Parser();
         $select = $p->keyword('select');
@@ -90,7 +90,7 @@ final class ParserTest extends TestCase
     /**
      * @throws ParseError
      */
-    public function testOptional()
+    public function testOptional(): void
     {
         $p = new Parser();
         $select = $p->keyword('select');
@@ -105,7 +105,7 @@ final class ParserTest extends TestCase
     /**
      * @throws ParseError
      */
-    public function testWord()
+    public function testWord(): void
     {
         $p = new Parser();
         $select = $p->keyword('select');
@@ -117,7 +117,7 @@ final class ParserTest extends TestCase
     /**
      * @throws ParseError
      */
-    public function testDelimitedList()
+    public function testDelimitedList(): void
     {
         $p = new Parser();
         $select = $p->keyword('select');
@@ -129,7 +129,7 @@ final class ParserTest extends TestCase
     /**
      * @throws ParseError
      */
-    public function testRecursive()
+    public function testRecursive(): void
     {
         $p = new Parser();
         $expr = $p->recursive();
@@ -142,7 +142,7 @@ final class ParserTest extends TestCase
      * @throws DefError
      * @throws ParseError
      */
-    public function testDelimitedSet()
+    public function testDelimitedSet(): void
     {
         $p = new Parser();
         $limit = $p->set($p->keyword('limit'), $p->delimitedList($p->set($p->word($p->alphanums()), $p->quotedString())));
@@ -153,7 +153,7 @@ final class ParserTest extends TestCase
      * @throws DefError
      * @throws ParseError
      */
-    public function testVisParser()
+    public function testVisParser(): void
     {
         $p = new Parser();
         $ident = $p->oneOf(
@@ -227,7 +227,7 @@ final class ParserTest extends TestCase
     /**
      * @throws DefError
      */
-    public function testQuotedStringEx1()
+    public function testQuotedStringEx1(): void
     {
         $p = new Parser();
         $this->expectException(DefError::class);
@@ -237,7 +237,7 @@ final class ParserTest extends TestCase
     /**
      * @throws DefError
      */
-    public function testQuotedStringEx2()
+    public function testQuotedStringEx2(): void
     {
         $p = new Parser();
         $this->expectException(DefError::class);

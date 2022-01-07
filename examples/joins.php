@@ -31,7 +31,7 @@ if (isset($_GET['tq'])) {
     ]);
 
     $vis->handleRequest();
-    die();
+    exit();
 }
 ?>
 <html lang="en">

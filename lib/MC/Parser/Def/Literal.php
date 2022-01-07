@@ -35,8 +35,6 @@ class Literal extends Def
 
     /**
      * @throws ParseError
-     *
-     * @return mixed[]
      */
     public function _parse(string $str, int $loc): array
     {

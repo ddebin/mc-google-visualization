@@ -27,7 +27,7 @@ abstract class Def
     {
         $str = ltrim($str);
 
-        list($loc, $tok) = $this->parsePart($str, 0);
+        [$loc, $tok] = $this->parsePart($str, 0);
         if ($loc !== strlen($str)) {
             throw new ParseError('An error occurred: "'.substr($str, $loc).'"', $str, $loc);
         }
@@ -44,7 +44,7 @@ abstract class Def
      */
     public function parsePart(string $str, int $loc): array
     {
-        list($loc, $tok) = $this->_parse($str, $loc);
+        [$loc, $tok] = $this->_parse($str, $loc);
 
         $char = @$str[$loc++];
         while (('' !== $char) && Parser::isWhitespace($char)) {
@@ -107,7 +107,7 @@ abstract class Def
      *
      * @return null|Token the new token, or null if the token should be suppressed
      */
-    public function token($value)
+    public function token($value): ?Token
     {
         if ($this->suppress) {
             return null;

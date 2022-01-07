@@ -13,7 +13,7 @@ use MC\Parser\ParseError;
 class Regex extends Def
 {
     /** @var string */
-    const DELIMITER = '/';
+    public const DELIMITER = '/';
 
     // Subclasses of this can just modify the $regex, $flags, and $errstr properties.
 
@@ -44,8 +44,6 @@ class Regex extends Def
 
     /**
      * @throws ParseError
-     *
-     * @return mixed[]
      */
     public function _parse(string $str, int $loc): array
     {

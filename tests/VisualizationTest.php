@@ -17,7 +17,7 @@ use PHPUnit\Framework\TestCase;
  */
 final class VisualizationTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -31,7 +31,7 @@ final class VisualizationTest extends TestCase
      * @throws ParseError
      * @throws DefError
      */
-    public function testGenSQL()
+    public function testGenSQL(): void
     {
         $vis = new Visualization();
         $vis->addEntity('entity', [
@@ -76,7 +76,7 @@ final class VisualizationTest extends TestCase
      * @throws DefError
      * @throws ParseError
      */
-    public function testFunctions()
+    public function testFunctions(): void
     {
         $vis = new Visualization();
         $vis->addEntity('campaigns', [
@@ -96,7 +96,7 @@ final class VisualizationTest extends TestCase
      * @throws ParseError
      * @throws DefError
      */
-    public function testSerializeFunction()
+    public function testSerializeFunction(): void
     {
         $vis = new Visualization();
         $vis->addEntity('campaigns', [
@@ -118,7 +118,7 @@ final class VisualizationTest extends TestCase
      * @throws DefError
      * @throws ParseError
      */
-    public function testWhere()
+    public function testWhere(): void
     {
         $vis = new Visualization();
         $vis->addEntity('campaigns', [
@@ -138,7 +138,7 @@ final class VisualizationTest extends TestCase
      * @throws ParseError
      * @throws DefError
      */
-    public function testCallback()
+    public function testCallback(): void
     {
         $vis = new Visualization();
         $vis->addEntity('campaigns', [
@@ -165,7 +165,7 @@ final class VisualizationTest extends TestCase
      * @throws Visualization_Error
      * @throws Visualization_QueryError
      */
-    public function testOrderBy()
+    public function testOrderBy(): void
     {
         $vis = new Visualization();
         $vis->addEntity('campaigns', [
@@ -183,7 +183,7 @@ final class VisualizationTest extends TestCase
      * @throws ParseError
      * @throws DefError
      */
-    public function testFormat()
+    public function testFormat(): void
     {
         $vis = new Visualization();
         $vis->addEntity('campaigns', [
@@ -206,7 +206,7 @@ final class VisualizationTest extends TestCase
      * @throws Visualization_Error
      * @throws Visualization_QueryError
      */
-    public function testGroupBy()
+    public function testGroupBy(): void
     {
         $vis = new Visualization();
         $vis->addEntity('campaigns', [
@@ -224,7 +224,7 @@ final class VisualizationTest extends TestCase
      * @throws ParseError
      * @throws DefError
      */
-    public function testPivot()
+    public function testPivot(): void
     {
         if (!in_array('sqlite', PDO::getAvailableDrivers(), true)) {
             self::markTestSkipped('Pivot tests require the SQLite PDO drivers to be installed');
@@ -258,7 +258,7 @@ final class VisualizationTest extends TestCase
      * @throws ParseError
      * @throws DefError
      */
-    public function testLabelAfterWhereAndGroupBy()
+    public function testLabelAfterWhereAndGroupBy(): void
     {
         $vis = new Visualization();
         $vis->addEntity('orders', [
@@ -274,7 +274,7 @@ final class VisualizationTest extends TestCase
      * @throws Visualization_Error
      * @throws Visualization_QueryError
      */
-    public function testDateLiterals()
+    public function testDateLiterals(): void
     {
         $vis = new Visualization();
         $vis->addEntity('orders', [
@@ -289,7 +289,7 @@ final class VisualizationTest extends TestCase
      * @throws ParseError
      * @throws DefError
      */
-    public function testNoFormat()
+    public function testNoFormat(): void
     {
         $vis = new Visualization();
         $vis->addEntity('orders', [
@@ -308,7 +308,7 @@ final class VisualizationTest extends TestCase
      * @throws ParseError
      * @throws DefError
      */
-    public function testNoValues()
+    public function testNoValues(): void
     {
         $vis = new Visualization();
         $vis->addEntity('orders', [
@@ -327,7 +327,7 @@ final class VisualizationTest extends TestCase
      * @throws ParseError
      * @throws DefError
      */
-    public function testCountNonNumber()
+    public function testCountNonNumber(): void
     {
         $vis = new Visualization();
         $vis->addEntity('orders', [
@@ -347,7 +347,7 @@ final class VisualizationTest extends TestCase
      * @throws Visualization_Error
      * @throws Visualization_QueryError
      */
-    public function testIsNull()
+    public function testIsNull(): void
     {
         $vis = new Visualization();
         $vis->addEntity('orders', [

@@ -25,14 +25,12 @@ class Set extends Def
     /**
      * @param string $str the string to parse
      * @param int    $loc the index to start parsing
-     *
-     * @return mixed[]
      */
     public function _parse(string $str, int $loc): array
     {
         $res = $this->tokenGroup();
         foreach ($this->exprs as $expr) {
-            list($loc, $toks) = $expr->parsePart($str, $loc);
+            [$loc, $toks] = $expr->parsePart($str, $loc);
             if ((null !== $toks) && (!is_array($toks) || (count($toks) > 0))) {
                 $res->append($toks);
             }

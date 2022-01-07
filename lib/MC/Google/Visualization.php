@@ -99,7 +99,7 @@ class Visualization
      *
      * @param null|PDO $db the database connection to use - or null if you want to handle your own queries
      */
-    public function setDB(PDO $db = null)
+    public function setDB(PDO $db = null): void
     {
         if (null !== $db) {
             $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -115,7 +115,7 @@ class Visualization
      *
      * @throws Visualization_Error
      */
-    public function setSqlDialect(string $dialect)
+    public function setSqlDialect(string $dialect): void
     {
         if ('mysql' !== $dialect && 'postgres' !== $dialect && 'sqlite' !== $dialect) {
             throw new Visualization_Error('SQL dialects must be one of "mysql", "postgres", or "sqlite" - not "'.$dialect.'"');
@@ -132,7 +132,7 @@ class Visualization
      *
      * @throws Visualization_Error
      */
-    public function setDefaultFormat(string $type, string $format)
+    public function setDefaultFormat(string $type, string $format): void
     {
         if (!isset($this->defaultFormat[$type])) {
             throw new Visualization_Error('Unknown or unformattable type: "'.$type.'"');
@@ -167,7 +167,7 @@ class Visualization
         ];
         $paramlist = explode(';', $queryParams['tqx']);
         foreach ($paramlist as $paramstr) {
-            list($name, $val) = explode(':', $paramstr);
+            [$name, $val] = explode(':', $paramstr);
             $params[$name] = $val;
         }
 
@@ -412,7 +412,7 @@ class Visualization
      *
      * @throws Visualization_Error
      */
-    public function addEntity(string $name, array $spec = [])
+    public function addEntity(string $name, array $spec = []): void
     {
         $entity = ['table' => $spec['table'] ?? $name, 'fields' => [], 'joins' => []];
         $this->entities[$name] = $entity;
@@ -441,7 +441,7 @@ class Visualization
      *
      * @throws Visualization_Error
      */
-    public function setDefaultEntity(string $default = null)
+    public function setDefaultEntity(string $default = null): void
     {
         if (null !== $default && !isset($this->entities[$default])) {
             throw new Visualization_Error('No entity exists with name "'.$default.'"');
@@ -528,7 +528,7 @@ class Visualization
 
                 case 'boolean':
                     $val = (bool) $val;
-                    list($formatFalse, $formatTrue) = explode(':', $format, 2);
+                    [$formatFalse, $formatTrue] = explode(':', $format, 2);
                     $formatted = $val ? $formatTrue : $formatFalse;
                     $val = json_encode($val);
                     break;
@@ -536,18 +536,19 @@ class Visualization
                 case 'date':
                     if (!is_numeric($val) || (is_string($val) && (6 !== strlen($val)))) {
                         $time = strtotime($val);
-                        list($year, $month, $day) = explode('-', date('Y-m-d', $time));
+                        [$year, $month, $day] = explode('-', date('Y-m-d', $time));
                         $formatted = date($format, $time);
-                    } else {
-                        assert(is_string($val));
+                    } elseif (is_string($val)) {
                         $year = substr($val, 0, 4);
                         $week = substr($val, -2);
                         $time = strtotime($year.'0104 +'.$week.' weeks');
                         assert(false !== $time);
                         $monday = strtotime('-'.((int) date('w', $time) - 1).' days', $time);
                         assert(false !== $monday);
-                        list($year, $month, $day) = explode('-', date('Y-m-d', $monday));
+                        [$year, $month, $day] = explode('-', date('Y-m-d', $monday));
                         $formatted = date($format, $monday);
+                    } else {
+                        throw new Visualization_Error('Incompatible value with field type "'.$type.'"');
                     }
                     $val = 'new Date('.(int) $year.','.((int) $month - 1).','.(int) $day.')';
                     break;
@@ -555,7 +556,7 @@ class Visualization
                 case 'datetime':
                 case 'timestamp':
                     $time = strtotime($val);
-                    list($year, $month, $day, $hour, $minute, $second) = explode('-', date('Y-m-d-H-i-s', $time));
+                    [$year, $month, $day, $hour, $minute, $second] = explode('-', date('Y-m-d-H-i-s', $time));
                     // MALC - Force us to consider the date as UTC...
                     $val = 'new Date(Date.UTC('.(int) $year.','.((int) $month - 1).','.(int) $day.','.(int) $hour.','.(int) $minute.','.(int) $second.'))';
                     $formatted = date($format, $time);
@@ -563,21 +564,24 @@ class Visualization
 
                 case 'time':
                     $time = strtotime($val);
-                    list($hour, $minute, $second) = explode('-', date('H-i-s', $time));
+                    [$hour, $minute, $second] = explode('-', date('H-i-s', $time));
                     $val = '['.(int) $hour.','.(int) $minute.','.(int) $second.',0]';
                     $formatted = date($format, $time);
                     break;
 
                 case 'binary':
-                    $formatted = '0x'.current(unpack('H*', $val));
-                    $val = '0x'.current(unpack('H*', $val));
-                    $val = json_encode($val);
+                    $bin = unpack('H*', $val);
+                    if (false === $bin) {
+                        throw new Visualization_Error('Incompatible value with field type "'.$type.'"');
+                    }
+                    $formatted = '0x'.current($bin);
+                    $val = json_encode($formatted);
                     break;
                 default:
                     throw new Visualization_Error('Unknown field type "'.$type.'"');
             }
 
-            if (isset($callbackResponse['formatted'])) {
+            if (is_array($callbackResponse) && isset($callbackResponse['formatted'])) {
                 $formatted = $callbackResponse['formatted'];
             }
 
@@ -855,7 +859,7 @@ class Visualization
      *
      * @throws Visualization_Error
      */
-    protected function addEntityField(string $entity, string $field, array $spec)
+    protected function addEntityField(string $entity, string $field, array $spec): void
     {
         if (!isset($spec['callback']) && (isset($spec['fields']) || isset($spec['extra']))) {
             throw new Visualization_Error('"fields" and "extra" parameters only apply to callback fields');
@@ -881,7 +885,7 @@ class Visualization
      *
      * @throws Visualization_Error
      */
-    protected function addEntityJoin(string $entity, string $join, string $sql)
+    protected function addEntityJoin(string $entity, string $join, string $sql): void
     {
         if (!isset($this->entities[$entity])) {
             throw new Visualization_Error('No entity table defined with name "'.$entity.'"');
@@ -898,7 +902,7 @@ class Visualization
      *
      * @throws Visualization_Error
      */
-    protected function setEntityWhere(string $entity, string $where)
+    protected function setEntityWhere(string $entity, string $where): void
     {
         if (!isset($this->entities[$entity])) {
             throw new Visualization_Error('No entity table defined with name "'.$entity.'"');
@@ -1202,7 +1206,7 @@ class Visualization
      *
      * @return string the limit clause converted to be used inline in a SQL query
      */
-    protected function convertLimit($limit, $offset): string
+    protected function convertLimit(?int $limit, ?int $offset): string
     {
         $sql = '';
         if (null !== $limit) {
@@ -1279,7 +1283,7 @@ class Visualization
      *
      * @throws Visualization_Error
      */
-    protected function addDependantCallbackFields(array $field, array $entity, array &$meta)
+    protected function addDependantCallbackFields(array $field, array $entity, array &$meta): void
     {
         foreach ($field['fields'] as $dependant) {
             if (!isset($entity['fields'][$dependant])) {
@@ -1305,7 +1309,7 @@ class Visualization
      * @param Token      $token  the token or token group to recursively parse
      * @param null|array $fields the collector array reference to receive the flattened select field values
      */
-    protected function parseFieldTokens(Token $token, array &$fields = null)
+    protected function parseFieldTokens(Token $token, array &$fields = null): void
     {
         if ('*' === $token->value) {
             return;
@@ -1336,7 +1340,7 @@ class Visualization
      * @param Token      $token the token or token group to parse
      * @param null|array $where the collector array of tokens that make up the where clause
      */
-    protected function parseWhereTokens(Token $token, array &$where = null)
+    protected function parseWhereTokens(Token $token, array &$where = null): void
     {
         if (!is_array($where)) {
             $where = [];
