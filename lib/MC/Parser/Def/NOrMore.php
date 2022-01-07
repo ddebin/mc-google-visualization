@@ -23,16 +23,15 @@ class NOrMore extends Def
 
     /**
      * @throws ParseError
-     *
-     * @return mixed[]
      */
     public function _parse(string $str, int $loc): array
     {
         $toks = $this->tokenGroup();
 
         try {
+            /** @phpstan-ignore-next-line */
             while (true) {
-                list($loc, $tok) = $this->expr->parsePart($str, $loc);
+                [$loc, $tok] = $this->expr->parsePart($str, $loc);
                 $toks->append($tok);
             }
         } catch (ParseError $parseError) {

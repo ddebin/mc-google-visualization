@@ -14,7 +14,7 @@ use PHPUnit\Framework\TestCase;
  */
 final class ExampleTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -26,7 +26,7 @@ final class ExampleTest extends TestCase
     /**
      * @throws Visualization_Error
      */
-    public function testQueryComplete()
+    public function testQueryComplete(): void
     {
         $db = new PDO('sqlite:'.__DIR__.'/../examples/example.db');
         $vis = new Visualization($db);
@@ -64,7 +64,7 @@ final class ExampleTest extends TestCase
     /**
      * @throws Visualization_Error
      */
-    public function testQuerySimple()
+    public function testQuerySimple(): void
     {
         $db = new PDO('sqlite:'.__DIR__.'/../examples/example.db');
         $vis = new Visualization($db);
@@ -89,7 +89,7 @@ final class ExampleTest extends TestCase
     /**
      * @throws Visualization_Error
      */
-    public function testQueryJoins()
+    public function testQueryJoins(): void
     {
         $db = new PDO('sqlite:'.__DIR__.'/../examples/example.db');
         $vis = new Visualization($db);

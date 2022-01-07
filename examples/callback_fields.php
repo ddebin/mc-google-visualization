@@ -10,10 +10,8 @@ require_once __DIR__.'/../vendor/autoload.php';
 
 /**
  * @param mixed $row
- *
- * @return null|string
  */
-function most_common($row)
+function most_common($row): ?string
 {
     $forms = ['pill', 'iud', 'condom', 'sterile_total', 'other_modern', 'traditional'];
     $maxForm = -1;
@@ -53,7 +51,7 @@ if (isset($_GET['tq'])) {
     ]);
 
     $vis->handleRequest();
-    die();
+    exit();
 }
 ?>
 <html lang="en">

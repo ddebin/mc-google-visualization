@@ -8,17 +8,17 @@ on:
 
 jobs:
   tests:
-    runs-on: ubuntu-16.04
+    runs-on: ubuntu-latest
     strategy:
       matrix:
-        php: ['7.0', '7.1', '7.2', '7.3', '7.4']
+        php: ['7.1', '7.2', '7.3', '7.4', '8.0']
     name: PHP ${{ matrix.php }} tests
     steps:
       -   uses: actions/checkout@v2
       # required for "git tag" presence for MonorepoBuilder split and ChangelogLinker git tags resolver; default is 1
       -   run: git fetch --depth=100000 origin
       # see https://github.com/shivammathur/setup-php
-      -   uses: shivammathur/setup-php@v1
+      -   uses: shivammathur/setup-php@v2
           with:
             php-version: ${{ matrix.php }}
             coverage: none
@@ -27,14 +27,14 @@ jobs:
       -   run: composer phpunit
 
   tests_lowest_dependencies:
-    runs-on: ubuntu-16.04
+    runs-on: ubuntu-latest
     steps:
       -   uses: actions/checkout@v2
       -   run: git fetch --depth=100000 origin
       # see https://github.com/shivammathur/setup-php
-      -   uses: shivammathur/setup-php@v1
+      -   uses: shivammathur/setup-php@v2
           with:
-            php-version: 7.0
+            php-version: 7.1
             coverage: none
       -   run: composer update --no-progress --prefer-lowest
       -   run: composer phpstan
