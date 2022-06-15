@@ -214,7 +214,7 @@ class Visualization
 
             $stmt = $this->db->query($sql);
             assert(false !== $stmt);
-            //If we got here, there's no errors
+            // If we got here, there's no errors
             $response .= $this->getSuccessInit($meta);
             $first = true;
             foreach ($stmt as $row) {
@@ -272,11 +272,11 @@ class Visualization
         }
 
         if (!isset($query['select'])) {
-            //By default, return all fields defined for an entity
+            // By default, return all fields defined for an entity
             $query['select'] = array_keys($entity['fields']);
         }
 
-        //The query fields might be different from the "select" fields (callback dependant fields will not be returned)
+        // The query fields might be different from the "select" fields (callback dependant fields will not be returned)
         $meta['query_fields'] = [];
         $meta['joins'] = [];
         $meta['field_spec'] = [];
@@ -313,7 +313,7 @@ class Visualization
         $meta['select'] = $query['select'];
 
         if (isset($query['where'])) {
-            //Parse the where clauses and error out on non-existant and callback fields and add joins
+            // Parse the where clauses and error out on non-existant and callback fields and add joins
             foreach ($query['where'] as $whereToken) {
                 if ('where_field' === $whereToken['type']) {
                     $field = $whereToken['value'];
@@ -334,7 +334,7 @@ class Visualization
             }
         }
 
-        //Also add the joins & field spec information for the orderby, groupby, and pivot clauses
+        // Also add the joins & field spec information for the orderby, groupby, and pivot clauses
         if (isset($query['pivot'])) {
             foreach ($query['pivot'] as $field) {
                 if (!isset($entity['fields'][$field])) {
@@ -393,7 +393,7 @@ class Visualization
             }
         }
 
-        //Some of the query information we just copy into the metadata array
+        // Some of the query information we just copy into the metadata array
         $copyKeys = ['where', 'orderby', 'groupby', 'pivot', 'limit', 'offset', 'labels', 'formats', 'options'];
         foreach ($copyKeys as $copyKey) {
             if (isset($query[$copyKey])) {
@@ -544,7 +544,7 @@ class Visualization
                         $time = strtotime($year.'0104 +'.$week.' weeks');
                         assert(false !== $time);
                         $monday = strtotime('-'.((int) date('w', $time) - 1).' days', $time);
-                        assert(false !== $monday);
+                        assert(false !== $monday); // @phpstan-ignore-line ; PHP < 8.0
                         [$year, $month, $day] = explode('-', date('Y-m-d', $monday));
                         $formatted = date($format, $monday);
                     } else {
@@ -927,7 +927,7 @@ class Visualization
         }
 
         if (isset($meta['pivot'])) {
-            //Pivot queries are special - they require an entity to be passed and modify the query directly
+            // Pivot queries are special - they require an entity to be passed and modify the query directly
             $entity = $meta['entity'];
             $pivotFields = [];
             $pivotJoins = [];
@@ -965,9 +965,9 @@ class Visualization
             $stmt = $this->db->query($pivotSql);
             assert(false !== $stmt);
             $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            assert(is_array($rows));
+            assert(false !== $rows); // @phpstan-ignore-line ; PHP < 8.0
             foreach ($rows as $row) {
-                //Create a version of all function-ed fields for each unique combination of pivot values
+                // Create a version of all function-ed fields for each unique combination of pivot values
                 foreach ($funcFields as $field) {
                     $field[2] = $row;
 
@@ -975,7 +975,7 @@ class Visualization
                 }
             }
 
-            //For pivot queries, the fields we return and the fields we query against are always the same
+            // For pivot queries, the fields we return and the fields we query against are always the same
             $meta['select'] = $meta['query_fields'];
         }
 
@@ -996,7 +996,7 @@ class Visualization
         if (isset($meta['where'])) {
             $where = [];
             foreach ($meta['where'] as &$wherePart) {
-                //Replace field references with their SQL forms
+                // Replace field references with their SQL forms
                 switch ($wherePart['type']) {
                     case 'where_field':
                         $wherePart['value'] = $this->getFieldSQL($wherePart['value'], $meta['field_spec'][$wherePart['value']]);
@@ -1058,7 +1058,7 @@ class Visualization
             $first = true;
             foreach ($meta['orderby'] as $field => $dir) {
                 if (isset($meta['field_spec'][$field]['sort_field'])) {
-                    //An entity field can delegate sorting to another field by using the "sort_field" key
+                    // An entity field can delegate sorting to another field by using the "sort_field" key
                     $field = $meta['field_spec'][$field]['sort_field'];
                 }
                 $spec = $meta['field_spec'][$field];

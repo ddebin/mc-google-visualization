@@ -38,7 +38,7 @@ class OneOf extends Def
                     $res = $toks;
                 }
             } catch (ParseError $parseError) {
-                //Ignore any non-matching conditions
+                // Ignore any non-matching conditions
             }
         }
 
