@@ -43,7 +43,7 @@ class NOrMore extends Def
         }
 
         if (0 === $toks->count()) {
-            //If this token is empty, remove it from the result group
+            // If this token is empty, remove it from the result group
             $toks = null;
         }
 

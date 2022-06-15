@@ -57,7 +57,7 @@ final class ExampleTest extends TestCase
 
         $output = $vis->handleRequest(false, $parameters);
 
-        //file_put_contents(__DIR__.'/result1.js', $output);
+        // file_put_contents(__DIR__.'/result1.js', $output);
         self::assertStringEqualsFile(__DIR__.'/result1.js', $output);
     }
 
@@ -82,7 +82,7 @@ final class ExampleTest extends TestCase
 
         $output = $vis->handleRequest(false, $parameters);
 
-        //file_put_contents(__DIR__.'/result2.js', $output);
+        // file_put_contents(__DIR__.'/result2.js', $output);
         self::assertStringEqualsFile(__DIR__.'/result2.js', $output);
     }
 
@@ -111,13 +111,13 @@ final class ExampleTest extends TestCase
         ]);
 
         $parameters = [
-            'tq' => 'select avg(life_male), avg(life_female), avg(life_both) from countries label life_male "Life Expectancy (Male)", life_female "Life Expectancy (Female)", life_both "Life Expectancy (Combined)" format life_male "%.2f years", life_female "%.2f years", life_both "%.2f years"',
+            'tq' => 'select max(life_male), avg(life_female), min(life_both) from countries label life_male "Life Expectancy (Male)", life_female "Life Expectancy (Female)", life_both "Life Expectancy (Combined)" format life_male "%.2f years", life_female "%.2f years", life_both "%.2f years"',
             'tqx' => 'reqId:3',
         ];
 
         $output = $vis->handleRequest(false, $parameters);
 
-        //file_put_contents(__DIR__.'/result3.js', $output);
+        // file_put_contents(__DIR__.'/result3.js', $output);
         self::assertStringEqualsFile(__DIR__.'/result3.js', $output);
     }
 }

@@ -4,3 +4,4 @@ includes:
     - vendor/phpstan/phpstan-strict-rules/rules.neon
 parameters:
     checkMissingIterableValueType: false
+    reportUnmatchedIgnoredErrors: false
