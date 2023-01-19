@@ -34,7 +34,7 @@ if (isset($_GET['tq'])) {
     $vis->setDefaultEntity('timeline');
 
     $vis->handleRequest();
-    exit();
+    exit;
 }
 ?>
 <html lang="en">

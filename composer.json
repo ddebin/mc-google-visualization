@@ -47,9 +47,9 @@
         }
     },
     "scripts": {
-        "phpstan": "phpstan analyse -l max lib tests",
-        "php-cs-fixer": "php-cs-fixer fix --allow-risky=yes",
-        "php-cs-fixer-dry-run": "php-cs-fixer fix --dry-run --allow-risky=yes",
-        "phpunit": "phpunit"
+        "phpstan": "@php phpstan analyse -l max lib tests examples .php-cs-fixer.php",
+        "php-cs-fixer": "@php php-cs-fixer fix --allow-risky=yes",
+        "php-cs-fixer-dry-run": "@php php-cs-fixer fix --dry-run --allow-risky=yes",
+        "phpunit": "@php phpunit"
     }
 }

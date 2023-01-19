@@ -21,6 +21,8 @@ use PDOException;
  * Visualizations can be found here: http://code.google.com/apis/visualization/documentation/querylanguage.html.
  *
  * @see \Tests\VisualizationTest
+ *
+ * @phpstan-type FieldSpec array{callback?:callable,field?:string,extra?:array,fields?:string[],sort_field?:string,type?:string,join?:string}
  */
 class Visualization
 {
@@ -82,9 +84,11 @@ class Visualization
      * @param null|PDO $db      the database connection to use
      * @param string   $dialect the SQL dialect to use - one of "mysql", "postgres", or "sqlite"
      *
+     * @phpstan-param 'mysql'|'postgres'|'sqlite' $dialect
+     *
      * @throws Visualization_Error
      */
-    public function __construct(PDO $db = null, string $dialect = 'mysql')
+    public function __construct(?PDO $db = null, string $dialect = 'mysql')
     {
         if (!function_exists('json_encode')) {
             throw new Visualization_Error('You must include the PHP json extension installed to use the MC Google Visualization Server');
@@ -99,7 +103,7 @@ class Visualization
      *
      * @param null|PDO $db the database connection to use - or null if you want to handle your own queries
      */
-    public function setDB(PDO $db = null): void
+    public function setDB(?PDO $db = null): void
     {
         if (null !== $db) {
             $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -112,6 +116,8 @@ class Visualization
      * Set the dialect to use when generating SQL statements.
      *
      * @param string $dialect one of "mysql", "postgres", or "sqlite"
+     *
+     * @phpstan-param 'mysql'|'postgres'|'sqlite' $dialect
      *
      * @throws Visualization_Error
      */
@@ -127,7 +133,10 @@ class Visualization
     /**
      * Change the default format string to use for a particular data type.
      *
-     * @param string $type   the data type to change - one of "date", "datetime", "time", "boolean", or "number"
+     * @param string $type the data type to change - one of "date", "datetime", "time", "boolean", or "number"
+     *
+     * @phpstan-param 'date'|'datetime'|'time'|'boolean'|'number' $type
+     *
      * @param string $format the format string to use for the data type
      *
      * @throws Visualization_Error
@@ -150,11 +159,11 @@ class Visualization
      * @param bool       $echo        print response and set header
      * @param null|array $queryParams query parameters
      *
-     * @throws Visualization_Error
-     *
      * @return string the javascript response
+     *
+     * @throws Visualization_Error
      */
-    public function handleRequest(bool $echo = true, array $queryParams = null): string
+    public function handleRequest(bool $echo = true, ?array $queryParams = null): string
     {
         if (null === $queryParams) {
             $queryParams = $_GET;
@@ -201,7 +210,7 @@ class Visualization
         $response = '';
 
         try {
-            if (!($this->db instanceof PDO)) {
+            if (!$this->db instanceof PDO) {
                 throw new Visualization_Error('You must pass a PDO connection to the MC Google Visualization Server if you want to let the server handle the entire request');
             }
 
@@ -244,10 +253,10 @@ class Visualization
      *
      * @param array $query the visualization query broken up into sections
      *
+     * @return array the metadata array from merging the query with the entity table definitions
+     *
      * @throws Visualization_QueryError
      * @throws Visualization_Error
-     *
-     * @return array the metadata array from merging the query with the entity table definitions
      */
     public function generateMetadata(array $query): array
     {
@@ -410,6 +419,8 @@ class Visualization
      * @param string $name the name of the entity - should be used in the "from" clause of visualization queries
      * @param array  $spec optional spec array with keys "fields", "joins", "table", and "where" to define the mapping between visualization queries and SQL queries
      *
+     * @phpstan-param array{table?: string, fields?: array<string, FieldSpec>, joins?: array<string, string>, where?: string} $spec
+     *
      * @throws Visualization_Error
      */
     public function addEntity(string $name, array $spec = []): void
@@ -441,7 +452,7 @@ class Visualization
      *
      * @throws Visualization_Error
      */
-    public function setDefaultEntity(string $default = null): void
+    public function setDefaultEntity(?string $default = null): void
     {
         if (null !== $default && !isset($this->entities[$default])) {
             throw new Visualization_Error('No entity exists with name "'.$default.'"');
@@ -456,9 +467,9 @@ class Visualization
      * @param array $row  the row values as an array
      * @param array $meta the metadata for the query (use generateMetadata())
      *
-     * @throws Visualization_Error
-     *
      * @return string the string fragment to include in the results back to the javascript client
+     *
+     * @throws Visualization_Error
      */
     public function getRowValues(array $row, array $meta): string
     {
@@ -510,8 +521,8 @@ class Visualization
                     $val = (float) $val;
                     if (1 === preg_match('#^num:(\d+)(.*)$#i', $format, $matches)) {
                         $digits = (int) $matches[1];
-                        $extras = $matches[2];
-                        if (is_array($extras) && (2 === count($extras))) {
+                        $extras = str_split($matches[2]);
+                        if (2 === count($extras)) {
                             $formatted = number_format($val, $digits, $extras[0], $extras[1]);
                         } else {
                             $formatted = number_format($val, $digits);
@@ -605,12 +616,12 @@ class Visualization
      *
      * @param string $query the visualization query to run
      *
+     * @return string the SQL that should be sent to the database
+     *
      * @throws Visualization_QueryError
      * @throws Visualization_Error
      * @throws ParseError
      * @throws DefError
-     *
-     * @return string the SQL that should be sent to the database
      */
     public function getSQL(string $query): string
     {
@@ -623,9 +634,9 @@ class Visualization
     /**
      * Use MC_Parser to generate a grammar that matches the query language specified here: http://code.google.com/apis/visualization/documentation/querylanguage.html.
      *
-     * @throws DefError
-     *
      * @return Def the grammar for the query language
+     *
+     * @throws DefError
      */
     public function getGrammar(): Def
     {
@@ -693,11 +704,11 @@ class Visualization
      *
      * @param string $str the query string to parse
      *
+     * @return array the parsed query as an array, keyed by each part of the query (select, from, where, groupby, pivot, orderby, limit, offset, label, format, options
+     *
      * @throws ParseError
      * @throws Visualization_QueryError
      * @throws Parser\DefError
-     *
-     * @return array the parsed query as an array, keyed by each part of the query (select, from, where, groupby, pivot, orderby, limit, offset, label, format, options
      */
     public function parseQuery(string $str): array
     {
@@ -857,6 +868,8 @@ class Visualization
      * @param string $field  the name of the field
      * @param array  $spec   the metadata for the field as a set of key-value pairs - allowed keys are "field", "callback", "fields", "extra", "sort_field", "type", and "join"
      *
+     * @phpstan-param FieldSpec $spec
+     *
      * @throws Visualization_Error
      */
     protected function addEntityField(string $entity, string $field, array $spec): void
@@ -916,9 +929,9 @@ class Visualization
      *
      * @param array $meta the results of generateMetadata() on the parsed visualization query
      *
-     * @throws Visualization_QueryError
-     *
      * @return string the SQL version of the visualization query
+     *
+     * @throws Visualization_QueryError
      */
     protected function generateSQL(array &$meta): string
     {
@@ -1083,9 +1096,9 @@ class Visualization
      *
      * @param array $meta the metadata for the query - generally generated by MC_Google_Visualization::generateMetadata
      *
-     * @throws Visualization_Error
-     *
      * @return string the initial output string for a successful query
+     *
+     * @throws Visualization_Error
      */
     protected function getSuccessInit(array $meta): string
     {
