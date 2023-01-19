@@ -1,20 +1,18 @@
 name: CI
 
 on:
-  push:
-    branches: [ master, dev ]
-  pull_request:
-    branches: [ master, dev ]
+  - push
+  - pull_request
 
 jobs:
   tests:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     strategy:
       matrix:
         php: ['7.1', '7.2', '7.3', '7.4', '8.0', '8.1']
-    name: PHP ${{ matrix.php }} tests
+    name: PHP ${{ matrix.php }}
     steps:
-      -   uses: actions/checkout@v2
+      -   uses: actions/checkout@v3
       # required for "git tag" presence for MonorepoBuilder split and ChangelogLinker git tags resolver; default is 1
       -   run: git fetch --depth=100000 origin
       # see https://github.com/shivammathur/setup-php
@@ -27,9 +25,9 @@ jobs:
       -   run: composer phpunit
 
   tests_lowest_dependencies:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
-      -   uses: actions/checkout@v2
+      -   uses: actions/checkout@v3
       -   run: git fetch --depth=100000 origin
       # see https://github.com/shivammathur/setup-php
       -   uses: shivammathur/setup-php@v2

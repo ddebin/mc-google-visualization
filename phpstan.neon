@@ -5,3 +5,4 @@ includes:
 parameters:
     checkMissingIterableValueType: false
     reportUnmatchedIgnoredErrors: false
+    treatPhpDocTypesAsCertain: false

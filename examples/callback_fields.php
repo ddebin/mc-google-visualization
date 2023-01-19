@@ -8,10 +8,7 @@ use MC\Google\Visualization;
 
 require_once __DIR__.'/../vendor/autoload.php';
 
-/**
- * @param mixed $row
- */
-function most_common($row): ?string
+function most_common(array $row): ?string
 {
     $forms = ['pill', 'iud', 'condom', 'sterile_total', 'other_modern', 'traditional'];
     $maxForm = -1;
@@ -40,7 +37,7 @@ if (isset($_GET['tq'])) {
             'condom' => ['field' => 'condom', 'type' => 'number'],
             'sterile_total' => ['field' => 'steril_total', 'type' => 'number'],
             'other_modern' => ['field' => 'other_modern', 'type' => 'number'],
-            'traditional' => ['field' => 'traditional',  'type' => 'number'],
+            'traditional' => ['field' => 'traditional', 'type' => 'number'],
             'most_common' => [
                 'callback' => 'most_common',
                 'fields' => ['pill', 'iud', 'condom', 'sterile_total', 'other_modern', 'traditional'],
@@ -51,7 +48,7 @@ if (isset($_GET['tq'])) {
     ]);
 
     $vis->handleRequest();
-    exit();
+    exit;
 }
 ?>
 <html lang="en">

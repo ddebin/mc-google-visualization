@@ -38,9 +38,9 @@ abstract class Def
     /**
      * Parse a string, cleaning up whitespace when we're done.
      *
-     * @throws ParseError
-     *
      * @return array A two-item array of the string location where parsing stopped, and the MC_Token instance that matches the grammar conditions
+     *
+     * @throws ParseError
      */
     public function parsePart(string $str, int $loc): array
     {
@@ -61,9 +61,9 @@ abstract class Def
      * @param string $str the string to parse
      * @param int    $loc the index to start parsing
      *
-     * @throws ParseError
-     *
      * @return array A two-item array of the string location where parsing stopped, and the MC_Token instance that matches the grammar conditions
+     *
+     * @throws ParseError
      */
     abstract public function _parse(string $str, int $loc): array;
 

@@ -8,12 +8,7 @@ $finder = Finder::create()
     ->in(__DIR__)
 ;
 
-
-$finder = PhpCsFixer\Finder::create()
-    ->exclude('vendor')
-    ->in(__DIR__);
-
-$config = new PhpCsFixer\Config();
+$config = new Config();
 return $config->setRules([
     '@PhpCsFixer' => true,
     '@PhpCsFixer:risky' => true,
