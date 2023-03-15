@@ -10,8 +10,12 @@ $finder = Finder::create()
 
 $config = new Config();
 return $config->setRules([
+    '@PSR12' => true,
+    '@PSR12:risky' => true,
     '@PhpCsFixer' => true,
     '@PhpCsFixer:risky' => true,
+    '@PHP71Migration' => true,
+    '@PHP71Migration:risky' => true,
     'array_syntax' => ['syntax' => 'short'],
     'php_unit_test_class_requires_covers' => false,
     'backtick_to_shell_exec' => true,
