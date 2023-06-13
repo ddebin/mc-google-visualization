@@ -12,25 +12,29 @@ class Token
     /** @var null|string */
     public $name;
 
-    /** @var mixed */
+    /** @var null|string */
     public $value;
 
     /**
      * Token constructor.
-     *
-     * @param mixed $value
      */
-    public function __construct($value, ?string $name)
+    public function __construct(?string $value, ?string $name)
     {
         $this->value = $value;
         $this->name = $name;
     }
 
+    /**
+     * @return array<null|string>
+     */
     public function getValues(): array
     {
         return [$this->value];
     }
 
+    /**
+     * @return array<array{null|string, null|string}>
+     */
     public function getNameValues(): array
     {
         return [[$this->name, $this->value]];

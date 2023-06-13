@@ -11,11 +11,11 @@ use MC\Parser\Def;
  */
 class Set extends Def
 {
-    /** @var array */
+    /** @var Def[] */
     public $exprs = [];
 
     /**
-     * Set constructor.
+     * @param Def[] $exprs
      */
     public function __construct(array $exprs = [])
     {
@@ -31,7 +31,7 @@ class Set extends Def
         $res = $this->tokenGroup();
         foreach ($this->exprs as $expr) {
             [$loc, $toks] = $expr->parsePart($str, $loc);
-            if ((null !== $toks) && (!is_array($toks) || (count($toks) > 0))) {
+            if (null !== $toks) {
                 $res->append($toks);
             }
         }

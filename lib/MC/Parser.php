@@ -32,17 +32,17 @@ class Parser
     /**
      * Return a Set with the function arguments as the subexpressions.
      */
-    public function set(): Set
+    public function set(Def ...$args): Set
     {
-        return new Set(func_get_args());
+        return new Set($args);
     }
 
     /**
      * Return a OneOf with the function arguments as the possible expressions.
      */
-    public function oneOf(): OneOf
+    public function oneOf(Def ...$args): OneOf
     {
-        return new OneOf(func_get_args());
+        return new OneOf($args);
     }
 
     /**

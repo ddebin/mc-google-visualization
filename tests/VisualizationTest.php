@@ -359,6 +359,9 @@ final class VisualizationTest extends TestCase
         self::assertSame('SELECT id AS id FROM orders WHERE (product IS NOT NULL)', $sql);
     }
 
+    /**
+     * @param array<string, mixed> $row
+     */
     public static function callbackTest(array $row): string
     {
         return 'callback-'.$row['field'];

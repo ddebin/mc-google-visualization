@@ -28,7 +28,7 @@ abstract class Def
         $str = ltrim($str);
 
         [$loc, $tok] = $this->parsePart($str, 0);
-        if ($loc !== strlen($str)) {
+        if ((null === $tok) || ($loc !== strlen($str))) {
             throw new ParseError('An error occurred: "'.substr($str, $loc).'"', $str, $loc);
         }
 
@@ -38,7 +38,7 @@ abstract class Def
     /**
      * Parse a string, cleaning up whitespace when we're done.
      *
-     * @return array A two-item array of the string location where parsing stopped, and the MC_Token instance that matches the grammar conditions
+     * @return array{int, null|Token} A two-item array of the string location where parsing stopped and the MC_Token instance that matches the grammar conditions
      *
      * @throws ParseError
      */
@@ -61,7 +61,7 @@ abstract class Def
      * @param string $str the string to parse
      * @param int    $loc the index to start parsing
      *
-     * @return array A two-item array of the string location where parsing stopped, and the MC_Token instance that matches the grammar conditions
+     * @return array{int, null|Token} A two-item array of the string location where parsing stopped, and the Token instance that matches the grammar conditions
      *
      * @throws ParseError
      */
@@ -103,11 +103,9 @@ abstract class Def
     /**
      * Return a token instance, copying over this Def's name and flagging suppression.
      *
-     * @param mixed $value
-     *
      * @return null|Token the new token, or null if the token should be suppressed
      */
-    public function token($value): ?Token
+    public function token(?string $value): ?Token
     {
         if ($this->suppress) {
             return null;

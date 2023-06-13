@@ -89,6 +89,30 @@ final class ExampleTest extends TestCase
     /**
      * @throws Visualization_Error
      */
+    public function testQueryError(): void
+    {
+        $db = new PDO('sqlite:'.__DIR__.'/../examples/example.db');
+        $vis = new Visualization($db);
+        $vis->addEntity('countries', [
+            'fields' => [
+                'id' => ['field' => 'id', 'type' => 'number'],
+                'name' => ['field' => 'name', 'type' => 'text'],
+            ],
+        ]);
+
+        $parameters = [
+            'tq' => 'select id, name from',
+            'tqx' => 'reqId:2',
+        ];
+
+        $output = $vis->handleRequest(false, $parameters);
+
+        self::assertSame('google.visualization.Query.setResponse({version:"0.5",reqId:"2",status:"error",errors:[{reason:"invalid_query",message:"Invalid Query - Parse Error",detailed_message:"An error occurred: \"from\""}]});', $output);
+    }
+
+    /**
+     * @throws Visualization_Error
+     */
     public function testQueryJoins(): void
     {
         $db = new PDO('sqlite:'.__DIR__.'/../examples/example.db');
