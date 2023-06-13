@@ -1,4 +1,5 @@
 /vendor/
+/.idea/
 /.*.cache
 /tests-report-html/
 /composer.lock

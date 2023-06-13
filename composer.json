@@ -38,12 +38,12 @@
     },
     "autoload": {
         "psr-4": {
-            "MC\\": "lib/MC"
+            "MC\\": "lib/MC/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Tests\\": "tests"
+            "Tests\\": "tests/"
         }
     },
     "scripts": {

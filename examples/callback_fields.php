@@ -35,7 +35,7 @@ if (isset($_GET['tq'])) {
             'pill' => ['field' => 'pill', 'type' => 'number'],
             'iud' => ['field' => 'iud', 'type' => 'number'],
             'condom' => ['field' => 'condom', 'type' => 'number'],
-            'sterile_total' => ['field' => 'steril_total', 'type' => 'number'],
+            'sterile_total' => ['field' => 'sterile_total', 'type' => 'number'],
             'other_modern' => ['field' => 'other_modern', 'type' => 'number'],
             'traditional' => ['field' => 'traditional', 'type' => 'number'],
             'most_common' => [
@@ -54,7 +54,7 @@ if (isset($_GET['tq'])) {
 <html lang="en">
 <head>
     <title>Callback fields visualization example</title>
-    <script type="text/javascript" src="http://www.google.com/jsapi"></script>
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
     <script type="text/javascript">
         google.load('visualization', '1', {'packages': ['table']});
         google.setOnLoadCallback(function() {
