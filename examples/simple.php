@@ -24,7 +24,7 @@ if (isset($_GET['tq'])) {
     exit;
 }
 ?>
-<html>
+<html lang="en">
 <head>
     <title>Simple single-table visualization example</title>
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>

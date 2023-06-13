@@ -8,7 +8,7 @@ use MC\Parser\Def;
 use MC\Parser\ParseError;
 
 /**
- * Generic grammar rule for matching a regular expresion.
+ * Generic grammar rule for matching a regular expression.
  */
 class Regex extends Def
 {
