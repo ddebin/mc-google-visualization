@@ -14,10 +14,7 @@ class Group extends Token implements Countable
     /** @var Token[] */
     public $subtoks = [];
 
-    /**
-     * @param null|string $name
-     */
-    public function __construct($name)
+    public function __construct(?string $name)
     {
         parent::__construct(null, $name);
     }
@@ -43,6 +40,9 @@ class Group extends Token implements Countable
         return count($this->subtoks);
     }
 
+    /**
+     * @return array<null|string>
+     */
     public function getValues(): array
     {
         $values = [];
@@ -53,6 +53,9 @@ class Group extends Token implements Countable
         return $values;
     }
 
+    /**
+     * @return array<array{null|string, null|string}>
+     */
     public function getNameValues(): array
     {
         $values = [];

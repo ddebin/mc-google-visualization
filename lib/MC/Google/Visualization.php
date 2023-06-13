@@ -22,7 +22,32 @@ use PDOException;
  *
  * @see \Tests\VisualizationTest
  *
- * @phpstan-type FieldSpec array{callback?:callable,field?:string,extra?:array,fields?:string[],sort_field?:string,type?:string,join?:string}
+ * @phpstan-type FieldSpec array{
+ *     type: string,
+ *     field?: string,
+ *     fields?: string[],
+ *     callback?: callable,
+ *     extra?: mixed[],
+ *     sort_field?: string,
+ *     join?: string
+ * }
+ * @phpstan-type QueryParsed array{
+ *     select?: array<string|string[]>,
+ *     from?: string,
+ *     where?: null|array<array{type: string, value: string}>,
+ *     groupby?: string[],
+ *     pivot?: string[],
+ *     orderby?: string[],
+ *     limit?: string,
+ *     offset?: string,
+ *     label?: string
+ * }
+ * @phpstan-type Entity array{
+ *     table: string,
+ *     fields: array<string, FieldSpec>,
+ *     joins: string[],
+ *     where?: string
+ * }
  */
 class Visualization
 {
@@ -37,7 +62,7 @@ class Visualization
     /**
      * The entity schema that defines which tables are exposed to visualization clients, along with their fields, joins, and callbacks.
      *
-     * @var array
+     * @var array<string, Entity>
      */
     protected $entities = [];
 
@@ -60,7 +85,7 @@ class Visualization
     /**
      * If a format string is not provided by the query, these will be used to format values by default.
      *
-     * @var array
+     * @var array<string, string>
      */
     protected $defaultFormat = [
         'date' => 'm/d/Y',
@@ -156,8 +181,8 @@ class Visualization
      * Handle the entire request, pulling the query from the $_GET variables and printing the results directly
      * if not specified otherwise.
      *
-     * @param bool       $echo        print response and set header
-     * @param null|array $queryParams query parameters
+     * @param bool                                                       $echo        print response and set header
+     * @param null|array{tq:string, tqx:string, responseHandler?:string} $queryParams query parameters
      *
      * @return string the javascript response
      *
@@ -199,14 +224,14 @@ class Visualization
     /**
      * Handle a specific query.  Use this if you want to gather the query parameters yourself instead of using handleRequest().
      *
-     * @param string $query  the visualization query to parse and execute
-     * @param array  $params all extra params sent along with the query - must include at least "reqId" key
+     * @param string                          $query  the visualization query to parse and execute
+     * @param array<string, float|int|string> $params all extra params sent along with the query - must include at least "reqId" key
      *
      * @return string the javascript response
      */
     public function handleQuery(string $query, array $params): string
     {
-        $reqId = null;
+        $reqId = -1;
         $response = '';
 
         try {
@@ -214,7 +239,7 @@ class Visualization
                 throw new Visualization_Error('You must pass a PDO connection to the MC Google Visualization Server if you want to let the server handle the entire request');
             }
 
-            $reqId = $params['reqId'];
+            $reqId = (int) $params['reqId'];
             $queryParsed = $this->parseQuery($query);
             $meta = $this->generateMetadata($queryParsed);
             $sql = $this->generateSQL($meta);
@@ -236,13 +261,13 @@ class Visualization
 
             $response .= $this->getSuccessClose();
         } catch (Visualization_Error $visualizationError) {
-            $response .= $this->handleError($reqId, $visualizationError->getMessage(), $params['responseHandler'], $visualizationError->type, $visualizationError->summary);
+            $response .= $this->handleError($reqId, $visualizationError->getMessage(), (string) $params['responseHandler'], $visualizationError->type, $visualizationError->summary);
         } catch (PDOException $pdoException) {
-            $response .= $this->handleError($reqId, $pdoException->getMessage(), $params['responseHandler'], 'invalid_query', 'Invalid Query - PDO exception');
+            $response .= $this->handleError($reqId, $pdoException->getMessage(), (string) $params['responseHandler'], 'invalid_query', 'Invalid Query - PDO exception');
         } catch (ParseError $parseError) {
-            $response .= $this->handleError($reqId, $parseError->getMessage(), $params['responseHandler'], 'invalid_query', 'Invalid Query - Parse Error');
+            $response .= $this->handleError($reqId, $parseError->getMessage(), (string) $params['responseHandler'], 'invalid_query', 'Invalid Query - Parse Error');
         } catch (Exception $exception) {
-            $response .= $this->handleError($reqId, $exception->getMessage(), $params['responseHandler']);
+            $response .= $this->handleError($reqId, $exception->getMessage(), (string) $params['responseHandler']);
         }
 
         return $response;
@@ -251,9 +276,11 @@ class Visualization
     /**
      * Given the results of parseQuery(), introspect against the entity definitions provided and return the metadata array used to generate the SQL.
      *
-     * @param array $query the visualization query broken up into sections
+     * @param array<string, mixed> $query the visualization query broken up into sections
      *
-     * @return array the metadata array from merging the query with the entity table definitions
+     * @phpstan-param QueryParsed $query
+     *
+     * @return array<string, mixed> the metadata array from merging the query with the entity table definitions
      *
      * @throws Visualization_QueryError
      * @throws Visualization_Error
@@ -704,7 +731,9 @@ class Visualization
      *
      * @param string $str the query string to parse
      *
-     * @return array the parsed query as an array, keyed by each part of the query (select, from, where, groupby, pivot, orderby, limit, offset, label, format, options
+     * @return array<string, mixed> the parsed query as an array, keyed by each part of the query (select, from, where, groupby, pivot, orderby, limit, offset, label, format, options
+     *
+     * @phpstan-return QueryParsed
      *
      * @throws ParseError
      * @throws Visualization_QueryError
@@ -727,8 +756,10 @@ class Visualization
                     break;
 
                 case 'from':
-                    $vals = $token->getValues();
-                    $query['from'] = $vals[1];
+                    $from = $token->getValues();
+                    $from = $from[1];
+                    assert(null !== $from);
+                    $query['from'] = $from;
 
                     break;
 
@@ -744,7 +775,7 @@ class Visualization
                     $groupby = $token->getValues();
                     array_shift($groupby);
                     array_shift($groupby);
-                    $query['groupby'] = $groupby;
+                    $query['groupby'] = array_filter($groupby);
 
                     break;
 
@@ -754,7 +785,7 @@ class Visualization
                     }
                     $pivot = $token->getValues();
                     array_shift($pivot);
-                    $query['pivot'] = $pivot;
+                    $query['pivot'] = array_filter($pivot);
 
                     break;
 
@@ -784,6 +815,7 @@ class Visualization
                 case 'limit':
                     $limit = $token->getValues();
                     $limit = $limit[1];
+                    assert(null !== $limit);
                     $query['limit'] = $limit;
 
                     break;
@@ -791,6 +823,7 @@ class Visualization
                 case 'offset':
                     $offset = $token->getValues();
                     $offset = $offset[1];
+                    assert(null !== $offset);
                     $query['offset'] = $offset;
 
                     break;
@@ -803,6 +836,7 @@ class Visualization
                     $count = count($labels);
                     for ($i = 0; $i < $count; $i += 2) {
                         $field = $labels[$i];
+                        assert(null !== $labels[$i + 1]);
                         $label = trim($labels[$i + 1], '\'"');
                         $queryLabels[$field] = $label;
                     }
@@ -818,6 +852,7 @@ class Visualization
                     $count = count($formats);
                     for ($i = 0; $i < $count; $i += 2) {
                         $field = $formats[$i];
+                        assert(null !== $formats[$i + 1]);
                         $queryFormats[$field] = trim($formats[$i + 1], '\'"');
                     }
                     $query['formats'] = $queryFormats;
@@ -1290,15 +1325,18 @@ class Visualization
     /**
      * Recursively process the dependant fields for callback entity fields.
      *
-     * @param array $field  the spec array for the field to add (must have a "callback" key)
-     * @param array $entity the spec array for the entity to pull other fields from
-     * @param array $meta   the query metadata array to append the results
+     * @param array $fieldSpec the spec array for the field to add (must have a "callback" key)
+     * @param array $entity    the spec array for the entity to pull other fields from
+     * @param array $meta      the query metadata array to append the results
+     *
+     * @phpstan-param FieldSpec $fieldSpec
+     * @phpstan-param Entity $entity
      *
      * @throws Visualization_Error
      */
-    protected function addDependantCallbackFields(array $field, array $entity, array &$meta): void
+    protected function addDependantCallbackFields(array $fieldSpec, array $entity, array &$meta): void
     {
-        foreach ($field['fields'] as $dependant) {
+        foreach ($fieldSpec['fields'] ?? [] as $dependant) {
             if (!isset($entity['fields'][$dependant])) {
                 throw new Visualization_Error('Unknown callback required field "'.$dependant.'"');
             }
@@ -1335,6 +1373,7 @@ class Visualization
         if ($token->hasChildren()) {
             if ('function' === $token->name) {
                 $field = $token->getValues();
+                assert(null !== $field[0]);
                 $field[0] = strtolower($field[0]);
                 $fields[] = $field;
             } else {
@@ -1350,8 +1389,8 @@ class Visualization
     /**
      * Helper method for the query parser to recursively scan and flatten the where clause's conditions.
      *
-     * @param Token      $token the token or token group to parse
-     * @param null|array $where the collector array of tokens that make up the where clause
+     * @param Token                                          $token the token or token group to parse
+     * @param null|array<array{type: string, value: string}> $where the collector array of tokens that make up the where clause
      */
     protected function parseWhereTokens(Token $token, array &$where = null): void
     {

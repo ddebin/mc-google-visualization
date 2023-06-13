@@ -15,6 +15,9 @@ class OneOf extends Def
     /** @var Def[] */
     public $exprs = [];
 
+    /**
+     * @param Def[] $exprs
+     */
     public function __construct(array $exprs = [])
     {
         $this->exprs = $exprs;
