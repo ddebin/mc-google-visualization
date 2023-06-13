@@ -1,4 +1,4 @@
-![Build Status](https://github.com/ddebin/mc-google-visualization/workflows/CI/badge.svg)
+![Build Status](https://img.shields.io/github/actions/workflow/status/ddebin/mc-google-visualization/main.yml?style=for-the-badge)
 
 # MC_Google_Visualization: Google Visualization datasource with your own database
 
