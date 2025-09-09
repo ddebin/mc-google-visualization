@@ -14,13 +14,14 @@ use MC\Parser\ParseError;
 use MC\Parser\Token;
 use PDO;
 use PDOException;
+use Tests\VisualizationTest;
 
 /**
  * Provide a working implementation of the Google Visualization Query data source that works with a database
  * (or any other custom backend). The documentation for the query language itself and how to use it with Google
  * Visualizations can be found here: http://code.google.com/apis/visualization/documentation/querylanguage.html.
  *
- * @see \Tests\VisualizationTest
+ * @see VisualizationTest
  *
  * @phpstan-type FieldSpec array{
  *     type: string,
@@ -106,10 +107,8 @@ class Visualization
      * Create a new instance.  This must be done before the library can be used.  Pass in a PDO connection and
      * dialect if MC_Google_Visualization will handle the entire request cycle.
      *
-     * @param null|PDO $db      the database connection to use
-     * @param string   $dialect the SQL dialect to use - one of "mysql", "postgres", or "sqlite"
-     *
-     * @phpstan-param 'mysql'|'postgres'|'sqlite' $dialect
+     * @param null|PDO                    $db      the database connection to use
+     * @param 'mysql'|'postgres'|'sqlite' $dialect the SQL dialect to use
      *
      * @throws Visualization_Error
      */
@@ -140,9 +139,7 @@ class Visualization
     /**
      * Set the dialect to use when generating SQL statements.
      *
-     * @param string $dialect one of "mysql", "postgres", or "sqlite"
-     *
-     * @phpstan-param 'mysql'|'postgres'|'sqlite' $dialect
+     * @param 'mysql'|'postgres'|'sqlite' $dialect the SQL dialect to use
      *
      * @throws Visualization_Error
      */
@@ -158,11 +155,8 @@ class Visualization
     /**
      * Change the default format string to use for a particular data type.
      *
-     * @param string $type the data type to change - one of "date", "datetime", "time", "boolean", or "number"
-     *
-     * @phpstan-param 'date'|'datetime'|'time'|'boolean'|'number' $type
-     *
-     * @param string $format the format string to use for the data type
+     * @param string                                      $format the format string to use for the data type
+     * @param 'boolean'|'date'|'datetime'|'number'|'time' $type   the data type to change
      *
      * @throws Visualization_Error
      */
@@ -582,7 +576,7 @@ class Visualization
                         $time = strtotime($year.'0104 +'.$week.' weeks');
                         assert(false !== $time);
                         $monday = strtotime('-'.((int) date('w', $time) - 1).' days', $time);
-                        assert(false !== $monday); // @phpstan-ignore-line ; PHP < 8.0
+                        assert(false !== $monday);
                         [$year, $month, $day] = explode('-', date('Y-m-d', $monday));
                         $formatted = date($format, $monday);
                     } else {
@@ -737,7 +731,7 @@ class Visualization
      *
      * @throws ParseError
      * @throws Visualization_QueryError
-     * @throws Parser\DefError
+     * @throws DefError
      */
     public function parseQuery(string $str): array
     {
@@ -887,7 +881,7 @@ class Visualization
      *
      * @return string the string to output that will cause the visualization client to detect an error
      */
-    protected function handleError(int $reqid, string $detailMsg, string $handler = 'google.visualization.Query.setResponse', string $code = 'error', string $summaryMsg = null): string
+    protected function handleError(int $reqid, string $detailMsg, string $handler = 'google.visualization.Query.setResponse', string $code = 'error', ?string $summaryMsg = null): string
     {
         if (null === $summaryMsg) {
             $summaryMsg = $detailMsg;
@@ -1013,7 +1007,7 @@ class Visualization
             $stmt = $this->db->query($pivotSql);
             assert(false !== $stmt);
             $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            assert(false !== $rows); // @phpstan-ignore-line ; PHP < 8.0
+            assert(false !== $rows);
             foreach ($rows as $row) {
                 // Create a version of all function-ed fields for each unique combination of pivot values
                 foreach ($funcFields as $field) {
@@ -1292,7 +1286,7 @@ class Visualization
      *
      * @return string the SQL string for this field, with an op
      */
-    protected function getFieldSQL(string $name, array $spec, bool $alias = false, string $func = null, array $pivot = null, array $pivotFields = null): string
+    protected function getFieldSQL(string $name, array $spec, bool $alias = false, ?string $func = null, ?array $pivot = null, ?array $pivotFields = null): string
     {
         $sql = $spec['field'];
         $q = $this->getFieldQuote();
@@ -1360,7 +1354,7 @@ class Visualization
      * @param Token      $token  the token or token group to recursively parse
      * @param null|array $fields the collector array reference to receive the flattened select field values
      */
-    protected function parseFieldTokens(Token $token, array &$fields = null): void
+    protected function parseFieldTokens(Token $token, ?array &$fields = null): void
     {
         if ('*' === $token->value) {
             return;
@@ -1392,7 +1386,7 @@ class Visualization
      * @param Token                                          $token the token or token group to parse
      * @param null|array<array{type: string, value: string}> $where the collector array of tokens that make up the where clause
      */
-    protected function parseWhereTokens(Token $token, array &$where = null): void
+    protected function parseWhereTokens(Token $token, ?array &$where = null): void
     {
         if (!is_array($where)) {
             $where = [];

@@ -29,7 +29,7 @@ class Regex extends Def
     /** @var int */
     public $retgroup = 0;
 
-    public function __construct(string $regex = null, string $flags = null, string $errstr = null)
+    public function __construct(?string $regex = null, ?string $flags = null, ?string $errstr = null)
     {
         if (null !== $regex) {
             $this->regex = $regex;
