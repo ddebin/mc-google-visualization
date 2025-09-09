@@ -13,7 +13,7 @@ class Word extends Regex
      * @param string      $firstChars the characters allowed as the first character in the word
      * @param null|string $restChars  the characters allowed as the rest of the word - defaults to same as $first_chars
      */
-    public function __construct(string $firstChars, string $restChars = null)
+    public function __construct(string $firstChars, ?string $restChars = null)
     {
         parent::__construct();
 

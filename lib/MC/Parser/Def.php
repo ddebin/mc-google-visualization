@@ -46,11 +46,7 @@ abstract class Def
     {
         [$loc, $tok] = $this->_parse($str, $loc);
 
-        $char = @$str[$loc++];
-        while (('' !== $char) && Parser::isWhitespace($char)) {
-            $char = @$str[$loc++];
-        }
-        --$loc;
+        for (; ($loc < strlen($str)) && Parser::isWhitespace($str[$loc]); ++$loc);
 
         return [$loc, $tok];
     }

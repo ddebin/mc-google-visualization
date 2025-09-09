@@ -6,6 +6,4 @@ namespace MC\Parser;
 
 use Exception;
 
-class Error extends Exception
-{
-}
+class Error extends Exception {}

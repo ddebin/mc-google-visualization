@@ -14,11 +14,12 @@ use MC\Parser\Def\Regex;
 use MC\Parser\Def\Set;
 use MC\Parser\Def\Word;
 use MC\Parser\DefError;
+use Tests\ParserTest;
 
 /**
  * Parser-generator class with an easy PHP-based API, similar to the pyparsing module in philosophy.
  *
- * @see \Tests\ParserTest
+ * @see ParserTest
  */
 class Parser
 {
@@ -48,7 +49,7 @@ class Parser
     /**
      * Return a Word that matches a set of possible characters not separated by whitespace.
      */
-    public function word(string $firstChars, string $restChars = null): Word
+    public function word(string $firstChars, ?string $restChars = null): Word
     {
         return new Word($firstChars, $restChars);
     }
