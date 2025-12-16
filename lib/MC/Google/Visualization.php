@@ -55,40 +55,34 @@ class Visualization
     /**
      * The default entity that will be used if the "from" part of a query is left out. Setting this to null
      * will make a "from" clause required.
-     *
-     * @var null|string
      */
-    protected $defaultEntity;
+    protected ?string $defaultEntity = null;
 
     /**
      * The entity schema that defines which tables are exposed to visualization clients, along with their fields, joins, and callbacks.
      *
      * @var array<string, Entity>
      */
-    protected $entities = [];
+    protected array $entities = [];
 
     /**
      * If pivots are being used or MC_Google_Visualization is handling the whole request, this must be a PDO
      * connection to your database.
-     *
-     * @var null|PDO
      */
-    protected $db;
+    protected ?PDO $db;
 
     /**
      * The SQL dialect to use when auto-generating SQL statements from the parsed query tokens
      * defaults to "mysql".  Allowed values are "mysql", "postgres", or "sqlite".  Patches are welcome for the rest.
-     *
-     * @var string
      */
-    protected $sqlDialect = 'mysql';
+    protected string $sqlDialect = 'mysql';
 
     /**
      * If a format string is not provided by the query, these will be used to format values by default.
      *
      * @var array<string, string>
      */
-    protected $defaultFormat = [
+    protected array $defaultFormat = [
         'date' => 'm/d/Y',
         'datetime' => 'm/d/Y h:ia',
         'time' => 'h:ia',
@@ -98,10 +92,8 @@ class Visualization
 
     /**
      * The current supported version of the Data Source protocol.
-     *
-     * @var float
      */
-    protected $version = 0.5;
+    protected float $version = 0.5;
 
     /**
      * Create a new instance.  This must be done before the library can be used.  Pass in a PDO connection and
@@ -543,11 +535,7 @@ class Visualization
                     if (1 === preg_match('#^num:(\d+)(.*)$#i', $format, $matches)) {
                         $digits = (int) $matches[1];
                         $extras = str_split($matches[2]);
-                        if (2 === count($extras)) {
-                            $formatted = number_format($val, $digits, $extras[0], $extras[1]);
-                        } else {
-                            $formatted = number_format($val, $digits);
-                        }
+                        $formatted = 2 === count($extras) ? number_format($val, $digits, $extras[0], $extras[1]) : number_format($val, $digits);
                     } elseif ('dollars' === $format) {
                         $formatted = '$'.number_format($val, 2);
                     } elseif ('percent' === $format) {
@@ -769,7 +757,7 @@ class Visualization
                     $groupby = $token->getValues();
                     array_shift($groupby);
                     array_shift($groupby);
-                    $query['groupby'] = array_filter($groupby);
+                    $query['groupby'] = array_filter($groupby, static fn (?string $s): bool => null !== $s && '' !== $s);
 
                     break;
 
@@ -779,7 +767,7 @@ class Visualization
                     }
                     $pivot = $token->getValues();
                     array_shift($pivot);
-                    $query['pivot'] = array_filter($pivot);
+                    $query['pivot'] = array_filter($pivot, static fn (?string $s): bool => null !== $s && '' !== $s);
 
                     break;
 
@@ -987,7 +975,7 @@ class Visualization
             }
 
             $pivotSql = 'SELECT '.implode(', ', $pivotFields).' FROM '.$meta['table'];
-            if (count($pivotJoins) > 0) {
+            if ([] !== $pivotJoins) {
                 $pivotSql .= ' '.implode(' ', $pivotJoins);
             }
             $pivotSql .= ' GROUP BY '.implode(', ', $pivotGroup);
@@ -1083,7 +1071,7 @@ class Visualization
             $wheres[] = $meta['global_where'];
         }
 
-        if (count($wheres) > 0) {
+        if ([] !== $wheres) {
             $sql .= ' WHERE '.implode(' AND ', $wheres);
         }
 
@@ -1353,6 +1341,8 @@ class Visualization
      *
      * @param Token      $token  the token or token group to recursively parse
      * @param null|array $fields the collector array reference to receive the flattened select field values
+     *
+     * @param-out array $fields
      */
     protected function parseFieldTokens(Token $token, ?array &$fields = null): void
     {
@@ -1385,6 +1375,8 @@ class Visualization
      *
      * @param Token                                          $token the token or token group to parse
      * @param null|array<array{type: string, value: string}> $where the collector array of tokens that make up the where clause
+     *
+     * @param-out array $where
      */
     protected function parseWhereTokens(Token $token, ?array &$where = null): void
     {

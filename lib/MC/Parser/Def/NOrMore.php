@@ -9,11 +9,9 @@ use MC\Parser\ParseError;
 
 class NOrMore extends Def
 {
-    /** @var Def */
-    public $expr;
+    public Def $expr;
 
-    /** @var int */
-    public $min;
+    public int $min;
 
     public function __construct(Def $expr, int $min)
     {

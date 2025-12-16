@@ -8,9 +8,7 @@ use Exception;
 
 class Visualization_Error extends Exception
 {
-    /** @var string */
-    public $type = 'server_error';
+    public string $type = 'server_error';
 
-    /** @var string */
-    public $summary = 'Server Error';
+    public string $summary = 'Server Error';
 }

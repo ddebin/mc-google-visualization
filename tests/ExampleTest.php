@@ -142,7 +142,7 @@ final class ExampleTest extends TestCase
         $output = $vis->handleRequest(false, $parameters);
 
         // hack, different PHP version have different float rounding
-        $output = preg_replace('/69\.22149730656[0-9]+/', '69.22149730656', $output);
+        $output = preg_replace('/69\.22149730656\d+/', '69.22149730656', $output);
         assert(is_string($output));
 
         // file_put_contents(__DIR__.'/result3.js', $output);

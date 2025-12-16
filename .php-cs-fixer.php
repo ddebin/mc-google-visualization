@@ -2,6 +2,7 @@
 
 use PhpCsFixer\Config;
 use PhpCsFixer\Finder;
+use PhpCsFixer\Runner\Parallel\ParallelConfigFactory;
 
 $finder = Finder::create()
     ->exclude('vendor')
@@ -9,34 +10,27 @@ $finder = Finder::create()
 ;
 
 $config = new Config();
-return $config->setRules([
-    '@PSR12' => true,
-    '@PSR12:risky' => true,
-    '@PhpCsFixer' => true,
-    '@PhpCsFixer:risky' => true,
-    '@PHP71Migration' => true,
-    '@PHP71Migration:risky' => true,
-    '@PHP73Migration' => true,
-    '@PHPUnit75Migration:risky' => true,
-    '@PHPUnit7x5Migration:risky' => true,
-    '@PHPUnit84Migration:risky' => true,
-    '@PHPUnit8x4Migration:risky' => true,
-    '@PHPUnit91Migration:risky' => true,
-    '@PHPUnit9x1Migration:risky' => true,
-    'array_syntax' => ['syntax' => 'short'],
-    'php_unit_test_class_requires_covers' => false,
-    'backtick_to_shell_exec' => true,
-    'blank_line_before_statement' => [
-        'statements' => ['declare', 'return', 'case'],
-    ],
-    'comment_to_phpdoc' => false,
-    'declare_equal_normalize' => ['space' => 'single'],
-    'global_namespace_import' => true,
-    'linebreak_after_opening_tag' => true,
-    'native_function_invocation' => false,
-    'no_unset_on_property' => false,
-    'php_unit_test_case_static_method_calls' => ['call_type' => 'self'],
-    'phpdoc_to_comment' => false,
-    'self_static_accessor' => true,
-])
+return $config
+    ->setParallelConfig(ParallelConfigFactory::detect())
+    ->setRules([
+        '@auto' => true,
+        '@auto:risky' => true,
+        '@PhpCsFixer' => true,
+        '@PhpCsFixer:risky' => true,
+        'array_syntax' => ['syntax' => 'short'],
+        'php_unit_test_class_requires_covers' => false,
+        'backtick_to_shell_exec' => true,
+        'blank_line_before_statement' => [
+            'statements' => ['declare', 'return', 'case'],
+        ],
+        'comment_to_phpdoc' => false,
+        'declare_equal_normalize' => ['space' => 'single'],
+        'global_namespace_import' => true,
+        'linebreak_after_opening_tag' => true,
+        'native_function_invocation' => false,
+        'no_unset_on_property' => false,
+        'php_unit_test_case_static_method_calls' => ['call_type' => 'self'],
+        'phpdoc_to_comment' => false,
+        'self_static_accessor' => true,
+    ])
     ->setFinder($finder);

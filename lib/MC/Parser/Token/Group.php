@@ -12,7 +12,7 @@ use MC\Parser\Token;
 class Group extends Token implements Countable
 {
     /** @var Token[] */
-    public $subtoks = [];
+    public array $subtoks = [];
 
     public function __construct(?string $name)
     {
@@ -68,7 +68,7 @@ class Group extends Token implements Countable
 
     public function hasChildren(): bool
     {
-        return count($this->subtoks) > 0;
+        return [] !== $this->subtoks;
     }
 
     /**

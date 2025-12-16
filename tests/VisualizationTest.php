@@ -147,7 +147,7 @@ final class VisualizationTest extends TestCase
                 'req_callback' => [
                     'fields' => ['field'],
                     'type' => 'text',
-                    'callback' => [__CLASS__, 'callbackTest'],
+                    'callback' => [self::class, 'callbackTest'],
                 ],
             ],
         ]);

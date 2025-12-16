@@ -10,8 +10,7 @@ use MC\Parser\ParseError;
 
 class Recursive extends Def
 {
-    /** @var null|Def */
-    public $replacement;
+    public ?Def $replacement = null;
 
     /**
      * @throws DefError

@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-24.04
     strategy:
       matrix:
-        php: ['7.3', '7.4', '8.0', '8.1', '8.2', '8.3', '8.4', '8.5']
+        php: ['7.4', '8.0', '8.1', '8.2', '8.3', '8.4', '8.5']
     name: PHP ${{ matrix.php }}
     steps:
       -   uses: actions/checkout@v6
@@ -21,6 +21,7 @@ jobs:
             tools: composer:2
             coverage: none
       -   run: composer install --no-progress
+      -   run: composer php-cs-fixer-dry-run
       -   run: composer phpstan
       -   run: composer phpunit
 
@@ -32,9 +33,10 @@ jobs:
             fetch-depth: 5
       -   uses: shivammathur/setup-php@v2
           with:
-            php-version: '7.3'
+            php-version: '7.4'
             tools: composer:2
             coverage: none
       -   run: composer update --no-progress --prefer-lowest
+      -   run: composer php-cs-fixer-dry-run
       -   run: composer phpstan
       -   run: composer phpunit

@@ -25,10 +25,8 @@ class Parser
 {
     /**
      * By default, the parser ignores these characters when they occur between tokens.
-     *
-     * @var string
      */
-    public static $whitespace = " \t\n\r";
+    public static string $whitespace = " \t\n\r";
 
     /**
      * Return a Set with the function arguments as the subexpressions.

@@ -9,11 +9,9 @@ namespace MC\Parser;
  */
 class Token
 {
-    /** @var null|string */
-    public $name;
+    public ?string $name;
 
-    /** @var null|string */
-    public $value;
+    public ?string $value;
 
     /**
      * Token constructor.

@@ -12,11 +12,9 @@ use MC\Parser\Token\Group;
  */
 abstract class Def
 {
-    /** @var null|string */
-    public $name;
+    public ?string $name = null;
 
-    /** @var bool */
-    public $suppress = false;
+    public bool $suppress = false;
 
     /**
      * Parse a string, and return the result or throw a parser exception.

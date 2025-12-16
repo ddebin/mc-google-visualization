@@ -11,8 +11,7 @@ use MC\Parser\Def;
  */
 class IsEmpty extends Def
 {
-    /** @var bool */
-    public $suppress = true;
+    public bool $suppress = true;
 
     public function _parse(string $str, int $loc): array
     {

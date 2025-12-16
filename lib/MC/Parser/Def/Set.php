@@ -13,7 +13,7 @@ use MC\Parser\ParseError;
 class Set extends Def
 {
     /** @var Def[] */
-    public $exprs = [];
+    public array $exprs = [];
 
     /**
      * @param Def[] $exprs

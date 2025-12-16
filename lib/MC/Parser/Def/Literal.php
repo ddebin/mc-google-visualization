@@ -10,25 +10,22 @@ use MC\Parser\ParseError;
 
 class Literal extends Def
 {
-    /** @var string */
-    public $search;
+    public string $search;
 
-    /** @var bool */
-    public $caseless = false;
+    public bool $caseless = false;
 
-    /** @var bool */
-    public $fullword = true;
+    public bool $fullword = true;
 
     /**
      * Match against an exact set of characters in the string.
      *
-     * @param string $str      the search string
+     * @param string $search   the search string
      * @param bool   $caseless set to true to ignore case
      * @param bool   $fullword set to false to allow a literal followed by a non-whitespace character
      */
-    public function __construct(string $str, bool $caseless = false, bool $fullword = true)
+    public function __construct(string $search, bool $caseless = false, bool $fullword = true)
     {
-        $this->search = $str;
+        $this->search = $search;
         $this->caseless = $caseless;
         $this->fullword = $fullword;
     }
@@ -38,7 +35,7 @@ class Literal extends Def
      */
     public function _parse(string $str, int $loc): array
     {
-        $match = !$this->caseless ? strpos($str, $this->search, $loc) : stripos($str, $this->search, $loc);
+        $match = $this->caseless ? stripos($str, $this->search, $loc) : strpos($str, $this->search, $loc);
 
         if ($match !== $loc) {
             throw new ParseError('Expected: '.$this->search, $str, $loc);

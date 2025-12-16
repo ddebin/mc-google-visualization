@@ -17,29 +17,19 @@ class Regex extends Def
 
     // Subclasses of this can just modify the $regex, $flags, and $errstr properties.
 
-    /** @var null|string */
-    public $regex;
+    public ?string $regex;
 
-    /** @var null|string */
-    public $flags = 'u';
+    public ?string $flags = 'u';
 
-    /** @var null|string */
-    public $errstr;
+    public ?string $errstr;
 
-    /** @var int */
-    public $retgroup = 0;
+    public int $retgroup = 0;
 
     public function __construct(?string $regex = null, ?string $flags = null, ?string $errstr = null)
     {
-        if (null !== $regex) {
-            $this->regex = $regex;
-        }
-        if (null !== $flags) {
-            $this->flags = $flags;
-        }
-        if (null !== $errstr) {
-            $this->errstr = $errstr;
-        }
+        $this->regex = $regex;
+        $this->flags = $flags;
+        $this->errstr = $errstr;
     }
 
     /**

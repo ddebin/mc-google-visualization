@@ -6,11 +6,9 @@ namespace MC\Parser;
 
 class ParseError extends Error
 {
-    /** @var string */
-    public $data;
+    public string $data;
 
-    /** @var int */
-    public $loc;
+    public int $loc;
 
     public function __construct(string $msg, string $str, int $loc)
     {
