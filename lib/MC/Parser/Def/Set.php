@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace MC\Parser\Def;
 
 use MC\Parser\Def;
+use MC\Parser\ParseError;
 
 /**
  * Verify that the string matches a series of subexpressions in the specified order.
@@ -25,6 +26,8 @@ class Set extends Def
     /**
      * @param string $str the string to parse
      * @param int    $loc the index to start parsing
+     *
+     * @throws ParseError
      */
     public function _parse(string $str, int $loc): array
     {

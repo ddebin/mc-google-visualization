@@ -28,7 +28,7 @@ use Tests\VisualizationTest;
  *     field?: string,
  *     fields?: string[],
  *     callback?: callable,
- *     extra?: mixed[],
+ *     extra?: array,
  *     sort_field?: string,
  *     join?: string
  * }
@@ -488,7 +488,7 @@ class Visualization
      * @param array $row  the row values as an array
      * @param array $meta the metadata for the query (use generateMetadata())
      *
-     * @return string the string fragment to include in the results back to the javascript client
+     * @return string the string fragment to include in the results back to the JavaScript client
      *
      * @throws Visualization_Error
      */
