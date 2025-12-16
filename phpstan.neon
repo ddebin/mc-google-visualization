@@ -3,6 +3,8 @@ includes:
     - vendor/phpstan/phpstan-phpunit/rules.neon
     - vendor/phpstan/phpstan-strict-rules/rules.neon
 parameters:
-    checkMissingIterableValueType: false
     reportUnmatchedIgnoredErrors: true
     treatPhpDocTypesAsCertain: false
+    ignoreErrors:
+        -
+            identifier: missingType.iterableValue
